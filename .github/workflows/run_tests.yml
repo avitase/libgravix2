@@ -27,7 +27,7 @@ jobs:
         ctest --test-dir ${{github.workspace}}/build
         mkdir -p ${{github.workspace}}/bindings/python/libs/ && \
         ln -s ${{github.workspace}}/build/src/libgravix2.so ${{github.workspace}}/bindings/python/libs/ && \
-        pytest ${{github.workspace}}/bindings/python/test/
+        python3 -m pytest ${{github.workspace}}/bindings/python/test/
 
     - name: Run tests for 3D potential
       run: |
@@ -36,4 +36,4 @@ jobs:
         ctest --test-dir ${{github.workspace}}/build
         mkdir -p ${{github.workspace}}/bindings/python/libs/ && \
         ln -s ${{github.workspace}}/build/src/libgravix2.so ${{github.workspace}}/bindings/python/libs/ && \
-        pytest ${{github.workspace}}/bindings/python/test/
+        python3 -m pytest ${{github.workspace}}/bindings/python/test/
