@@ -18,7 +18,7 @@ jobs:
 
     - name: Install pytest
       shell: bash
-      run: sudo apt-get install python-pytest
+      run: sudo apt-get install python3-pytest
 
     - name: Build tests for 2D potential
       run: |
