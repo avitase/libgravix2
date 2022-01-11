@@ -9,10 +9,6 @@ on:
 env:
   BUILD_TYPE: Debug
 
-inputs:
-  pot_type:
-    required: true
-
 jobs:
   build:
     runs-on: ubuntu-latest
