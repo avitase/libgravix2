@@ -23,7 +23,7 @@ enable_doxygen()
 
 option(ENABLE_TESTING "Enable Test Builds" OFF)
 if (ENABLE_TESTING)
-    if (CMAKE_BUILD_TYPE EQUAL "Debug")
+    if (CMAKE_BUILD_TYPE STREQUAL "Debug")
         enable_testing()
         add_subdirectory(test)
     else ()
