@@ -18,7 +18,6 @@ function(set_project_warnings project_name)
         -Wconversion
         -Wdangling-else
         -Wdate-time
-        -Wsizeof-array-div
         -Waggregate-return
         -Wstrict-prototypes
         -Wold-style-definition
@@ -32,13 +31,10 @@ function(set_project_warnings project_name)
         -Wno-unused-parameter
     )
 
-
-
     set(GCC_WARNINGS
         ${CLANG_WARNINGS}
         -Wsync-nand
         -Walloc-zero
-        -Warith-conversion
         -Wduplicated-branches
         -Wduplicated-cond
         -Wzero-length-bounds
