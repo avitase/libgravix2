@@ -16,14 +16,24 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Install pytest
+      shell: bash
+      run: sudo apt-get install python-pytest
+
     - name: Build tests for 2D potential
       run: |
         cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DENABLE_TESTING=ON -DPOT_TYPE=2D && \
         cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} && \
         ctest --test-dir ${{github.workspace}}/build
+        mkdir -p ${{github.workspace}}/bindings/python/libs/ && \
+        ln -s ${{github.workspace}}/build/src/libgravix2.so ${{github.workspace}}/bindings/python/libs/ && \
+        pytest ${{github.workspace}}/bindings/python/test/
 
     - name: Run tests for 3D potential
       run: |
         cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DENABLE_TESTING=ON -DPOT_TYPE=3D && \
         cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} && \
         ctest --test-dir ${{github.workspace}}/build
+        mkdir -p ${{github.workspace}}/bindings/python/libs/ && \
+        ln -s ${{github.workspace}}/build/src/libgravix2.so ${{github.workspace}}/bindings/python/libs/ && \
+        pytest ${{github.workspace}}/bindings/python/test/
