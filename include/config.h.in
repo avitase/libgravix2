@@ -1,0 +1,18 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
+#define TRAJECTORY_SIZE @TRAJECTORY_SIZE@
+#define INT_STEPS @INT_STEPS@
+#define MIN_DIST @MIN_DIST@
+
+#define POT_TYPE_2D 2
+#define POT_TYPE_3D 3
+#define POT_TYPE POT_TYPE_@POT_TYPE@
+
+#if POT_TYPE == POT_TYPE_3D
+    #define N_POT @N_POT@
+#endif
+
+#define COMPOSITION_SCHEME P2GAMMA_@COMPOSITION_SCHEME@
+
+#endif // CONFIG_H
