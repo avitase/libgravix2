@@ -35,8 +35,8 @@ jobs:
          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
          git config --local user.name "github-actions[bot]"
          git checkout -b ghaction-doc
-         git add -f ${{github.workspace}}/docs/
+         git add --force ${{github.workspace}}/docs/
          git commit -m "Update documentation" -a
 
     - name: Push changes
-      run: git push -u origin ghaction-doc
+      run: git push --force -u origin ghaction-doc
