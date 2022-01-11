@@ -28,7 +28,7 @@ jobs:
 
     - name: Install documentation 
       shell: bash
-      run: cp -r ${{github.workspace}}/build/html ${{github.workspace}}/autodoc/
+      run: cp -r ${{github.workspace}}/build/html ${{github.workspace}}/docs/
 
     - name: Commit files
       run: |
