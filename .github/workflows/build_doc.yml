@@ -32,7 +32,6 @@ jobs:
          git config --local user.name "github-actions[bot]"
          git checkout -b ghaction-doc
          git commit -m "Update documentation" -a
-         git push -u ghaction-doc
 
     - name: Push changes
-      uses: 
+      run: git push -u ghaction-doc
