@@ -37,7 +37,6 @@ function(set_project_warnings project_name)
         -Walloc-zero
         -Wduplicated-branches
         -Wduplicated-cond
-        -Wzero-length-bounds
         -Wjump-misses-init
         -Wlogical-op
         -Wno-unused-command-line-argument
