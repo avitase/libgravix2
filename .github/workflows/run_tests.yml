@@ -18,7 +18,10 @@ jobs:
 
     - name: Install python dependencies
       shell: bash
-      run: sudo apt-get install python3-pytest python3-numpy
+      run: |
+        sudo apt-get install python3-pip && \
+        pip3 install --user pytest && \
+        pip3 install --user numpy
 
     - name: Build tests for 2D potential
       run: |
