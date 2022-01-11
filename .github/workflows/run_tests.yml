@@ -16,14 +16,14 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Run tests for 2D potential
+    - name: Build tests for 2D potential
       run: |
         cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DENABLE_TESTING=ON -DPOT_TYPE=2D && \
         cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} && \
-        ctest -C ${{env.BUILD_TYPE}}
+        ctest --test-dir ${{github.workspace}}/build
 
     - name: Run tests for 3D potential
       run: |
         cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DENABLE_TESTING=ON -DPOT_TYPE=3D && \
         cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} && \
-        ctest -C ${{env.BUILD_TYPE}}
+        ctest --test-dir ${{github.workspace}}/build
