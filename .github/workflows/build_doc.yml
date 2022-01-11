@@ -39,4 +39,4 @@ jobs:
          git commit -m "Update documentation" -a
 
     - name: Push changes
-      run: git push -u ghaction-doc
+      run: git push -u origin ghaction-doc
