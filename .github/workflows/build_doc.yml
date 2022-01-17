@@ -46,7 +46,7 @@ jobs:
 
     - name: Install Python binding documentation 
       shell: bash
-      run: cp -r ${{github.workspace}}/bindings/python/doc/html/ ${{github.workspace}}/docs/py-bindings/
+      run: cp -r ${{github.workspace}}/bindings/python/doc/build/html/ ${{github.workspace}}/docs/py-bindings/
 
     - name: Commit files
       run: |
