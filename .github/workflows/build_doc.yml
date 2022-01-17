@@ -41,12 +41,12 @@ jobs:
 
     - name: Build Python binding documentation
       shell: bash
-      working-directory: bindings/python/docs
+      working-directory: bindings/python/doc
       run: make html
 
     - name: Install Python binding documentation 
       shell: bash
-      run: cp -r ${{github.workspace}}/bindings/python/docs/html/ ${{github.workspace}}/docs/py-bindings/
+      run: cp -r ${{github.workspace}}/bindings/python/doc/html/ ${{github.workspace}}/docs/py-bindings/
 
     - name: Commit files
       run: |
