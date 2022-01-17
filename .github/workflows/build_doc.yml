@@ -47,7 +47,7 @@ jobs:
     - name: Install Python binding documentation 
       shell: bash
       run: |
-        cp -r ${{github.workspace}}/bindings/python/doc/build/ ${{github.workspace}}/docs/py-bindings/ && \
+        cp -r ${{github.workspace}}/bindings/python/doc/build/html/ ${{github.workspace}}/docs/py-bindings/ && \
         touch ${{github.workspace}}/docs/.nojekyll
 
     - name: Commit files
