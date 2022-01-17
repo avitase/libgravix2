@@ -74,7 +74,7 @@ class Planets:
         :param idx: Planet index
         :return: None
         """
-        if i < 0 or i >= len(self._planet_id):
+        if idx < 0 or idx >= len(self._planet_id):
             raise IndexError(f"Invalid index {i}")
 
         n = self._pop_planet(self.handle)
