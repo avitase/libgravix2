@@ -25,7 +25,7 @@ class Trajectory:
 
 class Missile:
     """
-    Proxy class for operations on ``libgravix2``'s ``Missiles``
+    Proxy class for operations on ``libgravix2``'s ``Missile``
 
     Note that missiles have to be initialized via :func:`gravix2.missile.Missile.set` or
     :func:`gravix2.missile.Missile.launch` before they can be propagated.
@@ -166,7 +166,7 @@ class Missiles:
     A sequence of :class:`gravix2.missile.Missile` corresponding to ``libgravix``'s
     ``Missiles``.
 
-    This proxy covers all necessary (de)allocations of ``libgravix``'s ``Missiles`` from
+    This proxy covers all necessary (de)allocations of ``libgravix``'s ``TrajectoryBatch`` from
     the user and should behave like a tuple of :class:`gravix2.missile.Missile`:
 
     **Example**

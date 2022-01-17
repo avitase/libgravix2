@@ -1,38 +1,55 @@
+The propagation of point-like particles, aka _missiles_, are simulated in the gravitational force field of static center of masses, aka _planets_, on the surface of a unit-sphere.
+%Planets and missiles are restricted to stay exactly on the surface at any time.
+
+In this document we describe in detail the theoretical background and list all equations that are necessary to efficiently deal with this library.
+If you prefer a more experimental orientated approach you can skip this section and directly jump to [the description of the API](@ref include/api.h).
+There, you will find everything necessary to use the library and to run your simulations.
+
+# Theory
+%Planets generate a static gravitational force field \f$\vec\nabla V\f$ on the surface of a unit-sphere which we refer to as _the manifold_ from here on.
+Missiles do not generate a force field but move in \f$\vec\nabla V\f$ whereas planets are static and stay fix.
+%Planets and missiles are placed on the manifold and the dynamics of the latter is constrained to not leave it at any time.
+Let \f$(\vec q, \vec p) \in \mathbb{R}^3 \otimes \mathbb{R}^3\f$ be the phase space coordinates of a single missile and let us think about \f$\vec q\f$ as the spatial position which is sufficient to evaluate \f$V\f$, such that the Hamiltonian of a single missile with mass \f$m\f$ reads:
 \f[
-    H(\vec{q}, \vec{p}) = \frac{p^2}{2m} + V(\vec{q}) + \lambda g(\vec{q})
+    H(\vec{q}, \vec{p}) = \frac{p^2}{2m} + V(\vec{q}) + \lambda g(\vec{q}) \,,
 \f]
-
+where \f$g(\vec q)\f$ is the constraint of the manifold
 \f{align*}{
-    g(\vec{q}) &= \frac{1}{2} \left( q^2 - 1 \right) = 0 \\
-    \vec\nabla g(\vec{q}) &= \vec{q}
+    g(\vec q) &= \frac{1}{2} \left( q^2 - 1 \right) = 0 \,, \\
+    \vec\nabla g(\vec q) &= \vec{q} \,.
 \f}
+The potential \f$V(\vec q)\f$ is the linear superposition of the contributions of each planet \f$i\f$ at position \f$\vec{y}_i \in \mathbb{R}^3\f$,
+\f[
+    V(\vec q) = \sum\limits_{i=1}^n V_d(\sigma_i) \,,
+\f]
+with
+\f[
+    \sigma_i = \arccos(\vec{q} \cdot \vec{y}_i) \,,
+\f]
+where \f$\sigma_i\f$ is the (shortest) distance between \f$\vec q\f$ and \f$\vec{y}_i\f$ on the manifold.
 
+We implement two different types of gravitation potentials \f$V_d(\sigma_i)\f$,
 \f{align*}{
-    V_{2\mathrm{D}}(\sigma) &= -2 \sum\limits_{j=0}^\infty \big[ \ln(2\pi j + \sigma) + \ln(2\pi (j+1) - \sigma) \big] \\
-    V_{3\mathrm{D}}(\sigma) &= -\frac{1}{4\pi} \sum\limits_{j=0}^\infty \left[ \frac{1}{2\pi j + \sigma} + \frac{1}{2\pi (j+1) - \sigma} \right]
+    V_{2\mathrm{D}}(\sigma) &= -2 \sum\limits_{j=0}^\infty \big[ \ln(2\pi j + \sigma) + \ln(2\pi (j+1) - \sigma) \big] , \\
+    V_{3\mathrm{D}}(\sigma) &= -\frac{1}{4\pi} \sum\limits_{j=0}^\infty \left[ \frac{1}{2\pi j + \sigma} + \frac{1}{2\pi (j+1) - \sigma} \right] ,
 \f}
+where the former is motivated by a force field which is distributed solely on the manifold and the latter by the canonical \f$\sigma_i^{-2}\f$ behavior.
 
+To actually compute the force fields we first find the first derivates
 \f{align*}{
     V'_{2\mathrm{D}}(\sigma) &= -\sum\limits_{i=1}^n \operatorname{cot} \frac{\sigma}{2} \\
     V'_{3\mathrm{D}}(\sigma) &= -\sum\limits_{i=1}^n (\pi - \sigma) \sum\limits_{j=0}^\infty \frac{2j + 1}{\left[ (2j+1)^2 \pi^2 - (\pi - \sigma)^2 \right]^2}
 \f}
-
-\f[
-    V(\vec{q}) = \sum\limits_{i=1}^n V_d(\sigma_i)
-\f]
-with
-\f[
-    \sigma_i = \arccos(\vec{q} \cdot \vec{y}_i)
-\f]
-
+and then get the corresponding force fields
 \f[
     \vec\nabla_{\!q} V(\vec{q}) = \sum\limits_{i=1}^n \frac{V'_d(\sigma_i)}{\sin \sigma_i} \, \vec{y}_i = \sum\limits_{i=1}^n \mathcal{V}_d(\sigma_i) \, \vec{y}_i
 \f]
-
+using the abbreviations
 \f{align*}{
     \mathcal{V}_{2\mathrm{D}}(\sigma_i) &= -\frac{1}{1 - \cos \sigma_i} \\
     \mathcal{V}_{3\mathrm{D}}(\sigma_i) &= -\frac{1}{\operatorname{sinc}(\sigma_i - \pi)} \sum\limits_{j=0}^\infty \frac{2j + 1}{\left[ (2j+1)^2 \pi^2 - (\sigma_i - \pi)^2 \right]^2}
 \f}
+with \f$d \in \{2\mathrm{D}, 3\mathrm{D}\}\f$.
 
 note that although \f$V'_{2\mathrm{D}}(\sigma_i) / \sin \sigma_i \neq 0\f$ at \f$\sigma_i = \pi\f$, here \f$\vec{q} \parallel \vec\nabla_{\!q} V\f$
 
@@ -185,3 +202,7 @@ starting from
         0
     \end{pmatrix}
 \f]
+
+## How to proceed from here on
+You now have all the information necessary to efficiently deal with [our API](@ref include/api.h).
+Go there to find out how to use it in practice for fun and profit.
