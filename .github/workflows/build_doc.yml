@@ -20,15 +20,33 @@ jobs:
       shell: bash
       run: sudo apt-get install doxygen graphviz
 
+    - name: Install python dependencies
+      shell: bash
+      run: |
+        sudo apt-get install python3-pip && \
+        pip3 install --user pytest && \
+        pip3 install --user numpy && \
+        pip3 install --user sphinx && \
+        pip3 install --user sphinx-rtd-theme
+
     - name: Configure CMake
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DENABLE_DOXYGEN=ON
 
-    - name: Build
+    - name: Build main documentation
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
-    - name: Install documentation 
+    - name: Install main documentation 
       shell: bash
-      run: cp -r ${{github.workspace}}/build/html ${{github.workspace}}/docs/
+      run: cp -r ${{github.workspace}}/build/html/ ${{github.workspace}}/docs/
+
+    - name: Build Python binding documentation
+      shell: bash
+      working-directory: bindings/python/docs
+      run: make html
+
+    - name: Install Python binding documentation 
+      shell: bash
+      run: cp -r ${{github.workspace}}/bindings/python/docs/html/ ${{github.workspace}}/docs/py-bindings/
 
     - name: Commit files
       run: |
