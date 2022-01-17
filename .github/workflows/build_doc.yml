@@ -42,7 +42,7 @@ jobs:
     - name: Build Python binding documentation
       shell: bash
       working-directory: bindings/python/doc
-      run: make html
+      run: touch .nojekyll && make html
 
     - name: Install Python binding documentation 
       shell: bash
