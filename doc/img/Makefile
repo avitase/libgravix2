@@ -16,4 +16,5 @@ imgs: venv
 clean:
 	rm -rf venv
 	rm -rf .ipynb_checkpoints
+	rm -rf build/
 	find -iname "*.pyc" -delete

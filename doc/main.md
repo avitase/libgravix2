@@ -35,6 +35,8 @@ We implement two different types of gravitation potentials \f$V_d(\sigma_i)\f$,
 \f}
 where the former is motivated by a force field which is distributed solely on the manifold and the latter by the canonical \f$\sigma_i^{-2}\f$ behavior.
 
+[<img src="pot3D.png" width="400"/>](pot3D.png)
+
 To actually compute the force fields we first find the first derivates
 \f{align*}{
     V'_{2\mathrm{D}}(\sigma) &= -\sum\limits_{i=1}^n \operatorname{cot} \frac{\sigma}{2} \\

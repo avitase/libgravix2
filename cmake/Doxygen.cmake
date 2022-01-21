@@ -8,6 +8,7 @@ function(enable_doxygen)
         set(DOXYGEN_GENERATE_LATEX YES)
         set(DOXYGEN_USE_MATHJAX YES)
         set(DOXYGEN_USE_MDFILE_AS_MAINPAGE main.md)
+        set(DOXYGEN_IMAGE_PATH ${PROJECT_SOURCE_DIR}/doc/img/build)
         find_package(Doxygen REQUIRED dot)
 
         set(DOC_FILES
