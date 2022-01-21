@@ -30,8 +30,8 @@ where \f$\sigma_i\f$ is the (shortest) distance between \f$\vec q\f$ and \f$\vec
 
 We implement two different types of gravitation potentials \f$V_d(\sigma_i)\f$,
 \f{align*}{
-    V_{2\mathrm{D}}(\sigma) &= -2 \sum\limits_{j=0}^\infty \big[ \ln(2\pi j + \sigma) + \ln(2\pi (j+1) - \sigma) \big] , \\
-    V_{3\mathrm{D}}(\sigma) &= -\frac{1}{4\pi} \sum\limits_{j=0}^\infty \left[ \frac{1}{2\pi j + \sigma} + \frac{1}{2\pi (j+1) - \sigma} \right] ,
+    V_{2\mathrm{D}}(\sigma) &= -2 \sum\limits_{j=0}^\infty V^{(j)}_{2\mathrm{D}}(\sigma) = -2 \sum\limits_{j=0}^\infty \big[ \ln(2\pi j + \sigma) + \ln(2\pi (j+1) - \sigma) \big] , \\
+    V_{3\mathrm{D}}(\sigma) &= -\frac{1}{4\pi} \sum\limits_{j=0}^\infty V^{(j)}_{3\mathrm{D}}(\sigma) = -\frac{1}{4\pi} \sum\limits_{j=0}^\infty \left[ \frac{1}{2\pi j + \sigma} + \frac{1}{2\pi (j+1) - \sigma} \right] ,
 \f}
 where the former is motivated by a force field which is distributed solely on the manifold and the latter by the canonical \f$\sigma_i^{-2}\f$ behavior.
 
