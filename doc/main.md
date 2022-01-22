@@ -27,31 +27,44 @@ with
     \sigma_i = \arccos(\vec{q} \cdot \vec{y}_i) \,,
 \f]
 where \f$\sigma_i\f$ is the (shortest) distance between \f$\vec q\f$ and \f$\vec{y}_i\f$ on the manifold.
+On a sphere, the shortest distance is always an orthodrome, also known as a great circle.
+Without loss of generality, the kinematics of a massive particle in the force field of a single planet can thus be reduced to the movement on a (static) unit circle.
+Further, let's assume that the particle is at the azimuth \f$\varphi = \sigma \in [0, 2\pi)\f$ and is attracted by the planet at \f$\varphi = 0\f$.
+Following the line of sight of the particle on the manifold, the planet is *seen* periodically at distances \f$\sigma, 2\pi + \sigma, \ldots\f$ in one direction and at \f$2\pi - \sigma, 4\pi - \sigma, \ldots\f$ in the opposite direction.
 
 We implement two different types of gravitation potentials \f$V_d(\sigma_i)\f$,
 \f{align*}{
     V_{2\mathrm{D}}(\sigma) &= -2 \sum\limits_{j=0}^\infty V^{(j)}_{2\mathrm{D}}(\sigma) = -2 \sum\limits_{j=0}^\infty \big[ \ln(2\pi j + \sigma) + \ln(2\pi (j+1) - \sigma) \big] , \\
     V_{3\mathrm{D}}(\sigma) &= -\frac{1}{4\pi} \sum\limits_{j=0}^\infty V^{(j)}_{3\mathrm{D}}(\sigma) = -\frac{1}{4\pi} \sum\limits_{j=0}^\infty \left[ \frac{1}{2\pi j + \sigma} + \frac{1}{2\pi (j+1) - \sigma} \right] ,
 \f}
-where the former is motivated by a force field which is distributed solely on the manifold and the latter by the canonical \f$\sigma_i^{-2}\f$ behavior.
+where the former contributes \f$\sim \sigma_i^{-1}\f$ force fields that correspond to a 2D fields solely embedded on the manifold and the latter is motivated by the canonical \f$\sim \sigma_i^{-2}\f$ behavior of the unconstrained 3D case.
+
+In the figure below we show \f$V^{(j)}_{3\mathrm{D}}(\sigma_i)\f$ for \f$j=0,1,2\f$.
 
 [<img src="pot3D.png" width="400"/>](pot3D.png)
 
-To actually compute the force fields we first find the first derivates
+Note that these potential or only physical meaningfull for \f$0 \le \sigma_i \le 2\pi\f$.
+In fact, by definition \f$\sigma_i \in [0, \pi)\f$ and both potential are chosen such that \f$\sigma_i\f$ is symmetric at \f$\sigma_i = \pi\f$.
+
+The force fields are given by the gradients of the respective potentials:
+\f[
+    \vec\nabla_{\!q} V(\vec{q}) = \sum\limits_{i=1}^n \frac{V'_d(\sigma_i)}{\sin \sigma_i} \, \vec{y}_i = \sum\limits_{i=1}^n \mathcal{V}_d(\sigma_i) \, \vec{y}_i
+\f]
+where we introduced the abbreviations
 \f{align*}{
     V'_{2\mathrm{D}}(\sigma) &= -\sum\limits_{i=1}^n \operatorname{cot} \frac{\sigma}{2} \\
     V'_{3\mathrm{D}}(\sigma) &= -\sum\limits_{i=1}^n (\pi - \sigma) \sum\limits_{j=0}^\infty \frac{2j + 1}{\left[ (2j+1)^2 \pi^2 - (\pi - \sigma)^2 \right]^2}
 \f}
-and then get the corresponding force fields
-\f[
-    \vec\nabla_{\!q} V(\vec{q}) = \sum\limits_{i=1}^n \frac{V'_d(\sigma_i)}{\sin \sigma_i} \, \vec{y}_i = \sum\limits_{i=1}^n \mathcal{V}_d(\sigma_i) \, \vec{y}_i
-\f]
-using the abbreviations
+and 
 \f{align*}{
     \mathcal{V}_{2\mathrm{D}}(\sigma_i) &= -\frac{1}{1 - \cos \sigma_i} \\
     \mathcal{V}_{3\mathrm{D}}(\sigma_i) &= -\frac{1}{\operatorname{sinc}(\sigma_i - \pi)} \sum\limits_{j=0}^\infty \frac{2j + 1}{\left[ (2j+1)^2 \pi^2 - (\sigma_i - \pi)^2 \right]^2}
 \f}
 with \f$d \in \{2\mathrm{D}, 3\mathrm{D}\}\f$.
+Although we only find an analytical solution for \f$d = 2\mathrm{D}\f$ the infinite sum for \f$d = 2\mathrm{D}\f$ does converge quickly and for most cases taking \f$\mathrm{O}(10)\f$ summands is sufficient. 
+
+[<img src="fd.png" width="400"/>](fd.png)
+[<img src="f3D_ratio.png" width="400"/>](f3D_ratio.png)
 
 note that although \f$V'_{2\mathrm{D}}(\sigma_i) / \sin \sigma_i \neq 0\f$ at \f$\sigma_i = \pi\f$, here \f$\vec{q} \parallel \vec\nabla_{\!q} V\f$
 
