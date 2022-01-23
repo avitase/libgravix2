@@ -7,12 +7,12 @@ function(enable_doxygen)
         set(DOXYGEN_EXTRACT_ALL YES)
         set(DOXYGEN_GENERATE_LATEX YES)
         set(DOXYGEN_USE_MATHJAX YES)
-        set(DOXYGEN_USE_MDFILE_AS_MAINPAGE main.md)
-        set(DOXYGEN_IMAGE_PATH ${PROJECT_SOURCE_DIR}/doc/img/build)
+        set(DOXYGEN_USE_MDFILE_AS_MAINPAGE theory.md)
+        set(DOXYGEN_IMAGE_PATH ${PROJECT_SOURCE_DIR}/doc/img)
         find_package(Doxygen REQUIRED dot)
 
         set(DOC_FILES
-            ${PROJECT_SOURCE_DIR}/doc/main.md
+            ${PROJECT_SOURCE_DIR}/doc/theory.md
             ${PROJECT_SOURCE_DIR}/include
             ${PROJECT_SOURCE_DIR}/src
         )

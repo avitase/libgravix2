@@ -61,7 +61,7 @@ and
     \mathcal{V}_{3\mathrm{D}}(\sigma_i) &= -\frac{1}{\operatorname{sinc}(\sigma_i - \pi)} \sum\limits_{j=0}^\infty \frac{2j + 1}{\left[ (2j+1)^2 \pi^2 - (\sigma_i - \pi)^2 \right]^2}
 \f}
 with \f$d \in \{2\mathrm{D}, 3\mathrm{D}\}\f$.
-Although we only find an analytical solution for \f$d = 2\mathrm{D}\f$ the infinite sum for \f$d = 2\mathrm{D}\f$ does converge quickly and for most cases taking \f$\mathrm{O}(10)\f$ summands is sufficient. 
+Although we only find an analytical solution for \f$d = 2\mathrm{D}\f$, the infinite sum for \f$d = 3\mathrm{D}\f$ does converge quickly and for most cases taking \f$\mathrm{O}(10)\f$ summands is sufficient. 
 
 [<img src="fd.png" width="400"/>](fd.png)
 [<img src="f3D_ratio.png" width="400"/>](f3D_ratio.png)
