@@ -1,15 +1,15 @@
-The propagation of point-like particles, aka _missiles_, are simulated in the gravitational force field of static center of masses, aka _planets_, on the surface of a unit-sphere.
+The propagation of point-like particles, aka _missiles_, are simulated in the gravitational force field of static center of masses, aka _planets_, on the surface of a unit sphere.
 %Planets and missiles are restricted to stay exactly on the surface at any time.
 
-In this document we describe in detail the theoretical background and list all equations that are necessary to efficiently deal with this library.
-If you prefer a more experimental orientated approach you can skip this section and directly jump to [the description of the API](@ref include/api.h).
+In this document, we describe in detail the theoretical background and list all equations that are necessary to efficiently deal with this library.
+If you prefer a more experimental-orientated approach you can skip this section and directly jump to [the description of the API](@ref include/api.h).
 There, you will find everything necessary to use the library and to run your simulations.
 
 # Theory
-%Planets generate a static gravitational force field \f$\vec\nabla V\f$ on the surface of a unit-sphere which we refer to as _the manifold_ from here on.
-Missiles do not generate a force field but move in \f$\vec\nabla V\f$ whereas planets are static and stay fix.
-%Planets and missiles are placed on the manifold and the dynamics of the latter is constrained to not leave it at any time.
-Let \f$(\vec q, \vec p) \in \mathbb{R}^3 \otimes \mathbb{R}^3\f$ be the phase space coordinates of a single missile and let us think about \f$\vec q\f$ as the spatial position which is sufficient to evaluate \f$V\f$, such that the Hamiltonian of a single missile with mass \f$m\f$ reads:
+%Planets generate a static gravitational force field \f$\vec\nabla V\f$ on the surface of a unit sphere which we refer to as _the manifold_ from here on.
+Missiles do not generate a force field but move in \f$\vec\nabla V\f$ whereas planets are static and stay fixed.
+%Planets and missiles are placed on the manifold and the dynamics of the latter are constrained to not leave it at any time.
+Let \f$(\vec q, \vec p) \in \mathbb{R}^3 \otimes \mathbb{R}^3\f$ be the phase space coordinates of a single missile and let us think about \f$\vec q\f$ as the spatial position which is sufficient to evaluate \f$V\f$ such that the Hamiltonian of a single missile with mass \f$m\f$ reads:
 \f[
     H(\vec{q}, \vec{p}) = \frac{p^2}{2m} + V(\vec{q}) + \lambda g(\vec{q}) \,,
 \f]
@@ -28,7 +28,7 @@ with
 \f]
 where \f$\sigma_i\f$ is the (shortest) distance between \f$\vec q\f$ and \f$\vec{y}_i\f$ on the manifold.
 On a sphere, the shortest distance is always an orthodrome, also known as a great circle.
-Without loss of generality, the kinematics of a massive particle in the force field of a single planet can thus be reduced to the movement on a (static) unit-circle.
+Without loss of generality, the kinematics of a massive particle in the force field of a single planet can thus be reduced to the movement on a (static) unit circle.
 Further, let's assume that the particle is at the azimuth \f$\varphi = \sigma \in [0, 2\pi)\f$ and is attracted by the planet at \f$\varphi = 0\f$.
 Following the line of sight of the particle on the manifold, the planet is *seen* periodically at distances \f$\sigma, 2\pi + \sigma, \ldots\f$ in one direction and at \f$2\pi - \sigma, 4\pi - \sigma, \ldots\f$ in the opposite direction.
 
@@ -37,14 +37,15 @@ We implement two different types of gravitation potentials \f$V_d(\sigma_i)\f$,
     V_{2\mathrm{D}}(\sigma_i) &= -2 \sum\limits_{j=0}^\infty V^{(j)}_{2\mathrm{D}}(\sigma_i) = -2 \sum\limits_{j=0}^\infty \big[ \ln(2\pi j + \sigma_i) + \ln(2\pi (j+1) - \sigma_i) \big] , \\
     V_{3\mathrm{D}}(\sigma_i) &= -\frac{1}{4\pi} \sum\limits_{j=0}^\infty V^{(j)}_{3\mathrm{D}}(\sigma_i) = -\frac{1}{4\pi} \sum\limits_{j=0}^\infty \left[ \frac{1}{2\pi j + \sigma_i} + \frac{1}{2\pi (j+1) - \sigma_i} \right] ,
 \f}
-where the former contributes \f$\sim \sigma_i^{-1}\f$ force fields that correspond to a 2D fields solely embedded on the manifold and the latter is motivated by the canonical \f$\sim \sigma_i^{-2}\f$ behavior of the unconstrained 3D case.
+where the former contributes \f$\sim \sigma_i^{-1}\f$ force fields that correspond to a 2D field solely embedded on the manifold and the latter is motivated by the canonical \f$\sim \sigma_i^{-2}\f$ behavior of the unconstrained 3D case.
 
 In the figure below we show \f$V^{(j)}_{3\mathrm{D}}(\sigma_i)\f$ for \f$j=0,1,2\f$.
 
 [<img src="pot3D.png" width="400"/>](pot3D.png)
 
-Note that these potential or only physical meaningfull for \f$0 \le \sigma_i < 2\pi\f$.
-In fact, by definition \f$\sigma_i \in [0, \pi]\f$ since \f$\sigma_i = \pi\f$ is the largest possible distance between two points on a unit-sphere and thus any reasonable potential \f$V(\sigma_i)\f$ has to obey the symmetry relation \f$V(\sigma_i) = V(2\pi - \sigma_i)\f$.
+Note that these potentials or only physical meaningful for \f$0 \le \sigma_i < 2\pi\f$.
+In fact, by definition of the inverse cosine function, \f$\sigma_i \in [0, \pi]\f$.
+Furthermore, since \f$\sigma_i = \pi\f$ is the largest possible distance between two points on a unit sphere, any reasonable potential \f$V(\sigma_i)\f$ has to obey the symmetry relation \f$V(\sigma_i) = V(2\pi - \sigma_i)\f$.
 
 The force fields are given by the gradients of the respective potentials:
 \f[
@@ -63,17 +64,19 @@ and
 \f}
 with \f$d \in \{2\mathrm{D}, 3\mathrm{D}\}\f$.
 Below, we show both types of the scaling factors \f$f_d\f$ as functions of \f$\sigma_i\f$.
-Note that we use different scales of the ordinate to compensate the effect of our arbitrarly chosen coupling constants.
+Note that we use different scales of the ordinate to compensate effects of our arbitrarly chosen coupling constants.
 Furthermore, note that \f$f_d\f$ is only a scaling factor of the force field.
 In particular, \f$f_d(\sigma_i) < 0 \; \forall \, \sigma_i\f$ whereas the projection of \f$\vec\nabla_{\!q} V(\vec{q})\f$ onto the manifold can become zero, e.g., if \f$n=1\f$ and \f$\vec{q} \parallel \vec{y}_i\f$.
 
 [<img src="fd.png" width="400"/>](fd.png)
 
-In the visualization of \f$d = 3\mathrm{D}\f$ above we approximated the infinite sum with \f$J=100\f$ summands.
+In the visualization of \f$d = 3\mathrm{D}\f$ above, we approximated the infinite sum with \f$J=100\f$ summands.
 Below, we show the ratio of truncated summations w.r.t. \f$J=0\f$.
 In general, we see that the sum converges fast and for most cases taking \f$\mathrm{O}(10)\f$ summands is sufficient. 
 
 [<img src="f3D_ratio.png" width="400"/>](f3D_ratio.png)
+
+# Symplectic integration
 
 \f{align*}{
     H^{[1]} &= \frac{p^2}{2m} + \lambda g(\vec{q}) \\
@@ -225,6 +228,6 @@ starting from
     \end{pmatrix}
 \f]
 
-## How to proceed from here on
+# How to proceed from here on
 You now have all the information necessary to efficiently deal with [our API](@ref include/api.h).
 Go there to find out how to use it in practice for fun and profit.
