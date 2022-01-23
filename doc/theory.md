@@ -65,7 +65,8 @@ and
 with \f$d \in \{2\mathrm{D}, 3\mathrm{D}\}\f$.
 Below, we show both types of the scaling factors \f$f_d\f$ as functions of \f$\sigma_i\f$.
 Note that we use different scales of the ordinate to compensate effects of our arbitrarly chosen coupling constants.
-Furthermore, note that \f$f_d\f$ is only a scaling factor of the force field.
+Furthermore, note that \f$f_d\f$ is a scaling factor and not the force field.
+(For a single planet, \f$n=1\f$, however, it is equivalent to the magnitude of the force field.)
 In particular, \f$f_d(\sigma_i) < 0 \; \forall \, \sigma_i\f$ whereas the projection of \f$\vec\nabla_{\!q} V(\vec{q})\f$ onto the manifold can become zero, e.g., if \f$n=1\f$ and \f$\vec{q} \parallel \vec{y}_i\f$.
 
 [<img src="fd.png" width="400"/>](fd.png)
@@ -75,6 +76,19 @@ Below, we show the ratio of truncated summations w.r.t. \f$J=0\f$.
 In general, we see that the sum converges fast and for most cases taking \f$\mathrm{O}(10)\f$ summands is sufficient. 
 
 [<img src="f3D_ratio.png" width="400"/>](f3D_ratio.png)
+
+Escape velocity \f$p_1\f$:
+\f{align*}{
+    H_0 &= V(\vec{q}_0) \overset{!}{=} H_1 = \frac{p_1^2}{2m} + V(\vec{q}_1) \\
+    \Leftrightarrow \quad p_1 &= \sqrt{2m \, (V(\vec{q}_1) - V(\vec{q}_2))}
+\f}
+with
+\f[
+    \vec{q}_0 = \begin{pmatrix} -1 \\ 0 \\ 0 \end{pmatrix}
+    \quad \text{and} \quad
+    \vec{q}_1 = \begin{pmatrix} \cos\delta \\ \sin\delta \\ 0 \end{pmatrix}
+\f]
+at \f$\vec{q}_0\f$: \f$\sigma = \pi\f$ and at \f$\vec{q}_1\f$: \f$\sigma = \delta\f$
 
 # Symplectic integration
 
