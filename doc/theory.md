@@ -51,6 +51,12 @@ Note that these potentials or only physical meaningful for \f$0 \le \sigma_i < 2
 In fact, by definition of the inverse cosine function, \f$\sigma_i \in [0, \pi]\f$.
 Furthermore, since \f$\sigma_i = \pi\f$ is the largest possible distance between two points on a unit sphere, any reasonable potential \f$V(\sigma_i)\f$ has to obey the symmetry relation \f$V(\sigma_i) = V(2\pi - \sigma_i)\f$.
 
+The aforementioned gauging of the potentials makes the evaluation of the escape velocity, \f$p_\pi\f$, at a given distance to a planet, \f$\delta\f$, straightforward:
+\f[
+    p_\pi = \sqrt{-2m \, V_d(\delta)} \,,
+\f]
+where we define \f$p_\pi\f$ as the minimal initial momentum necessary to asymptotically reach a distance \f$\sigma = \pi\f$ when launched at a distance \f$\delta\f$.
+
 The force fields are given by the gradients of the respective potentials:
 \f[
     \vec\nabla_{\!q} V(\vec{q}) = \sum\limits_{i=1}^n \frac{V'_d(\sigma_i)}{\sin \sigma_i} \, \vec{y}_i = \sum\limits_{i=1}^n f_d(\sigma_i) \, \vec{y}_i
@@ -80,19 +86,6 @@ Below, we show the ratio of truncated summations w.r.t. \f$J=0\f$.
 In general, we see that the sum converges fast and for most cases taking \f$\mathrm{O}(10)\f$ summands is sufficient. 
 
 [<img src="f3D_ratio.png" width="400"/>](f3D_ratio.png)
-
-Escape velocity \f$p_1\f$:
-\f{align*}{
-    H_0 &= 0 \overset{!}{=} H_1 = \frac{p^2}{2m} + V(\vec{q}) \\
-    \Leftrightarrow \quad p &= \sqrt{-2m \, V(\vec{q})}
-\f}
-with
-\f[
-    \vec{q}_0 = \begin{pmatrix} -1 \\ 0 \\ 0 \end{pmatrix}
-    \quad \text{and} \quad
-    \vec{q} = \begin{pmatrix} \cos\delta \\ \sin\delta \\ 0 \end{pmatrix}
-\f]
-at \f$\vec{q}_0\f$: \f$\sigma = \pi\f$ and at \f$\vec{q}\f$: \f$\sigma = \delta\f$
 
 # Symplectic integration
 
