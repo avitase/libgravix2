@@ -27,10 +27,10 @@ with
     \sigma_i = \arccos(\vec{q} \cdot \vec{y}_i) \,,
 \f]
 where \f$\sigma_i\f$ is the (shortest) distance between \f$\vec q\f$ and \f$\vec{y}_i\f$ on the manifold.
-On a sphere, the shortest distance is always an orthodrome, also known as a great circle.
-Without loss of generality, the kinematics of a massive particle in the force field of a single planet can thus be reduced to the movement on a (static) unit circle.
-Further, let's assume that the particle is at the azimuth \f$\varphi = \sigma \in [0, 2\pi)\f$ and is attracted by the planet at \f$\varphi = 0\f$.
-Following the line of sight of the particle on the manifold, the planet is *seen* periodically at distances \f$\sigma, 2\pi + \sigma, \ldots\f$ in one direction and at \f$2\pi - \sigma, 4\pi - \sigma, \ldots\f$ in the opposite direction.
+On a sphere, the shortest distance is an orthodrome, also known as a great circle.
+Without loss of generality, the kinematics of a missile in the force field of a single planet can thus be reduced to the movement on a (static) unit circle.
+Further, let's assume that the missile is at the azimuth \f$\varphi = \sigma \in [0, 2\pi)\f$ and is attracted by the planet at \f$\varphi = 0\f$.
+Following the line of sight of the missile on the manifold, the planet is *seen* periodically at distances \f$\sigma, 2\pi + \sigma, \ldots\f$ in one direction and at \f$2\pi - \sigma, 4\pi - \sigma, \ldots\f$ in the opposite direction.
 
 We implement two different types of gravitation potentials \f$V_d(\sigma_i)\f$,
 \f{align*}{
@@ -40,10 +40,10 @@ We implement two different types of gravitation potentials \f$V_d(\sigma_i)\f$,
     &= -\frac{2 \psi\!\left( \frac{1}{2} \right) - \psi\!\left(\frac{\sigma_i}{2 \pi} \right) - \psi\!\left(1 - \frac{\sigma_i}{2 \pi} \right)}{8 \pi^2}
 \f}
 with the digamma function \f$\psi\f$.
-The former contributes \f$\sim \sigma_i^{-1}\f$ force fields that correspond to a 2D field solely embedded on the manifold and the latter is motivated by the canonical \f$\sim \sigma_i^{-2}\f$ behavior of the unconstrained 3D case.
+The former contributes force fields \f$\sim \sigma_i^{-1}\f$ that correspond to a 2D field solely embedded on the manifold and the latter is motivated by the canonical \f$\sim \sigma_i^{-2}\f$ behavior of the unconstrained 3D case.
 Both potentials are gauged by an additional constant offset s.t. \f$V_{2\mathrm{D}}(\pi) = V_{3\mathrm{D}}(\pi) = 0\f$ which keeps each series convergent while not inferring with the respective force fields.
 
-In the figure below we show \f$V^{(j)}_{3\mathrm{D}}(\sigma_i)\f$ for \f$j=0,1,2\f$.
+In the figure below, we show \f$V^{(j)}_{3\mathrm{D}}(\sigma_i)\f$ for \f$j=0,1,2\f$.
 
 [<img src="pot3D.png" width="400"/>](pot3D.png)
 
@@ -69,8 +69,8 @@ where we introduced the abbreviations
 and 
 \f{align*}{
     f_{2\mathrm{D}}(\sigma_i) &= -\frac{1}{1 - \cos \sigma_i} \\
-    f_{3\mathrm{D}}(\sigma_i) &= -\frac{1}{\operatorname{sinc}(\sigma_i - \pi)} \sum\limits_{j=0}^\infty \frac{2j + 1}{\left[ (2j+1)^2 \pi^2 - (\sigma_i - \pi)^2 \right]^2} \\
-    &= \lim\limits_{J \to \infty} \sum\limits_{j=0}^J f^{(j)}_{3\mathrm{D}}(\sigma_i)
+    f_{3\mathrm{D}}(\sigma_i) &= \lim\limits_{J \to \infty} \sum\limits_{j=0}^J f^{(j)}_{3\mathrm{D}}(\sigma_i) \\
+    &= -\frac{1}{\operatorname{sinc}(\sigma_i - \pi)} \, \lim\limits_{J \to \infty} \sum\limits_{j=0}^J \frac{2j + 1}{\left[ (2j+1)^2 \pi^2 - (\sigma_i - \pi)^2 \right]^2}
 \f}
 with \f$d \in \{2\mathrm{D}, 3\mathrm{D}\}\f$.
 Below, we show both types of the scaling factors \f$f_d\f$ as functions of \f$\sigma_i\f$.
@@ -84,6 +84,7 @@ In particular, \f$f_d(\sigma_i) < 0 \; \forall \, \sigma_i\f$ whereas the projec
 In the visualization of \f$d = 3\mathrm{D}\f$ above, we approximated the infinite sum with \f$J=100\f$ summands.
 Below, we show the ratio of truncated summations w.r.t. \f$J=0\f$.
 In general, we see that the sum converges fast and for most cases taking \f$\mathrm{O}(10)\f$ summands is sufficient. 
+In particular, the deviation is largest where the force field is weakest and the missile kinematic is most likely be dominated by other planets, and even here, taking the first two leading terms, \f$J=1\f$, already gives an approximation which deviates less than \f$2\,\%\f$ from the asymptotic result, \f$J \to \infty\f$.
 
 [<img src="f3D_ratio.png" width="400"/>](f3D_ratio.png)
 
