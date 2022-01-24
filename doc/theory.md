@@ -34,10 +34,14 @@ Following the line of sight of the particle on the manifold, the planet is *seen
 
 We implement two different types of gravitation potentials \f$V_d(\sigma_i)\f$,
 \f{align*}{
-    V_{2\mathrm{D}}(\sigma_i) &= -2 \sum\limits_{j=0}^\infty V^{(j)}_{2\mathrm{D}}(\sigma_i) = -2 \sum\limits_{j=0}^\infty \big[ \ln(2\pi j + \sigma_i) + \ln(2\pi (j+1) - \sigma_i) \big] , \\
-    V_{3\mathrm{D}}(\sigma_i) &= -\frac{1}{4\pi} \sum\limits_{j=0}^\infty V^{(j)}_{3\mathrm{D}}(\sigma_i) = -\frac{1}{4\pi} \sum\limits_{j=0}^\infty \left[ \frac{1}{2\pi j + \sigma_i} + \frac{1}{2\pi (j+1) - \sigma_i} \right] ,
+    V_{2\mathrm{D}}(\sigma_i) = -2 \sum\limits_{j=0}^\infty V^{(j)}_{2\mathrm{D}}(\sigma_i) &= -2 \sum\limits_{j=0}^\infty \big[ \ln(2\pi j + \sigma_i) + \ln(2\pi (j+1) - \sigma_i) - 2 \ln \pi (2j+1) \big] \\
+    &= -2 \ln \sin \frac{\sigma_i}{2}, \\
+    V_{3\mathrm{D}}(\sigma_i) = -\frac{1}{4\pi} \sum\limits_{j=0}^\infty V^{(j)}_{3\mathrm{D}}(\sigma_i) &= -\frac{1}{4\pi} \sum\limits_{j=0}^\infty \left[ \frac{1}{2\pi j + \sigma_i} + \frac{1}{2\pi (j+1) - \sigma_i} - \frac{2}{\pi (2j+1)} \right] \\
+    &= \frac{\psi\!\left(\frac{\sigma_i}{2 \pi} \right) + \psi\!\left(1 - \frac{\sigma_i}{2 \pi} \right) - 2 \psi\!\left( \frac{1}{2} \right)}{8 \pi^2}
 \f}
-where the former contributes \f$\sim \sigma_i^{-1}\f$ force fields that correspond to a 2D field solely embedded on the manifold and the latter is motivated by the canonical \f$\sim \sigma_i^{-2}\f$ behavior of the unconstrained 3D case.
+with the digamma function \f$\psi\f$.
+The former contributes \f$\sim \sigma_i^{-1}\f$ force fields that correspond to a 2D field solely embedded on the manifold and the latter is motivated by the canonical \f$\sim \sigma_i^{-2}\f$ behavior of the unconstrained 3D case.
+Both potentials are gauged by an additional constant offset s.t. \f$V_{2\mathrm{D}}(\pi) = V_{3\mathrm{D}}(\pi) = 0\f$ which keeps each series convergent while not inferring with the respective force fields.
 
 In the figure below we show \f$V^{(j)}_{3\mathrm{D}}(\sigma_i)\f$ for \f$j=0,1,2\f$.
 
@@ -79,16 +83,16 @@ In general, we see that the sum converges fast and for most cases taking \f$\mat
 
 Escape velocity \f$p_1\f$:
 \f{align*}{
-    H_0 &= V(\vec{q}_0) \overset{!}{=} H_1 = \frac{p_1^2}{2m} + V(\vec{q}_1) \\
-    \Leftrightarrow \quad p_1 &= \sqrt{2m \, (V(\vec{q}_1) - V(\vec{q}_2))}
+    H_0 &= 0 \overset{!}{=} H_1 = \frac{p^2}{2m} + V(\vec{q}) \\
+    \Leftrightarrow \quad p &= \sqrt{-2m \, V(\vec{q})}
 \f}
 with
 \f[
     \vec{q}_0 = \begin{pmatrix} -1 \\ 0 \\ 0 \end{pmatrix}
     \quad \text{and} \quad
-    \vec{q}_1 = \begin{pmatrix} \cos\delta \\ \sin\delta \\ 0 \end{pmatrix}
+    \vec{q} = \begin{pmatrix} \cos\delta \\ \sin\delta \\ 0 \end{pmatrix}
 \f]
-at \f$\vec{q}_0\f$: \f$\sigma = \pi\f$ and at \f$\vec{q}_1\f$: \f$\sigma = \delta\f$
+at \f$\vec{q}_0\f$: \f$\sigma = \pi\f$ and at \f$\vec{q}\f$: \f$\sigma = \delta\f$
 
 # Symplectic integration
 
