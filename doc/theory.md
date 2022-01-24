@@ -37,7 +37,7 @@ We implement two different types of gravitation potentials \f$V_d(\sigma_i)\f$,
     V_{2\mathrm{D}}(\sigma_i) = -2 \sum\limits_{j=0}^\infty V^{(j)}_{2\mathrm{D}}(\sigma_i) &= -2 \sum\limits_{j=0}^\infty \big[ \ln(2\pi j + \sigma_i) + \ln(2\pi (j+1) - \sigma_i) - 2 \ln \pi (2j+1) \big] \\
     &= -2 \ln \sin \frac{\sigma_i}{2}, \\
     V_{3\mathrm{D}}(\sigma_i) = -\frac{1}{4\pi} \sum\limits_{j=0}^\infty V^{(j)}_{3\mathrm{D}}(\sigma_i) &= -\frac{1}{4\pi} \sum\limits_{j=0}^\infty \left[ \frac{1}{2\pi j + \sigma_i} + \frac{1}{2\pi (j+1) - \sigma_i} - \frac{2}{\pi (2j+1)} \right] \\
-    &= \frac{\psi\!\left(\frac{\sigma_i}{2 \pi} \right) + \psi\!\left(1 - \frac{\sigma_i}{2 \pi} \right) - 2 \psi\!\left( \frac{1}{2} \right)}{8 \pi^2}
+    &= -\frac{2 \psi\!\left( \frac{1}{2} \right) - \psi\!\left(\frac{\sigma_i}{2 \pi} \right) - \psi\!\left(1 - \frac{\sigma_i}{2 \pi} \right)}{8 \pi^2}
 \f}
 with the digamma function \f$\psi\f$.
 The former contributes \f$\sim \sigma_i^{-1}\f$ force fields that correspond to a 2D field solely embedded on the manifold and the latter is motivated by the canonical \f$\sim \sigma_i^{-2}\f$ behavior of the unconstrained 3D case.
