@@ -14,12 +14,12 @@ class Helper:
         get_lon.restype = c_double
         self.get_lon = get_lon
 
-        get_vlat = lib.v_lat
+        get_vlat = lib.vlat
         get_vlat.argtypes = [c_double, c_double, c_double, c_double, c_double]
         get_vlat.restype = c_double
         self.get_vlat = get_vlat
 
-        get_vlon = lib.v_lon
+        get_vlon = lib.vlon
         get_vlon.argtypes = [c_double, c_double, c_double, c_double]
         get_vlon.restype = c_double
         self.get_vlon = get_vlon

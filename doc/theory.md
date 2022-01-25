@@ -139,7 +139,7 @@ and thus
 \f]
 
 The strang splitting \f$\phi_t = \phi_{t/2}^{[1]} \circ \phi_t^{[2]} \circ \phi_{t/2}^{[1]}\f$ is a second-order symmetric and symplectic integration scheme.
-We implement several symmetric composition schemes which raise the integration order by evaluating \f$\phi_t\f$ in multiple stages and refer to them as `pXsY` where `X` and `Y` are the new integration order and the number of stages, respectively:
+We offer a set of several symmetric composition schemes during compilation, each raising the integration order by evaluating \f$\phi_t\f$ in multiple stages and refer to them as `pXsY` where `X` and `Y` are the new integration order and the number of stages, respectively:
 
  - `p2s1`: Vanilla Strang splitting.
  - `p4s5`: TODO
@@ -152,14 +152,22 @@ Asymptotically, increasing the integration scheme will eventually outperform sma
 However, for practical applications and finite integration times, one should always carefully benchmark simulation speed and accuracy w.r.t. time-step size and integration order.
 
 # Spherical coordinates
-API is asymetric
+
+[Our API](@ref include/api.h) is designed asymmetrically w.r.t. coordinate systems. 
+Internally, our algorithms operate on Cartesian coordinates whereas the initialization of planets and missiles has to be given in spherical coordinates.
+Doing so takes the burden off the caller to correctly embed vectors onto the manifold and makes the physical interpretation of parameters easier.
+
+A point on the surface of a unit-sphere has two degrees of freedom which we refer to as latitude, \f$\phi\f$, and longitude, \f$\lambda\f$.
+In Cartesian coordinates such a point is given by
 \f[
     \vec{x} = \begin{pmatrix}
         \cos\phi \, \sin\lambda \\
         \cos\phi \, \cos\lambda \\
         \sin\phi
-    \end{pmatrix}
+    \end{pmatrix} .
 \f]
+
+Similarly, a velocity vector is given by
 \f[
     \vec{v} = \begin{pmatrix}
         v_1 \\ v_2 \\ v_3
@@ -171,30 +179,25 @@ API is asymetric
         \phantom{-}\cos\lambda \\
         -\sin\lambda \\
         0
-    \end{pmatrix}
+    \end{pmatrix} ,
 \f]
-
-Note that we refer in source to \f$\dot\phi\f$ and \f$(\dot\lambda \, \cos \phi)\f$ as `vlat` and `vlon`, respectively.
-
+and is always orthogonal to \f$\vec x\f$ at the same latitude and longitude.
+We define \f$\dot\phi\f$ and \f$(\dot\lambda \, \cos\phi)\f$ as the latitudinal velocity, vlat(), and the (scaled) longitudinal velocity, vlon(), respectively.
+Adding both in quadrature yields the magnitude of the Cartesian velocity,
 \f[
-    \begin{pmatrix}
-        \dot\lambda \, \cos \phi \\
-        -\dot\phi \, \sin \phi
-    \end{pmatrix} = \begin{pmatrix}
-        \cos \lambda & -\sin \lambda \\
-        \sin \lambda & \cos \lambda
-    \end{pmatrix} \begin{pmatrix}
-        v_1 \\ v_2
-    \end{pmatrix}
-\f]
-if \f$|\sin \phi| \ll |\cos \phi|\f$
+     v = \sqrt{\dot\phi^2 + (\dot\lambda \, \cos \phi)^2} \,.
+ \f]
+
+Typically, missiles are launched at the rim of a planet, where <em>rim</em> refers to a small circle centered at the given planet.
+The velocity vector of a missile launched at a distance \f$\sigma\f$ to \f$(\phi, \lambda)\f$ is given by
 \f[
-    \dot \phi = \frac{v_z}{\cos \phi}
+    \vec v = v \, \boldsymbol{R}_{\phi, \lambda} \begin{pmatrix}
+        \cos \sigma \, \sin \psi \\
+        \cos \sigma \, \cos \psi \\
+        -\sin \sigma
+    \end{pmatrix},
 \f]
-
-\f$x^2=1\f$ and \f$v^2 = \dot\phi^2 + (\dot\lambda \, \cos \phi)^2\f$
-
-Rotating \f$\vec{\mathrm{e}}_z = (0, 0, 1)^\top\f$ to latitude \f$\phi\f$ and longitude \f$\lambda\f$
+where the rotating matrix \f$\boldsymbol{R}_{\phi, \lambda}\f$ rotates \f$\vec{\mathrm{e}}_z = (0, 0, 1)^\top\f$ to latitude \f$\phi\f$ and longitude \f$\lambda\f$,
 \f[
     \boldsymbol{R}_{\phi, \lambda} = \begin{pmatrix}
         -\cos\lambda & -\sin\phi \, \sin\lambda & \cos\phi \, \sin\lambda \\
@@ -202,31 +205,21 @@ Rotating \f$\vec{\mathrm{e}}_z = (0, 0, 1)^\top\f$ to latitude \f$\phi\f$ and lo
         0 & \cos\phi & \sin\phi
     \end{pmatrix}
 \f]
-
-Velocity vector with distance \f$r\f$ to \f$(\phi, \lambda)\f$
-\f[
-    \vec v = v \, \boldsymbol{R}_{\phi, \lambda} \begin{pmatrix}
-        \cos r \, \sin \psi \\
-        \cos r \, \cos \psi \\
-        -\sin r
-    \end{pmatrix}
-\f]
-(using \f$\sin(\pi/2 - r) = \cos(r)\f$ and \f$\cos(\pi - r) = \sin(r)\f$)
-
-starting from
-\f[
-    \vec x = \begin{pmatrix} x_1 \\ x_2 \\ x_3 \end{pmatrix} = \boldsymbol{R}_{\phi, \lambda} \begin{pmatrix}
-        \sin r \, \sin \psi \\
-        \sin r \, \cos \psi \\
-        \cos r
-    \end{pmatrix}
-\f]
-
+and \f$\psi\f$ is the initial longitude prior to the rotation.
+This velocity vector is located at a point with latitude \f$\phi' \neq \phi\f$ and longitude \f$\lambda' \neq \lambda\f$,
 \f{align*}{
     \phi' &= \arcsin x_3 \\
     \lambda' &= \operatorname{atan2}(x_1, x_2)
 \f}
-
+where \f$(x_1, x_2, x_3)^\top\f$ is given by
+\f[
+    \vec x = \begin{pmatrix} x_1 \\ x_2 \\ x_3 \end{pmatrix} = \boldsymbol{R}_{\phi, \lambda} \begin{pmatrix}
+        \sin \sigma \, \sin \psi \\
+        \sin \sigma \, \cos \psi \\
+        \cos \sigma
+    \end{pmatrix}.
+\f]
+Hence, an equivalent parametrization of \f$\vec v\f$ is
 \f[
     \vec{v} = \dot\phi \begin{pmatrix}
         -\sin\phi' \, \sin\lambda' \\
@@ -236,22 +229,22 @@ starting from
         \phantom{-}\cos\lambda' \\
         -\sin\lambda' \\
         0
-    \end{pmatrix}
+    \end{pmatrix}.
 \f]
-
+that allows for a straightforward extraction of the longitudinal and (scaled) latitudinal velocities:
 \f[
     \dot\phi = \vec v \cdot \begin{pmatrix}
         -\sin\phi' \, \sin\lambda' \\
         -\sin\phi' \, \cos\lambda' \\
         \cos\phi'
-    \end{pmatrix}
+    \end{pmatrix},
 \f]
 \f[
     \dot\lambda \, \cos\phi' = \vec v \cdot \begin{pmatrix}
         \phantom{-}\cos\lambda' \\
         -\sin\lambda' \\
         0
-    \end{pmatrix}
+    \end{pmatrix}.
 \f]
 
 # How to proceed from here on

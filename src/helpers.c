@@ -14,7 +14,7 @@ double lon(double x, double y) {
     return atan2(x, y) * RAD2DEG;
 }
 
-double v_lat(double vx, double vy, double vz, double lat, double lon) {
+double vlat(double vx, double vy, double vz, double lat, double lon) {
     lat *= DEG2RAD;
     lon *= DEG2RAD;
 
@@ -29,7 +29,7 @@ double v_lat(double vx, double vy, double vz, double lat, double lon) {
     return dot(v, e_lat) * RAD2DEG;
 }
 
-double v_lon(double vx, double vy, double vz, double lon) {
+double vlon(double vx, double vy, double vz, double lon) {
     lon *= DEG2RAD;
 
     const double sin_lon = sin(lon);

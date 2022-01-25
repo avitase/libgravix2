@@ -21,8 +21,8 @@
  * Each missile is represented by a Trajectory parametrized by a sequence of
  * spatial and velocity data, represented in cartesian coordinates. In order
  * to transform this parametrization back into a spherical parametrization using
- * latitude and longitude pairs, the helper functions lat(), lon(), v_lat() and
- * v_lon() can be used. **Note that spherical arguments have to be given in
+ * latitude and longitude pairs, the helper functions lat(), lon(), vlat() and
+ * vlon() can be used. **Note that spherical arguments have to be given in
  * units of degrees.**
  */
 
@@ -238,7 +238,7 @@ double lon(double x, double y);
  * @param lon Longitude, \f$\lambda\f$, in degrees as obtained from lon().
  * @return Latitudinal speed, \f$\dot\phi\f$.
  */
-double v_lat(double vx, double vy, double vz, double lat, double lon);
+double vlat(double vx, double vy, double vz, double lat, double lon);
 
 /*!
  * \brief Computes the (scaled) longitudinal speed, \f$\dot\lambda \cos\phi\f$,
@@ -250,6 +250,6 @@ double v_lat(double vx, double vy, double vz, double lat, double lon);
  * @param lon Longitude, \f$\lambda\f$, in degrees as obtained from lon().
  * @return (Scaled) longitudinal speed, \f$\dot\lambda \cos\phi\f$.
  */
-double v_lon(double vx, double vy, double vz, double lon);
+double vlon(double vx, double vy, double vz, double lon);
 
 #endif // PHYSICS_API_H
