@@ -18,7 +18,7 @@ where \f$g(\vec q)\f$ is the constraint of the manifold
     g(\vec q) &= \frac{1}{2} \left( q^2 - 1 \right) = 0 \,, \\
     \vec\nabla g(\vec q) &= \vec{q} \,.
 \f}
-The potential \f$V(\vec q)\f$ is the linear superposition of the contributions of each planet \f$i\f$ at position \f$\vec{y}_i \in \mathbb{R}^3\f$,
+The conservative potential \f$V(\vec q)\f$ is the linear superposition of the contributions of each planet \f$i\f$ at position \f$\vec{y}_i \in \mathbb{R}^3\f$,
 \f[
     V(\vec q) = \sum\limits_{i=1}^n V_d(\sigma_i) \,,
 \f]
@@ -56,6 +56,8 @@ The aforementioned gauging of the potentials makes the evaluation of the escape 
     p_\pi = \sqrt{-2m \, V_d(\delta)} \,,
 \f]
 where we define \f$p_\pi\f$ as the minimal initial momentum necessary to asymptotically reach a distance \f$\sigma = \pi\f$ when launched at a distance \f$\delta\f$.
+In layman's terms: <em>The only way to not shoot yourself in the face is to launch a missile faster than \f$p_\pi\f$—then you will hit your back.</em>
+Obviously, these definitions only hold for a single planet.
 
 The force fields are given by the gradients of the respective potentials:
 \f[
@@ -90,7 +92,7 @@ In particular, the deviation is largest where the force field is weakest and the
 
 # Symplectic integration
 
-We use a symplectic Strang splitting \f$\phi_t = \phi_{t/2}^{[1]} \circ \phi_t^{[2]} \circ \phi_{t/2}^{[1]}\f$ to integrate the Hamiltonian system \f$H = H^{[1]} + H^{[2]}\f$:
+We use a Strang splitting \f$\phi_t = \phi_{t/2}^{[1]} \circ \phi_t^{[2]} \circ \phi_{t/2}^{[1]}\f$ to integrate the Hamiltonian system \f$H = H^{[1]} + H^{[2]}\f$:
 \f{align*}{
     H^{[1]} &= \frac{p^2}{2m} + \lambda g(\vec{q}) \\
     H^{[2]} &= V(\vec{q}) + \lambda g(\vec{q}) \,.
@@ -119,7 +121,7 @@ By using this convention, the integration steps read:
         \vec{p} + \left[ (\vec{q} \cdot \vec\nabla_{\!q} V(\vec{q})) \, \vec{q} - \vec\nabla_{\!q} V(\vec{q}) \right] t
     \end{pmatrix} .
 \f}
-For small time-steps \f$\phi_t^{[1]}\f$ can be efficiently approximated without diminishing the integration order or its symplectic nature by expanding the trigonometric functions up to third order,
+For small time-steps \f$\phi_t^{[1]}\f$ can be efficiently approximated without diminishing the integration order or its symmetric and symplectic nature by expanding the trigonometric functions up to third order,
 \f{align*}{
     \cos x &= 1 - \frac{x^2}{2} + \mathcal{O}(x^4) \,, \\
     \sin x &= \sqrt{1 - \cos^2(x)} = x \, \sqrt{1 - \frac{x^2}{4}} + \mathcal{O}(x^3) \,,
@@ -136,13 +138,15 @@ and thus
     \end{pmatrix} .
 \f]
 
-The strang splitting \f$\phi_t = \phi_{t/2}^{[1]} \circ \phi_t^{[2]} \circ \phi_{t/2}^{[1]}\f$ is a second-order integration scheme.
-We implement several composition schemes which raise the integration order by evaluating \f$\phi_t\f$ in multiple stages and refer to them as `pXsY` where `X` and `Y` are the new integration order and the number of stages, respectively:
+The strang splitting \f$\phi_t = \phi_{t/2}^{[1]} \circ \phi_t^{[2]} \circ \phi_{t/2}^{[1]}\f$ is a second-order symmetric and symplectic integration scheme.
+We implement several symmetric composition schemes which raise the integration order by evaluating \f$\phi_t\f$ in multiple stages and refer to them as `pXsY` where `X` and `Y` are the new integration order and the number of stages, respectively:
 
- - `p2s1`: Strang splitting.
+ - `p2s1`: Vanilla Strang splitting.
  - `p4s5`: TODO
  - `p6s9`: TODO
  - `p8s15`: TODO
+
+Since the Strang splitting is symplectic, its compositions are symplectic as well.
 
 Asymptotically, increasing the integration scheme will eventually outperform smaller time-steps.
 However, for practical applications and finite integration times, one should always carefully benchmark simulation speed and accuracy w.r.t. time-step size and integration order.
