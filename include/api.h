@@ -77,7 +77,7 @@ void delete_planets(PlanetsHandle handle);
  * Planets are referred to by unique IDs. For \f$n\f$ planets (cf.
  * new_planets()) the IDs are the integer values \f$[0, 1, 2, \ldots, n-1]\f$.
  * Note that all planets of a universe have to be initialized before missiles
- * are propagated here.
+ * are propagated.
  *
  * @param handle The planets handle.
  * @param i ID of the planet to be initialized.
