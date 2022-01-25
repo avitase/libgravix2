@@ -1,6 +1,6 @@
 /*!
  * \file integrators.h
- * \brief Implementation of the integrators.
+ * \brief Symmetric and symplectic integrator for ODEs
  */
 
 #ifndef PHYSICS_INTEGRATORS_H

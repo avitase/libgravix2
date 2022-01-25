@@ -4,10 +4,46 @@
 #include "pot.h"
 #include <math.h>
 
+/*!
+ * \brief Vanilla Strang splitting
+ */
 const double P2GAMMA_p2s1[] = {
     1.0,
 };
 
+/*!
+ * \brief Tripple Jump
+ *
+ * 4th-order symmetric composition method with 3 stages.
+ */
+const double P2GAMMA_p4s3[] = {
+    1.35120719195965763405,  // 1, 3
+    -1.70241438391931526810, // 2
+    1.35120719195965763405,  // 1, 3
+};
+
+/*!
+ * \brief Suzuki's Fractal
+ *
+ * 4th-order symmetric composition method with 5 stages.
+ * See <a href="https://doi.org/10.1016/0375-9601(90)90962-N">DOI:10.1016/0375-9601(90)90962-N</a>
+ * for more information.
+ */
+const double P2GAMMA_p4s5[] = {
+    0.41449077179437573714,  // 1, 2, 4, 5
+    0.41449077179437573714,  // 1, 2, 4, 5
+    -0.65796308717750294857, // 3
+    0.41449077179437573714,  // 1, 2, 4, 5
+    0.41449077179437573714,  // 1, 2, 4, 5
+};
+
+/*!
+ * \brief Kahan & Li (1997)
+ *
+ * 6th-order symmetric composition method with 9 stages.
+ * See <a href="https://doi.org/10.1090/S0025-5718-97-00873-9">DOI:10.1090/S0025-5718-97-00873-9</a>
+ * for more information.
+ */
 const double P2GAMMA_p6s9[] = {
     0.39216144400731413928,  // 1, 9
     0.33259913678935943860,  // 2, 8
@@ -20,6 +56,13 @@ const double P2GAMMA_p6s9[] = {
     0.39216144400731413928,  // 1, 9
 };
 
+/*!
+ * \brief Suzuki & Umeno (1993)
+ *
+ * 8th-order symmetric composition method with 15 stages.
+ * See <a href="https://doi.org/10.1007/978-3-642-78448-4_7">DOI:10.1007/978-3-642-78448-4_7</a>
+ * for more information.
+ */
 const double P2GAMMA_p8s15[] = {
     0.74167036435061295345,  // 1, 15
     -0.40910082580003159400, // 2, 14

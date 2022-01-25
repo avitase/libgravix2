@@ -52,7 +52,7 @@ set(INT_STEPS "10" CACHE STRING "Number of integration steps between consecutive
 set(MIN_DIST "1" CACHE STRING "Min. allowed distance between missiles and planets in degree")
 
 set(COMPOSITION_SCHEME "p8s15" CACHE STRING "Composition method of integrator")
-set(COMPOSITION_SCHEME_VALUES "p2s1" "p4s5" "p6s9" "p8s15")
+set(COMPOSITION_SCHEME_VALUES "p2s1" "p4s3" "p4s5" "p6s9" "p8s15")
 set_property(CACHE COMPOSITION_SCHEME PROPERTY STRINGS ${COMPOSITION_SCHEME_VALUES})
 list(FIND COMPOSITION_SCHEME_VALUES ${COMPOSITION_SCHEME} COMPOSITION_SCHEME_INDEX)
 if (${COMPOSITION_SCHEME_INDEX} EQUAL -1)

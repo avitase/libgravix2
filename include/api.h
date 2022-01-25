@@ -252,4 +252,32 @@ double vlat(double vx, double vy, double vz, double lat, double lon);
  */
 double vlon(double vx, double vy, double vz, double lon);
 
+/*!
+ * \brief Escape velocity \f$p_\pi\f$ for isolated planets.
+ *
+ * For isolated planets: Minimal initial momentum necessary to asymptotically
+ * reach a distance of \f$\pi\f$ to the center of the planet if launched on its
+ * rim.
+ *
+ * **WARNING: NOT YET IMPLEMENTED**
+ *
+ * @return Escape velocity, \f$p_\pi\f$.
+ */
+double v_esc(void);
+
+/*!
+ * \brief Orbital period for isolated planets.
+ *
+ * For isolated planets: Integrated time between launching and touching the rim
+ * of the given planet for the first time.
+ *
+ * **WARNING: NOT YET IMPLEMENTED**
+ *
+ * @param v0 Initial speed.
+ * @param h The step size of the integrator. Typically, this value should be
+ * \f$\ll 1\f$.
+ * @return Orbital period.
+ */
+double orb_period(double v0, double h);
+
 #endif // PHYSICS_API_H

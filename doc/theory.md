@@ -59,6 +59,10 @@ where we define \f$p_\pi\f$ as the minimal initial momentum necessary to asympto
 In layman's terms: <em>The only way to not shoot yourself in the face is to launch a missile faster than \f$p_\pi\f$—then you will hit your back.</em>
 Obviously, these definitions only hold for a single planet.
 
+**Tip:** In practical applications \f$p_\pi\f$ can be used as a natural unit for velocities and time.
+For example, velocities can be given in multiples of \f$p_\pi\f$ and durations in multiples of the orbital period if missiles are launched with \f$2p_\pi\f$.
+Use v_esc() and orb_period() to get \f$p_\pi\f$ and the orbital period, respectively, of the given potential.
+
 The force fields are given by the gradients of the respective potentials:
 \f[
     \vec\nabla_{\!q} V(\vec{q}) = \sum\limits_{i=1}^n \frac{V'_d(\sigma_i)}{\sin \sigma_i} \, \vec{y}_i = \sum\limits_{i=1}^n f_d(\sigma_i) \, \vec{y}_i
@@ -92,7 +96,7 @@ In particular, the deviation is largest where the force field is weakest and the
 
 # Symplectic integration
 
-We use a Strang splitting \f$\phi_t = \phi_{t/2}^{[1]} \circ \phi_t^{[2]} \circ \phi_{t/2}^{[1]}\f$ to integrate the Hamiltonian system \f$H = H^{[1]} + H^{[2]}\f$:
+We use a [Strang splitting](https://doi.org/10.1137/0705041) \f$\phi_t = \phi_{t/2}^{[1]} \circ \phi_t^{[2]} \circ \phi_{t/2}^{[1]}\f$ to integrate the Hamiltonian system \f$H = H^{[1]} + H^{[2]}\f$:
 \f{align*}{
     H^{[1]} &= \frac{p^2}{2m} + \lambda g(\vec{q}) \\
     H^{[2]} &= V(\vec{q}) + \lambda g(\vec{q}) \,.
@@ -141,10 +145,11 @@ and thus
 The strang splitting \f$\phi_t = \phi_{t/2}^{[1]} \circ \phi_t^{[2]} \circ \phi_{t/2}^{[1]}\f$ is a second-order symmetric and symplectic integration scheme.
 We offer a set of several symmetric composition schemes during compilation, each raising the integration order by evaluating \f$\phi_t\f$ in multiple stages and refer to them as `pXsY` where `X` and `Y` are the new integration order and the number of stages, respectively:
 
- - `p2s1`: Vanilla Strang splitting.
- - `p4s5`: TODO
- - `p6s9`: TODO
- - `p8s15`: TODO
+ - [p2s1](@ref P2GAMMA_p2s1): Vanilla Strang splitting.
+ - [p4s3](@ref P2GAMMA_p4s3): Triple Jump. See, [DOI:10.1103/PhysRevLett.63.9](https://doi.org/10.1103/PhysRevLett.63.9) or related publications for more information.
+ - [p4s5](@ref P2GAMMA_p4s5): Suzuki's Fractal. See [DOI:10.1016/0375-9601(90)90962-N](https://doi.org/10.1016/0375-9601(90)90962-N) for more information.
+ - [p6s9](@ref P2GAMMA_p6s9): Kahan & Li (1997). See [DOI:10.1090/S0025-5718-97-00873-9](https://doi.org/10.1090/S0025-5718-97-00873-9) for more information.
+ - [p8s15](@ref P2GAMMA_p8s15): Suzuki & Umeno (1993). See [DOI:10.1007/978-3-642-78448-4_7](https://doi.org/10.1007/978-3-642-78448-4_7) for more information.
 
 Since the Strang splitting is symplectic, its compositions are symplectic as well.
 
