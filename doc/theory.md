@@ -137,13 +137,18 @@ and thus
 \f]
 
 The strang splitting \f$\phi_t = \phi_{t/2}^{[1]} \circ \phi_t^{[2]} \circ \phi_{t/2}^{[1]}\f$ is a second-order integration scheme.
-We implement several composition schemes which raise the integration order by evaluating \f$\phi_t\f$ in multiple stages and refer to them as `pXsY` where `X` and `Y` are the new integration order and the number of stages, respectively.
-For example, `p6s9` refers to a sixth-order integration scheme that uses nine stages.
+We implement several composition schemes which raise the integration order by evaluating \f$\phi_t\f$ in multiple stages and refer to them as `pXsY` where `X` and `Y` are the new integration order and the number of stages, respectively:
+
+ - `p2s1`: Strang splitting.
+ - `p4s5`: TODO
+ - `p6s9`: TODO
+ - `p8s15`: TODO
 
 Asymptotically, increasing the integration scheme will eventually outperform smaller time-steps.
 However, for practical applications and finite integration times, one should always carefully benchmark simulation speed and accuracy w.r.t. time-step size and integration order.
 
 # Spherical coordinates
+API is asymetric
 \f[
     \vec{x} = \begin{pmatrix}
         \cos\phi \, \sin\lambda \\
