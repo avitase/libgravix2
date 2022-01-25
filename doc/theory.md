@@ -90,55 +90,60 @@ In particular, the deviation is largest where the force field is weakest and the
 
 # Symplectic integration
 
+We use a symplectic Strang splitting \f$\phi_t = \phi_{t/2}^{[1]} \circ \phi_t^{[2]} \circ \phi_{t/2}^{[1]}\f$ to integrate the Hamiltonian system \f$H = H^{[1]} + H^{[2]}\f$:
 \f{align*}{
     H^{[1]} &= \frac{p^2}{2m} + \lambda g(\vec{q}) \\
-    H^{[2]} &= V(\vec{q}) + \lambda g(\vec{q})
+    H^{[2]} &= V(\vec{q}) + \lambda g(\vec{q}) \,.
 \f}
-
-\f[
-    \begin{pmatrix}
-        \vec{q} \\ \vec{p}
-    \end{pmatrix}
-    \overset{\phi_t^{[1]}}{\longleftarrow}
-    \begin{pmatrix}
-        \frac{1}{p} \, \vec{p} \, \sin p \tau + \vec{q} \, \cos p \tau \\
-        -p \, \vec{q} \, \sin p \tau + \vec{p} \, \cos p \tau 
-    \end{pmatrix}
-\f]
-
-\f[
-    \tau = \frac{t}{m}
-\f]
-
-with approximation
-\f{align*}{
-    \cos x &= 1 - \frac{x^2}{2} + \mathcal{O}(x^4) \\
-    \sin x &= \sqrt{1 - \cos^2(x)} = x \, \sqrt{1 - \frac{x^2}{4}} + \mathcal{O}(x^3)
+Without loss of generality, we choose the scale of a time-step and the coupling constant of the potential such that we can set \f$m=1\f$ during simulation, i.e.,
+\f{align*}
+    \frac{t}{m} &\mapsto t , \\
+    Vm &\mapsto V .
 \f}
-\f[
+By using this convention, the integration steps read:
+\f{align*}
     \begin{pmatrix}
         \vec{q} \\ \vec{p}
     \end{pmatrix}
-    \overset{\phi_t^{[1]}}{\longleftarrow}
+    &\overset{\phi_t^{[1]}}{\longleftarrow}
     \begin{pmatrix}
-        \vec{q} + \tau \, \sqrt{1 - \frac{p^2 \tau^2}{4}} \, \vec{p} - \frac{p^2 \tau^2}{2} \, \vec{q} \\
-        \vec{p} - p^2 \tau \, \sqrt{1 - \frac{p^2 \tau^2}{4}} \, \vec{q} - \frac{p^2 \tau^2}{2} \, \vec{p}
-    \end{pmatrix}
-\f]
-
-\f[
+        \frac{1}{p} \, \vec{p} \, \sin p t + \vec{q} \, \cos p t \\
+        -p \, \vec{q} \, \sin p t + \vec{p} \, \cos p t 
+    \end{pmatrix} , \\
     \begin{pmatrix}
         \vec{q} \\ \vec{p}
     \end{pmatrix}
-    \overset{\phi_t^{[2]}}{\longleftarrow}
+    &\overset{\phi_t^{[2]}}{\longleftarrow}
     \begin{pmatrix}
         \vec{q} \\
         \vec{p} + \left[ (\vec{q} \cdot \vec\nabla_{\!q} V(\vec{q})) \, \vec{q} - \vec\nabla_{\!q} V(\vec{q}) \right] t
+    \end{pmatrix} .
+\f}
+For small time-steps \f$\phi_t^{[1]}\f$ can be efficiently approximated without diminishing the integration order or its symplectic nature by expanding the trigonometric functions up to third order,
+\f{align*}{
+    \cos x &= 1 - \frac{x^2}{2} + \mathcal{O}(x^4) \,, \\
+    \sin x &= \sqrt{1 - \cos^2(x)} = x \, \sqrt{1 - \frac{x^2}{4}} + \mathcal{O}(x^3) \,,
+\f}
+and thus
+\f[
+    \begin{pmatrix}
+        \vec{q} \\ \vec{p}
     \end{pmatrix}
+    \overset{\phi_t^{[1]}}{\longleftarrow}
+    \begin{pmatrix}
+        \vec{q} + t \, \sqrt{1 - \frac{p^2 t^2}{4}} \, \vec{p} - \frac{p^2 t^2}{2} \, \vec{q} \\
+        \vec{p} - p^2 t \, \sqrt{1 - \frac{p^2 t^2}{4}} \, \vec{q} - \frac{p^2 t^2}{2} \, \vec{p}
+    \end{pmatrix} .
 \f]
 
-Strang splitting \f$\phi_{t/2}^{[1]} \circ \phi_t^{[2]} \circ \phi_{t/2}^{[1]}\f$
+The strang splitting \f$\phi_t = \phi_{t/2}^{[1]} \circ \phi_t^{[2]} \circ \phi_{t/2}^{[1]}\f$ is a second-order integration scheme.
+We implement several composition schemes which raise the integration order by evaluating \f$\phi_t\f$ in multiple stages and refer to them as `pXsY` where `X` and `Y` are the new integration order and the number of stages, respectively.
+For example, `p6s9` refers to a sixth-order integration scheme that uses nine stages.
 
+Asymptotically, increasing the integration scheme will eventually outperform smaller time-steps.
+However, for practical applications and finite integration times, one should always carefully benchmark simulation speed and accuracy w.r.t. time-step size and integration order.
+
+# Spherical coordinates
 \f[
     \vec{x} = \begin{pmatrix}
         \cos\phi \, \sin\lambda \\
