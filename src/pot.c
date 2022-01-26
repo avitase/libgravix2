@@ -77,5 +77,5 @@ double v_esc(void) {
     const double pot = pot3D_approx(x);
 #endif
 
-    return sqrt(-2. * pot);
+    return sqrt(2. * pot);
 }

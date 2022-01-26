@@ -53,7 +53,7 @@ Furthermore, since \f$\sigma_i = \pi\f$ is the largest possible distance between
 
 The aforementioned gauging of the potentials makes the evaluation of the escape velocity, \f$p_\pi\f$, at a given distance to a planet, \f$\delta\f$, straightforward:
 \f[
-    p_\pi = \sqrt{-2m \, V_d(\delta)} \,,
+    p_\pi = \sqrt{2m \, V_d(\delta)} \,,
 \f]
 where we define \f$p_\pi\f$ as the minimal initial momentum necessary to asymptotically reach a distance \f$\sigma = \pi\f$ when launched at a distance \f$\delta\f$.
 In layman's terms: <em>The only way to not shoot yourself in the face is to launch a missile faster than \f$p_\pi\f$—then you will hit your back.</em>
