@@ -1,15 +1,31 @@
 #include "pot.h"
+#include "api.h"
 #include "config.h"
 #include "linalg.h"
 #include "planet.h"
+#include <math.h>
 
 #if POT_TYPE == POT_TYPE_3D
 #include "helpers.h"
-#include <math.h>
 #endif
 
 #if POT_TYPE == POT_TYPE_3D
-static double v3D_approx(double x) {
+static double pot3D_approx(double x) {
+    const double TWO_PI = 2. * M_PI;
+
+    // TODO: use lookup table and cubic hermite spline
+    double acc = 0.;
+
+    // accumulate contributions starting with the smallest one
+    for (unsigned i = 0; i < N_POT; i++) {
+        acc += 1. / (TWO_PI * i + x) + 1. / (TWO_PI * (i + 1) - x) -
+               4. / (TWO_PI * (2. * i + 1.));
+    }
+
+    return -acc / (2. * TWO_PI);
+}
+
+static double f3D_approx(double x) {
     // TODO: use lookup table and cubic hermite spline
     double acc = 0.;
 
@@ -39,7 +55,7 @@ double gradV(struct Vec3D *x, const struct Planets *planets) {
 #if POT_TYPE == POT_TYPE_2D
         const double s = -1. / (1. - d);
 #elif POT_TYPE == POT_TYPE_3D
-        const double s = v3D_approx(acos(d) - M_PI);
+        const double s = f3D_approx(acos(d) - M_PI);
 #endif
 
         acc.x += s * planet.x;
@@ -50,4 +66,16 @@ double gradV(struct Vec3D *x, const struct Planets *planets) {
     *x = acc;
 
     return mdist;
+}
+
+double v_esc(void) {
+    const double x = MIN_DIST / 180. * M_PI;
+
+#if POT_TYPE == POT_TYPE_2D
+    const double pot = -2. * log(sin(x / 2.));
+#elif POT_TYPE == POT_TYPE_3D
+    const double pot = pot3D_approx(x);
+#endif
+
+    return sqrt(-2. * pot);
 }

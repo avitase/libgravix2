@@ -23,3 +23,13 @@ class Helper:
         get_vlon.argtypes = [c_double, c_double, c_double, c_double]
         get_vlon.restype = c_double
         self.get_vlon = get_vlon
+
+        get_vesc = lib.v_esc
+        get_vesc.argtypes = None
+        get_vesc.restype = c_double
+        self.get_vesc = get_vesc
+
+        get_orb_period = lib.orb_period
+        get_orb_period.argtypes = [c_double, c_double]
+        get_orb_period.restype = c_double
+        self.get_orb_period = get_orb_period

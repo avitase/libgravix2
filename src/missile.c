@@ -172,3 +172,36 @@ unsigned propagate_missile(struct Trajectory *t,
 
     return i;
 }
+
+double orb_period(double v0, double h) {
+    const double sin_threshold = sin(THRESHOLD);
+    const double cos_threshold = cos(THRESHOLD);
+
+    struct QP qp = {
+        .q.x = 0.,
+        .q.y = cos_threshold,
+        .q.z = sin_threshold,
+        .p.x = 0.,
+        .p.y = -v0 * sin_threshold,
+        .p.z = v0 * cos_threshold,
+    };
+
+    PlanetsHandle planets = new_planets(1);
+    set_planet(planets, 0, 0., 0.);
+
+    double mdist = -1.;
+
+    double p2;
+    int t = 0;
+    do {
+        p2 = qp.p.y * qp.p.y + qp.p.z * qp.p.z;
+        mdist = integration_step(&qp, h, planets);
+        t += 1;
+    } while (mdist < cos_threshold);
+
+    delete_planets(planets);
+
+    const double a = sqrt(qp.p.y * qp.p.y + qp.p.z * qp.p.z) - sqrt(p2);
+    const double s = acos(qp.q.y) - THRESHOLD;
+    return (double)t + sqrt(2 * s / a);
+}

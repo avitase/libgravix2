@@ -1,4 +1,5 @@
 import ctypes
+import functools
 from pathlib import Path
 from typing import List, Tuple, Union
 
@@ -85,3 +86,26 @@ class Gravix2:
         """
         vx, vy, vz = v
         return self._helper.get_vlon(float(vx), float(vy), float(vz), float(lon))
+
+    @functools.cached_property
+    def v_esc(self) -> float:
+        """
+        Returns the escape velocity
+
+        Calls ``libgravix2``'s helper function ``v_esc()`` on first call. The result is
+        saved and returned on this and all subsequent calls.
+
+        :return: Escape velocity
+        """
+        return self._helper.get_vesc()
+
+    @functools.lru_cache
+    def estimate_orb_period(self, v0: float, h: float) -> float:
+        """
+        Wraps call to ``libgravix2``'s helper function ``orb_period()``
+
+        :param v0: Initial velocity
+        :param h: Step size
+        :return: Orbital period
+        """
+        return self._helper.get_orb_period(float(v0), float(h))

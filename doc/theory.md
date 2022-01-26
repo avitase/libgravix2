@@ -96,7 +96,7 @@ In particular, the deviation is largest where the force field is weakest and the
 
 # Symplectic integration
 
-We use a [Strang splitting](https://doi.org/10.1137/0705041) \f$\phi_t = \phi_{t/2}^{[1]} \circ \phi_t^{[2]} \circ \phi_{t/2}^{[1]}\f$ to integrate the Hamiltonian system \f$H = H^{[1]} + H^{[2]}\f$:
+We use a [Strang splitting](https://doi.org/10.1137/0705041) \f$\phi_t = \phi_{t/2}^{[1]} \circ \phi_t^{[2]} \circ \phi_{t/2}^{[1]}\f$ to integrate the Hamiltonian system \f$H = H^{[1]} + H^{[2]}\f$ with
 \f{align*}{
     H^{[1]} &= \frac{p^2}{2m} + \lambda g(\vec{q}) \\
     H^{[2]} &= V(\vec{q}) + \lambda g(\vec{q}) \,.
