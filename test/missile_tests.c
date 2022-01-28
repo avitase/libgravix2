@@ -1,10 +1,15 @@
 #include "api.h"
 #include <assert.h>
+#include <math.h>
 
 int main(int argc, char **argv) {
     const double h = 1e-3;
+
     const double V = v_esc();
+    assert(!isnan(V) && V > 0.);
+
     const double T = orb_period(2. * V, h);
+    assert(!isnan(T) && T > 0.);
 
     PlanetsHandle planets = new_planets(1);
     set_planet(planets, 0, 0., 0.);

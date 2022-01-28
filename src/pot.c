@@ -3,7 +3,6 @@
 #include "config.h"
 #include "linalg.h"
 #include "planet.h"
-#include <assert.h>
 #include <math.h>
 
 #if POT_TYPE == POT_TYPE_3D
@@ -23,7 +22,7 @@ static double pot3D_approx(double x) {
                4. / (TWO_PI * (2. * i + 1.));
     }
 
-    return -acc / (2. * TWO_PI);
+    return acc / (2. * TWO_PI);
 }
 
 static double f3D_approx(double x) {
