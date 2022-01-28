@@ -2,7 +2,7 @@ The propagation of point-like particles, aka _missiles_, are simulated in the gr
 %Planets and missiles are restricted to stay exactly on the surface at any time.
 
 In this document, we describe in detail the theoretical background and list all equations that are necessary to efficiently deal with this library.
-If you prefer a more experimental-orientated approach you can skip this section and directly jump to [the description of the API](@ref include/api.h).
+If you prefer a more experimental-orientated approach you can skip this section and directly jump to [the description of the API](@ref API).
 There, you will find everything necessary to use the library and to run your simulations.
 
 # Theory
@@ -109,38 +109,48 @@ Without loss of generality, we choose the scale of a time-step and the coupling 
 By using this convention, the integration steps read:
 \f{align*}
     \begin{pmatrix}
-        \vec{q} \\ \vec{p}
+        \vec q \\ \vec p
     \end{pmatrix}
     &\overset{\phi_t^{[1]}}{\longleftarrow}
     \begin{pmatrix}
-        \frac{1}{p} \, \vec{p} \, \sin p t + \vec{q} \, \cos p t \\
-        -p \, \vec{q} \, \sin p t + \vec{p} \, \cos p t 
+        \frac{1}{p} \, \vec p  \, \sin pt + \vec q \, \cos pt \\
+        -p \, \vec q \, \sin pt + \vec p \, \cos pt 
     \end{pmatrix} , \\
     \begin{pmatrix}
-        \vec{q} \\ \vec{p}
+        \vec q \\ \vec p
     \end{pmatrix}
     &\overset{\phi_t^{[2]}}{\longleftarrow}
     \begin{pmatrix}
-        \vec{q} \\
-        \vec{p} + \left[ (\vec{q} \cdot \vec\nabla_{\!q} V(\vec{q})) \, \vec{q} - \vec\nabla_{\!q} V(\vec{q}) \right] t
+        \vec q \\
+        \vec p + \vec a t
     \end{pmatrix} .
 \f}
-For small time-steps \f$\phi_t^{[1]}\f$ can be efficiently approximated without diminishing the integration order or its symmetric and symplectic nature by expanding the trigonometric functions up to third order,
-\f{align*}{
-    \cos x &= 1 - \frac{x^2}{2} + \mathcal{O}(x^4) \,, \\
-    \sin x &= \sqrt{1 - \cos^2(x)} = x \, \sqrt{1 - \frac{x^2}{4}} + \mathcal{O}(x^3) \,,
-\f}
-and thus
-\f[
+with \f$\vec a = (\vec q \cdot \vec\nabla_{\!q} V(\vec q)) \, \vec q - \vec\nabla_{\!q} V(\vec q)\f$.
+
+Alternatively, the phase space can be parametrized with \f$(\hat q, \hat p, p)\f$ where \f$\hat\bullet\f$ are unit vectors and \f$p\f$ is the momentum magnitude:
+\f{align*}
     \begin{pmatrix}
-        \vec{q} \\ \vec{p}
+        \hat q \\ \hat p \\ p
     \end{pmatrix}
-    \overset{\phi_t^{[1]}}{\longleftarrow}
+    &\overset{\phi_t^{[1]}}{\longleftarrow}
     \begin{pmatrix}
-        \vec{q} + t \, \sqrt{1 - \frac{p^2 t^2}{4}} \, \vec{p} - \frac{p^2 t^2}{2} \, \vec{q} \\
-        \vec{p} - p^2 t \, \sqrt{1 - \frac{p^2 t^2}{4}} \, \vec{q} - \frac{p^2 t^2}{2} \, \vec{p}
+        +\hat q \, \cos pt + \hat p \, \sin pt \\
+        -\hat q \, \sin pt + \hat p \, \cos pt \\
+        p
+    \end{pmatrix} , \\
+    \begin{pmatrix}
+        \hat q \\ \hat p \\ p
+    \end{pmatrix}
+    &\overset{\phi_t^{[2]}}{\longleftarrow}
+    \begin{pmatrix}
+        \hat q \\
+        \left| p \hat p + \vec a t \right|^{-1} \, \left( p \hat p + \vec a t \right) \\
+        |p\hat p + \vec a t|
     \end{pmatrix} .
-\f]
+\f}
+The update step for \f$\hat p\f$ can become error-prone if \f$\left| p \hat p + \vec a t \right| \ll 1\f$.
+This is the case if either \f$p \hat p \approx -\vec a t\f$ but \f$p \gg 0\f$ or if \f$\mathcal{O}(p) = \mathcal{O}(|\vec a t |) \ll 1\f$.
+In both cases, keeping the old value of \f$\hat p\f$ but setting \f$p = 0\f$ gives a reasonable approximation and pins the missile in the latter case onto a fix point.
 
 The strang splitting \f$\phi_t = \phi_{t/2}^{[1]} \circ \phi_t^{[2]} \circ \phi_{t/2}^{[1]}\f$ is a second-order symmetric and symplectic integration scheme.
 We offer a set of several symmetric composition schemes during compilation, each raising the integration order by evaluating \f$\phi_t\f$ in multiple stages and refer to them as `pXsY` where `X` and `Y` are the new integration order and the number of stages, respectively:
@@ -158,7 +168,7 @@ However, for practical applications and finite integration times, one should alw
 
 # Spherical coordinates
 
-[Our API](@ref include/api.h) is designed asymmetrically w.r.t. coordinate systems. 
+[Our API](@ref API) is designed asymmetrically w.r.t. coordinate systems. 
 Internally, our algorithms operate on Cartesian coordinates whereas the initialization of planets and missiles has to be given in spherical coordinates.
 Doing so takes the burden off the caller to correctly embed vectors onto the manifold and makes the physical interpretation of parameters easier.
 
@@ -252,6 +262,6 @@ that allows for a straightforward extraction of the longitudinal and (scaled) la
     \end{pmatrix}.
 \f]
 
-# How to proceed from here on
-You now have all the information necessary to efficiently deal with [our API](@ref include/api.h).
+# Detailed description of API
+You now have all the information necessary to efficiently deal with [our API](@ref API).
 Go there to find out how to use it in practice for fun and profit.

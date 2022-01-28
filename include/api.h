@@ -1,6 +1,15 @@
 /*!
  * \file api.h
- * \brief C-API for gravix2's physics engine.
+ * \brief API
+ *
+ * See module \ref API for a detailed description.
+ */
+
+/*!
+ * \defgroup API API
+ * \brief API for creating planets and launching missiles.
+ *
+ * @{
  *
  * The API of gravix2's physics engine should be used to create planets and
  * launch missiles. Upon calling propagate_missile(), missiles move on the
@@ -31,7 +40,7 @@
  * propagate on a great circle of the unit sphere and eventually hit the planet
  * on the opposite side. We refer to this critical momentum as the escape
  * velocity, v_esc(), and to the integrated time between launching the missile
- * and its collision with the planet as the orbital periode, orb_period(). 
+ * and its collision with the planet as the orbital periode, orb_period().
  */
 
 #ifndef PHYSICS_API_H
@@ -56,7 +65,7 @@ typedef struct Planets *PlanetsHandle;
  */
 struct Trajectory {
     double x[TRAJECTORY_SIZE][3]; /*!< Cartesian position. */
-    double v[TRAJECTORY_SIZE][3]; /*!< Cartesian velocity. */
+    double v[TRAJECTORY_SIZE][4]; /*!< Normalized velocity and magnitude. */
 };
 
 /*!
@@ -149,16 +158,31 @@ struct Trajectory *get_trajectory(TrajectoryBatch batch, unsigned i);
 /*!
  * \brief Initializes the position and velocity of a missile on the sphere.
  *
+ * The missile is aligned on the surface of the sphere s.t. it is pointing
+ * towards \f$\Delta \phi\f$ and \f$(\Delta \lambda \, \cos \phi)\f$ where the
+ * former (latter) is the difference in latitude (longitude). The magnitude of
+ * the vector is given separately by \p v.
+ *
+ * For convenience, this function will also write the initial values into the
+ * first slot of the trajectory (index ``0``) where they can be read out safely.
+ * Note that this value is overwritten by calling propagate_missile().
+ *
  * @param trj The trajectory handle as obtained from get_trajectory().
  * @param lat The initial latitude, \f$\phi\f$, in units of degrees.
  * @param lon The initial longitude, \f$\lambda\f$, in units of degrees.
- * @param vlat The initial latitudinal speed \f$\dot\phi\f$.
- * @param vlon The initial (scaled) longitudinal speed \f$\dot\lambda
+ * @param v The intitial velocity, \f$\sqrt{\dot\phi^2 + (\dot\lambda \,
+ * \cos\phi)^2}\f$.
+ * @param dlat The intitial latitudinal orientation, \f$\Delta \phi\f$.
+ * @param dlon The intitial longitudinal orientation, \f$\Delta \lambda \,
  * \cos\phi\f$.
  * @return Zero on success.
  */
-int init_missile(
-    struct Trajectory *trj, double lat, double lon, double vlat, double vlon);
+int init_missile(struct Trajectory *trj,
+                 double lat,
+                 double lon,
+                 double v,
+                 double dlat,
+                 double dlon);
 
 /*!
  * \brief Initializes a missile on the rim of a given planet.
@@ -167,6 +191,10 @@ int init_missile(
  * away from the planet center if the initial velocity is positive. The rim is
  * defined as a circle centered at the planet. Propagation of missiles that fall
  * inside this circle is stopped, cf. propagate_missile().
+ *
+ * For convenience, this function will also write the initial values into the
+ * first slot of the trajectory (index ``0``) where they can be read out safely.
+ * Note that this value is overwritten by calling propagate_missile().
  *
  * @param trj The trajectory handle as obtained from get_trajectory().
  * @param planets_handle The planets handle.
@@ -193,11 +221,18 @@ int launch_missile(struct Trajectory *trj,
  * set. The behavior of any subsequent calls is undefined until a missile is
  * reinitialized using either init_missile() or launch_missile().
  *
+ * Consider a trajectory sequence ``[x, x+1, x+2, ..., x+N]`` where ``x`` refers
+ * to some point in phase space and ``x+1`` to its immediate successor.
+ * Let ``2`` be the return value of this function, then the updated sequence
+ * corresponds to ``[x+N+1, x+N+2, x+2, ..., x+N]``, i.e., the first two values
+ * were updated by the integrator. In particular, initial values at the first
+ * position are overwritten upon calling.
+ *
  * If a missile propagates inside the rim of a planet, cf. launch_missile(), the
  * \p premature flag is set to a non-zero value and propagation is stopped.
  *
  * @param trj The trajectory handle as obtained from get_trajectory().
- * @param planets_handle The planets handle.
+ * @param planets The planets handle.
  * @param h The step size of the integrator. Typically, this value should be
  * \f$\ll 1\f$.
  * @param premature Set to non-zero values if propagation was stopped
@@ -212,7 +247,7 @@ int launch_missile(struct Trajectory *trj,
  * \p premature flag is still set in this case.)
  */
 unsigned propagate_missile(struct Trajectory *trj,
-                           const PlanetsHandle planets_handle,
+                           const PlanetsHandle planets,
                            double h,
                            int *premature);
 
@@ -283,8 +318,6 @@ double v_esc(void);
  * This method returns a more precise value than one would get by calling
  * propagate_missile() until the \p premature flag is set.
  *
- * **WARNING: NOT YET IMPLEMENTED**
- *
  * @param v0 Initial speed.
  * @param h The step size of the integrator. Typically, this value should be
  * \f$\ll 1\f$.
@@ -293,3 +326,5 @@ double v_esc(void);
 double orb_period(double v0, double h);
 
 #endif // PHYSICS_API_H
+
+/*! @} */ // end of group API

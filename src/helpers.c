@@ -45,5 +45,5 @@ double vlon(double vx, double vy, double vz, double lon) {
 }
 
 double sinc(double x) {
-    return x != 0. ? x / sin(x) : 1.;
+    return x != 0. ? sin(x) / x : 1.;
 }

@@ -3,6 +3,7 @@
 #include "config.h"
 #include "linalg.h"
 #include "planet.h"
+#include <assert.h>
 #include <math.h>
 
 #if POT_TYPE == POT_TYPE_3D
@@ -50,6 +51,7 @@ double gradV(struct Vec3D *x, const struct Planets *planets) {
             planets->data[3 * i + 2],
         };
         const double d = dot(*x, planet);
+        // assert(fabs(d) <= 1.);
         mdist = d > mdist ? d : mdist;
 
 #if POT_TYPE == POT_TYPE_2D
@@ -77,5 +79,6 @@ double v_esc(void) {
     const double pot = pot3D_approx(x);
 #endif
 
-    return sqrt(2. * pot);
+    const double RAD2DEG = 180. / M_PI;
+    return sqrt(2. * pot) * RAD2DEG;
 }

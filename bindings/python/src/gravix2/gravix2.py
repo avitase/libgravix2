@@ -100,7 +100,7 @@ class Gravix2:
         return self._helper.get_vesc()
 
     @functools.lru_cache
-    def estimate_orb_period(self, v0: float, h: float) -> float:
+    def estimate_orb_period(self, *, v0: float, h: float) -> float:
         """
         Wraps call to ``libgravix2``'s helper function ``orb_period()``
 

@@ -22,4 +22,13 @@ struct Vec3D {
  */
 double dot(struct Vec3D a, struct Vec3D b);
 
+/*!
+ * \brief Magnitude of vector.
+ *
+ * @param v Vector.
+ * @return Magnitude of vector.
+ */
+double mag(struct Vec3D v);
+
+
 #endif // PHYSICS_LINALG_H

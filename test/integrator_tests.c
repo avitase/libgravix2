@@ -22,17 +22,17 @@ int main(int argc, char **argv) {
     const double vy0 = m->v[TRAJECTORY_SIZE - 1][1];
     const double vz0 = m->v[TRAJECTORY_SIZE - 1][2];
 
-    int premature;
-    unsigned n = propagate_missile(m, planets, 1e-4, &premature);
-    assert(n > 0);
-    assert(premature == 1);
-
     assert(fabs(m->x[0][0] - x0) < threshold);
     assert(fabs(m->x[0][1] - y0) < threshold);
     assert(fabs(m->x[0][2] - z0) < threshold);
     assert(fabs(m->v[0][0] - vx0) < threshold);
     assert(fabs(m->v[0][1] - vy0) < threshold);
     assert(fabs(m->v[0][2] - vz0) < threshold);
+
+    int premature;
+    unsigned n = propagate_missile(m, planets, 1e-4, &premature);
+    assert(n > 0);
+    assert(premature == 1);
 
     int is_debug = -1;
     assert(is_debug++);

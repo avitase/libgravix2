@@ -13,13 +13,15 @@ from .planet import Planets
 @dataclass(eq=False, order=False, frozen=True)
 class Trajectory:
     """
-    A sequence of positional and velocity data in cartesian coordinates
+    A sequence of positional and velocity data in Cartesian coordinates
 
     :param x: Position
+    :param n: Orientation
     :param v: Velocity
     """
 
     x: ArrayLike
+    n: ArrayLike
     v: ArrayLike
 
 
@@ -42,7 +44,7 @@ class Missile:
         self._trajectory = None
 
         init = lib.init_missile
-        init.argtypes = [c_void_p, c_double, c_double, c_double, c_double]
+        init.argtypes = [c_void_p, c_double, c_double, c_double, c_double, c_double]
         init.restype = c_int
         self._init = init
 
@@ -58,41 +60,42 @@ class Missile:
 
         self._helper = Helper(lib=lib)
 
-    def set(self, *, pos: List[float], vel: List[float]) -> None:
+    def set(self, *, pos: List[float], orientation: List[float], v: float) -> None:
         """
         Wrapper for ``libgravix2``'s ``init_missile()`` function
 
-        The initial position and velocity can either be passed as 2D tuples of
-        latitudinal and longitudinal components (in units of degrees) or as 3D tuple
-        in their respective cartesian representation. If passed as 2D tuples
+        The initial position and orientation can either be passed as 2D tuples of
+        latitudinal and longitudinal components (in units of degrees) or as 3D tuples
+        in their respective Cartesian representation. If passed as 2D tuples
         ``libgravix2``'s helper functions ``lat()``, ``lon()``, ``v_lat()`` and
         ``v_lon()`` are used for conversions.
 
         :param pos: Initial position
-        :param vel: Initial velocity
+        :param orientation: Initial orientation
+        :param v: Initial velocity
         :return: None
         """
         pos = [float(x) for x in pos]
-        vel = [float(v) for v in vel]
+        orientation = [float(dx) for dx in orientation]
 
-        if len(pos) != len(vel) or len(pos) not in [2, 3]:
+        if len(pos) != len(orientation) or len(pos) not in [2, 3]:
             raise ValueError(
                 "Position and velocity have either to be given as a pair of latitude "
-                "and longitude or in the cartesian representation"
+                "and longitude or in the Cartesian representation"
             )
 
         if len(pos) == 3:
             x, y, z = pos
-            vx, vy, vz = vel
+            dx, dy, dz = orientation
             lat = self._helper.get_lat(z)
             lon = self._helper.get_lon(x, y)
-            vlat = self._helper.get_vlat(vx, vy, vz, lat, lon)
-            vlon = self._helper.get_vlon(vx, vy, vz, lon)
+            dlat = self._helper.get_vlat(dx, dy, dz, lat, lon)
+            dlon = self._helper.get_vlon(dx, dy, dz, lon)
         else:
             lat, lon = pos
-            vlat, vlon = vel
+            dlat, dlon = orientation
 
-        rc = self._init(self._missile, lat, lon, vlat, vlon)
+        rc = self._init(self._missile, lat, lon, v, dlat, dlon)
         if rc != 0:
             raise RuntimeError("Initializing missile failed")
 
@@ -149,13 +152,14 @@ class Missile:
         class _Trajectory(ctypes.Structure):
             _fields_ = [
                 ("x", c_double * (n * 3)),
-                ("v", c_double * (n * 3)),
+                ("v", c_double * (n * 4)),
             ]
 
         raw = ctypes.cast(self._missile, POINTER(_Trajectory))
         self._trajectory = Trajectory(
             np.ctypeslib.as_array(raw.contents.x).reshape(n, 3),
-            np.ctypeslib.as_array(raw.contents.v).reshape(n, 3),
+            np.ctypeslib.as_array(raw.contents.v).reshape(n, 4)[:, :3],
+            np.ctypeslib.as_array(raw.contents.v).reshape(n, 4)[:, 3],
         )
 
         return premature

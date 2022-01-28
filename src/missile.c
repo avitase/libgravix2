@@ -1,6 +1,7 @@
 #include "api.h"
 #include "integrators.h"
 #include "planet.h"
+#include <assert.h>
 #include <math.h>
 #include <stdlib.h>
 
@@ -18,26 +19,36 @@ struct Trajectory *get_trajectory(TrajectoryBatch batch, unsigned i) {
     return batch + i;
 }
 
-int init_missile(
-    struct Trajectory *t, double lat, double lon, double vlat, double vlon) {
+int init_missile(struct Trajectory *t,
+                 double lat,
+                 double lon,
+                 double v,
+                 double dlat,
+                 double dlon) {
     const double DEG2RAD = M_PI / 180.;
     lat *= DEG2RAD;
     lon *= DEG2RAD;
-    vlat *= DEG2RAD;
-    vlon *= DEG2RAD; // WARNING: this is \f$\dot\lambda \, \cos\phi\f$
 
     const double sin_lat = sin(lat);
     const double cos_lat = cos(lat);
     const double sin_lon = sin(lon);
     const double cos_lon = cos(lon);
 
-    const unsigned i = TRAJECTORY_SIZE - 1;
-    t->x[i][0] = cos_lat * sin_lon;
-    t->x[i][1] = cos_lat * cos_lon;
-    t->x[i][2] = sin_lat;
-    t->v[i][0] = -vlat * sin_lat * sin_lon + vlon * cos_lon;
-    t->v[i][1] = -vlat * sin_lat * cos_lon - vlon * sin_lon;
-    t->v[i][2] = vlat * cos_lat;
+    t->x[0][0] = cos_lat * sin_lon;
+    t->x[0][1] = cos_lat * cos_lon;
+    t->x[0][2] = sin_lat;
+
+    const double dv = sqrt(dlat * dlat + dlon * dlon);
+    t->v[0][0] = (-dlat * sin_lat * sin_lon + dlon * cos_lon) / dv;
+    t->v[0][1] = (-dlat * sin_lat * cos_lon - dlon * sin_lon) / dv;
+    t->v[0][2] = dlat * cos_lat / dv;
+    t->v[0][3] = v;
+
+    for (int i = 0; i < 3; i++) {
+        t->x[TRAJECTORY_SIZE - 1][i] = t->x[0][i];
+        t->v[TRAJECTORY_SIZE - 1][i] = t->v[0][i];
+    }
+    t->v[TRAJECTORY_SIZE - 1][3] = v;
 
     return 0;
 }
@@ -79,7 +90,6 @@ int launch_missile(struct Trajectory *t,
     }
 
     const double DEG2RAD = M_PI / 180.;
-    v *= DEG2RAD;
     psi *= DEG2RAD;
 
     struct Vec3D rot[3];
@@ -104,9 +114,9 @@ int launch_missile(struct Trajectory *t,
         dot(rot[2], x0),
     };
     struct Vec3D v0 = {
-        v * cos_r * sin_psi,
-        v * cos_r * cos_psi,
-        -v * sin_r,
+        cos_r * sin_psi,
+        cos_r * cos_psi,
+        -sin_r,
     };
     struct Vec3D v1 = {
         dot(rot[0], v0),
@@ -134,46 +144,49 @@ int launch_missile(struct Trajectory *t,
     };
 
     const double RAD2DEG = 180. / M_PI;
-    const double vlat = dot(v1, e_lat) * RAD2DEG;
-    const double vlon = dot(v1, e_lon) * RAD2DEG;
-    return init_missile(t, lat * RAD2DEG, lon * RAD2DEG, vlat, vlon);
+    const double dlat = dot(v1, e_lat);
+    const double dlon = dot(v1, e_lon);
+    return init_missile(t, lat * RAD2DEG, lon * RAD2DEG, v, dlat, dlon);
 }
 
-unsigned propagate_missile(struct Trajectory *t,
-                           const PlanetsHandle p,
+unsigned propagate_missile(struct Trajectory *trj,
+                           const PlanetsHandle planets,
                            double h,
                            int *premature) {
-    for (unsigned i = 0; i < 3; i++) {
-        t->x[0][i] = t->x[TRAJECTORY_SIZE - 1][i];
-        t->v[0][i] = t->v[TRAJECTORY_SIZE - 1][i];
-    }
+    const double DEG2RAD = M_PI / 180.;
+    const double RAD2DEG = 180. / M_PI;
 
     struct QP qp = {
-        .q.x = t->x[0][0],
-        .q.y = t->x[0][1],
-        .q.z = t->x[0][2],
-        .p.x = t->v[0][0],
-        .p.y = t->v[0][1],
-        .p.z = t->v[0][2],
+        .q.x = trj->x[TRAJECTORY_SIZE - 1][0],
+        .q.y = trj->x[TRAJECTORY_SIZE - 1][1],
+        .q.z = trj->x[TRAJECTORY_SIZE - 1][2],
+        .p.x = trj->v[TRAJECTORY_SIZE - 1][0],
+        .p.y = trj->v[TRAJECTORY_SIZE - 1][1],
+        .p.z = trj->v[TRAJECTORY_SIZE - 1][2],
+        .p_abs = trj->v[TRAJECTORY_SIZE - 1][3] * DEG2RAD,
     };
 
-    unsigned i = 1;
+    unsigned i = 0;
     for (*premature = 0; i < TRAJECTORY_SIZE && !*premature; i++) {
-        unsigned n_left = integration_loop(&qp, h, INT_STEPS, p);
+        unsigned n_left = integration_loop(&qp, h, INT_STEPS, planets);
         *premature = (n_left != 0);
 
-        t->x[i][0] = qp.q.x;
-        t->x[i][1] = qp.q.y;
-        t->x[i][2] = qp.q.z;
-        t->v[i][0] = qp.p.x;
-        t->v[i][1] = qp.p.y;
-        t->v[i][2] = qp.p.z;
+        trj->x[i][0] = qp.q.x;
+        trj->x[i][1] = qp.q.y;
+        trj->x[i][2] = qp.q.z;
+        trj->v[i][0] = qp.p.x;
+        trj->v[i][1] = qp.p.y;
+        trj->v[i][2] = qp.p.z;
+        trj->v[i][3] = qp.p_abs * RAD2DEG;
     }
 
     return i;
 }
 
-double orb_period(double v0, double h) {
+double orb_period(double v, double h) {
+    const double DEG2RAD = M_PI / 180.;
+    v *= DEG2RAD;
+
     const double sin_threshold = sin(THRESHOLD);
     const double cos_threshold = cos(THRESHOLD);
 
@@ -182,8 +195,9 @@ double orb_period(double v0, double h) {
         .q.y = cos_threshold,
         .q.z = sin_threshold,
         .p.x = 0.,
-        .p.y = -v0 * sin_threshold,
-        .p.z = v0 * cos_threshold,
+        .p.y = -sin_threshold,
+        .p.z = cos_threshold,
+        .p_abs = v,
     };
 
     PlanetsHandle planets = new_planets(1);
@@ -191,17 +205,20 @@ double orb_period(double v0, double h) {
 
     double mdist = -1.;
 
-    double p2;
+    struct QP qp2 = qp;
     int t = 0;
     do {
-        p2 = qp.p.y * qp.p.y + qp.p.z * qp.p.z;
-        mdist = integration_step(&qp, h, planets);
+        qp = qp2;
+        mdist = integration_step(&qp2, h, planets);
         t += 1;
     } while (mdist < cos_threshold);
 
     delete_planets(planets);
 
-    const double a = sqrt(qp.p.y * qp.p.y + qp.p.z * qp.p.z) - sqrt(p2);
     const double s = acos(qp.q.y) - THRESHOLD;
-    return (double)t + sqrt(2 * s / a);
+    const double a = qp2.p_abs - qp.p_abs;
+    const double dt = sqrt(2 * s / a);
+    assert(dt < 1.);
+
+    return ((double)t + dt) / INT_STEPS;
 }

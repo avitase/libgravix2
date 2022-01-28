@@ -15,7 +15,8 @@ struct Planets;
  */
 struct QP {
     struct Vec3D q; /*!< Vector of canonical coordinates. */
-    struct Vec3D p; /*!< Vector of conjugate momenta. */
+    struct Vec3D p; /*!< Normalized conjugate momentum vector. */
+    double p_abs;   /*!< Magnitude of conjugate momentum. */
 };
 
 /*!

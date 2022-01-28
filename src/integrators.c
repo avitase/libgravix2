@@ -2,6 +2,7 @@
 #include "config.h"
 #include "helpers.h"
 #include "pot.h"
+#include <assert.h>
 #include <math.h>
 
 /*!
@@ -26,7 +27,8 @@ const double P2GAMMA_p4s3[] = {
  * \brief Suzuki's Fractal
  *
  * 4th-order symmetric composition method with 5 stages.
- * See <a href="https://doi.org/10.1016/0375-9601(90)90962-N">DOI:10.1016/0375-9601(90)90962-N</a>
+ * See <a
+ * href="https://doi.org/10.1016/0375-9601(90)90962-N">DOI:10.1016/0375-9601(90)90962-N</a>
  * for more information.
  */
 const double P2GAMMA_p4s5[] = {
@@ -41,7 +43,8 @@ const double P2GAMMA_p4s5[] = {
  * \brief Kahan & Li (1997)
  *
  * 6th-order symmetric composition method with 9 stages.
- * See <a href="https://doi.org/10.1090/S0025-5718-97-00873-9">DOI:10.1090/S0025-5718-97-00873-9</a>
+ * See <a
+ * href="https://doi.org/10.1090/S0025-5718-97-00873-9">DOI:10.1090/S0025-5718-97-00873-9</a>
  * for more information.
  */
 const double P2GAMMA_p6s9[] = {
@@ -60,7 +63,8 @@ const double P2GAMMA_p6s9[] = {
  * \brief Suzuki & Umeno (1993)
  *
  * 8th-order symmetric composition method with 15 stages.
- * See <a href="https://doi.org/10.1007/978-3-642-78448-4_7">DOI:10.1007/978-3-642-78448-4_7</a>
+ * See <a
+ * href="https://doi.org/10.1007/978-3-642-78448-4_7">DOI:10.1007/978-3-642-78448-4_7</a>
  * for more information.
  */
 const double P2GAMMA_p8s15[] = {
@@ -88,20 +92,17 @@ static const unsigned N_STAGES =
 static const double THRESHOLD = MIN_DIST / 180. * M_PI;
 
 static void strang1(struct QP *qp, double h) {
-    const double p = sqrt(dot(qp->p, qp->p));
-    const double s = sin(p * h);
-    const double c = cos(p * h);
-
-    /*
-     * TODO: test if approximation with square root is more efficient
-     */
-    const double sinc_ph = sinc(p * h);
-    struct QP qp2 = {.q.x = qp->p.x * h * sinc_ph + qp->q.x * c,
-                     .q.y = qp->p.y * h * sinc_ph + qp->q.y * c,
-                     .q.z = qp->p.z * h * sinc_ph + qp->q.z * c,
-                     .p.x = qp->p.x * c - qp->q.x * p * s,
-                     .p.y = qp->p.y * c - qp->q.y * p * s,
-                     .p.z = qp->p.z * c - qp->q.z * p * s};
+    const double sin_ph = sin(qp->p_abs * h);
+    const double cos_ph = cos(qp->p_abs * h);
+    struct QP qp2 = {
+        .q.x = qp->q.x * cos_ph + qp->p.x * sin_ph,
+        .q.y = qp->q.y * cos_ph + qp->p.y * sin_ph,
+        .q.z = qp->q.z * cos_ph + qp->p.z * sin_ph,
+        .p.x = -qp->q.x * sin_ph + qp->p.x * cos_ph,
+        .p.y = -qp->q.y * sin_ph + qp->p.y * cos_ph,
+        .p.z = -qp->q.z * sin_ph + qp->p.z * cos_ph,
+        .p_abs = qp->p_abs,
+    };
     *qp = qp2;
 }
 
@@ -110,9 +111,23 @@ static double strang2(struct QP *qp, double h, const struct Planets *planets) {
     const double mdist = gradV(&v, planets);
     const double q_dot_gradV = dot(qp->q, v);
 
-    qp->p.x += (q_dot_gradV * qp->q.x - v.x) * h;
-    qp->p.y += (q_dot_gradV * qp->q.y - v.y) * h;
-    qp->p.z += (q_dot_gradV * qp->q.z - v.z) * h;
+    struct Vec3D ah = {
+        v.x = (q_dot_gradV * qp->q.x - v.x) * h,
+        v.y = (q_dot_gradV * qp->q.y - v.y) * h,
+        v.z = (q_dot_gradV * qp->q.z - v.z) * h,
+    };
+
+    v.x = qp->p_abs * qp->p.x + ah.x;
+    v.y = qp->p_abs * qp->p.y + ah.y;
+    v.z = qp->p_abs * qp->p.z + ah.z;
+    qp->p_abs = mag(v);
+
+    const double p_min = P_MIN;
+    const int too_small = (qp->p_abs < p_min);
+    qp->p.x = too_small ? qp->p.x : v.x / qp->p_abs;
+    qp->p.y = too_small ? qp->p.y : v.y / qp->p_abs;
+    qp->p.z = too_small ? qp->p.z : v.z / qp->p_abs;
+    qp->p_abs = too_small ? 0. : qp->p_abs;
 
     return mdist;
 }
@@ -129,6 +144,18 @@ integration_step(struct QP *qp, double h, const struct Planets *planets) {
         mdist = strang2(qp, g2 * h, planets);
         strang1(qp, g1 * h / 2.);
     }
+
+    // TODO: necessary?
+    const double q_norm = 1. / mag(qp->q);
+    qp->q.x *= q_norm;
+    qp->q.y *= q_norm;
+    qp->q.z *= q_norm;
+
+    // TODO: necessary?
+    const double p_norm = 1. / mag(qp->p);
+    qp->p.x *= p_norm;
+    qp->p.y *= p_norm;
+    qp->p.z *= p_norm;
 
     return mdist;
 }
