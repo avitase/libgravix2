@@ -325,6 +325,91 @@ double v_esc(void);
  */
 double orb_period(double v0, double h);
 
+/*!
+ * \brief Static configurations.
+ *
+ * There are several static configurations that can be set at compile-time.
+ * Use get_config() to get the configuration that was used during compilation.
+ */
+struct config {
+    /*!
+     * \brief Type of potential.
+     *
+     * Currently, we support two types of potentials, \f$V_{2\mathrm{D}}\f$ and
+     * \f$V_{3\mathrm{D}}\f$ and identify them by the values ``2`` and ``3``,
+     * respectively.
+     */
+    int pot_type;
+
+    /*!
+     * \brief Approximation order of potential.
+     *
+     * There is no closed-form for \f$V_{3\mathrm{D}} = \frac{1}{4\pi}
+     * \sum_{j=0}^\infty V^{(j)}_{3\mathrm{D}}\f$, but the series can be treated
+     * as a perturbation expansion with \f$V^{(j)}_{3\mathrm{D}} >
+     * V^{(j')}_{3\mathrm{D}}\f$ if \f$j < j'\f$. Empirically, we find that
+     * \f[
+     *  V_{3\mathrm{D}}
+     *  \approx \frac{1}{4\pi} \sum_{j=0}^{\texttt{n_pot}-1}
+     *  V^{(j)}_{3\mathrm{D}}
+     * \f]
+     * converges fast and yields decent approximations.
+     *
+     * For \f$V_{2\mathrm{D}}\f$ a closed-form expression does exist and no
+     * approximation is needed.
+     */
+    int n_pot;
+
+    /*!
+     * \brief Size of trajectory.
+     *
+     * Missiles are propagated for multiple time steps. The result is stored in
+     * arrays with \p trajectory_size elements. See Trajectory for more details.
+     */
+    int trajectory_size;
+
+    /*!
+     * \brief Number of integration steps between trajectory points.
+     *
+     * Number of integration steps between consecutive points of a trajectory.
+     * Note that changing this number effectively speeds-up or slows-down the
+     * simulated and simulation time.
+     */
+    int int_steps;
+
+    /*!
+     * \brief Min. allowed distance between missiles and planets.
+     *
+     * If missiles approach planets closer than this minimal distance (given in
+     * degrees), propagation is stopped.
+     */
+    double min_dist;
+
+    /*!
+     * \brief Momentum threshold.
+     *
+     * If the momentum of a missile is lower than this threshold for two
+     * consecutive integration steps, the momentum is set to zero to ensure
+     * numeric stability.
+     */
+    double p_min;
+
+    /*!
+     * \brief Composition method of integrator
+     *
+     * The composition method of the integrator encoded as ``pXsY`` where ``X``
+     * is the integration order and ``Y`` is the number of stages.
+     */
+    const char *composition_scheme;
+};
+
+/*!
+ * \brief Writes static configuration.
+ *
+ * **NOT YET IMPLEMENTED**
+ */
+void get_config(struct config *cfg);
+
 #endif // PHYSICS_API_H
 
 /*! @} */ // end of group API

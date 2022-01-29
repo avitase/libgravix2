@@ -150,7 +150,7 @@ Alternatively, the phase space can be parametrized with \f$(\hat q, \hat p, p)\f
 \f}
 The update step for \f$\hat p\f$ can become error-prone if \f$\left| p \hat p + \vec a t \right| \ll 1\f$.
 This is the case if either \f$p \hat p \approx -\vec a t\f$ but \f$p \gg 0\f$ or if \f$\mathcal{O}(p) = \mathcal{O}(|\vec a t |) \ll 1\f$.
-In both cases, keeping the old value of \f$\hat p\f$ but setting \f$p = 0\f$ gives a reasonable approximation and pins the missile in the latter case onto a fix point.
+In both cases, keeping the old value of \f$\hat p\f$ but setting \f$p = 0\f$ gives a reasonable approximation and pins the missile in the latter case onto a fix point—see the configuration parameter config.p_min.
 
 The strang splitting \f$\phi_t = \phi_{t/2}^{[1]} \circ \phi_t^{[2]} \circ \phi_{t/2}^{[1]}\f$ is a second-order symmetric and symplectic integration scheme.
 We offer a set of several symmetric composition schemes during compilation, each raising the integration order by evaluating \f$\phi_t\f$ in multiple stages and refer to them as `pXsY` where `X` and `Y` are the new integration order and the number of stages, respectively:
