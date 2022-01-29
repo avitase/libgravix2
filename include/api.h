@@ -330,6 +330,12 @@ double orb_period(double v0, double h);
  *
  * There are several static configurations that can be set at compile-time.
  * Use get_config() to get the configuration that was used during compilation.
+ *
+ * Note that none of these settings is needed to interact with the API, for
+ * example, propagate_missile() returns the number of simulated steps stored in
+ * the trajectory sequence upon calling. In fact, it is safer to use this return
+ * value because it also reflects cases were less values were stored in case of
+ * a collision with a planet.
  */
 struct config {
     /*!
