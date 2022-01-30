@@ -330,22 +330,33 @@ double orb_period(double v0, double h);
  *
  * There are several static configurations that can be set at compile-time.
  * Use get_config() to get the configuration that was used during compilation.
+ * The corresponding compile-time constants that can be passed to <a
+ * href="https://cmake.org">CMake</a> are:
  *
- * Note that none of these settings is needed to interact with the API, for
- * example, propagate_missile() returns the number of simulated steps stored in
- * the trajectory sequence upon calling. In fact, it is safer to use this return
- * value because it also reflects cases were less values were stored in case of
- * a collision with a planet.
+ *  - ``POT_TYPE``: same as Config::pot_type
+ *  - ``N_POT``: same as Config::n_pot
+ *  - ``TRAJECTORY_SIZE``: same as Config::trajectory_size
+ *  - ``INT_STEPS``: same as Config::int_steps
+ *  - ``MIN_DIST``: same as Config::min_dist
+ *  - ``P_MIN``: same as Config::p_min
+ *  - ``COMPOSITION_SCHEME``: same as Config::composition_scheme
+ *
+ * Note that none of these settings is necessarily needed to interact with the
+ * API, for example, propagate_missile() returns the number of simulated steps
+ * stored in the trajectory sequence upon calling. In fact, it is safer to
+ * prefer this value over Config::trajectory_size because the former also
+ * reflects cases where less values were stored in case of a collision with a
+ * planet.
  */
-struct config {
+struct Config {
     /*!
      * \brief Type of potential.
      *
      * Currently, we support two types of potentials, \f$V_{2\mathrm{D}}\f$ and
-     * \f$V_{3\mathrm{D}}\f$ and identify them by the values ``2`` and ``3``,
-     * respectively.
+     * \f$V_{3\mathrm{D}}\f$ and identify them by the strings ``"2D"`` and
+     * ``"3D"``, respectively.
      */
-    int pot_type;
+    const char* pot_type;
 
     /*!
      * \brief Approximation order of potential.
@@ -414,7 +425,7 @@ struct config {
  *
  * **NOT YET IMPLEMENTED**
  */
-void get_config(struct config *cfg);
+void get_config(struct Config *cfg);
 
 #endif // PHYSICS_API_H
 
