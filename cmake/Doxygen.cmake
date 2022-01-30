@@ -11,11 +11,11 @@ function(enable_doxygen)
         set(DOXYGEN_GENERATE_TREEVIEW YES)
         set(DOXYGEN_FULL_SIDEBAR YES)
         set(DOXYGEN_USE_MDFILE_AS_MAINPAGE theory.md)
-        set(DOXYGEN_IMAGE_PATH ${PROJECT_SOURCE_DIR}/doc/img)
+        set(DOXYGEN_IMAGE_PATH ${PROJECT_SOURCE_DIR}/docsrc/img)
         find_package(Doxygen REQUIRED dot)
 
         set(DOC_FILES
-            ${PROJECT_SOURCE_DIR}/doc/theory.md
+            ${PROJECT_SOURCE_DIR}/docsrc/theory.md
             ${PROJECT_SOURCE_DIR}/include
             ${PROJECT_SOURCE_DIR}/src
         )
