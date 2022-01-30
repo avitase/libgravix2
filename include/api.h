@@ -355,8 +355,10 @@ struct Config {
      * Currently, we support two types of potentials, \f$V_{2\mathrm{D}}\f$ and
      * \f$V_{3\mathrm{D}}\f$ and identify them by the strings ``"2D"`` and
      * ``"3D"``, respectively.
+     *
+     * Possible values: ``"2D"`` and ``"3D"``.
      */
-    const char* pot_type;
+    const char *pot_type;
 
     /*!
      * \brief Approximation order of potential.
@@ -374,6 +376,9 @@ struct Config {
      *
      * For \f$V_{2\mathrm{D}}\f$ a closed-form expression does exist and no
      * approximation is needed.
+     *
+     * Possible values: Positive integer values or undefined if Config::pot_type
+     * is ``"2D"``.
      */
     int n_pot;
 
@@ -382,6 +387,8 @@ struct Config {
      *
      * Missiles are propagated for multiple time steps. The result is stored in
      * arrays with \p trajectory_size elements. See Trajectory for more details.
+     *
+     * Possible values: Positive, non-zero integer values.
      */
     int trajectory_size;
 
@@ -391,6 +398,8 @@ struct Config {
      * Number of integration steps between consecutive points of a trajectory.
      * Note that changing this number effectively speeds-up or slows-down the
      * simulated and simulation time.
+     *
+     * Possible values: Positive, non-zero integer values.
      */
     int int_steps;
 
@@ -399,6 +408,8 @@ struct Config {
      *
      * If missiles approach planets closer than this minimal distance (given in
      * degrees), propagation is stopped.
+     *
+     * Possible values: Positive floating point values.
      */
     double min_dist;
 
@@ -408,14 +419,21 @@ struct Config {
      * If the momentum of a missile is lower than this threshold for two
      * consecutive integration steps, the momentum is set to zero to ensure
      * numeric stability.
+     *
+     * Possible values: Positive floating point values.
      */
     double p_min;
 
     /*!
      * \brief Composition method of integrator
      *
-     * The composition method of the integrator encoded as ``pXsY`` where ``X``
-     * is the integration order and ``Y`` is the number of stages.
+     * The composition method of the integrator encoded as ``"pXsY"`` where
+     * ``X`` is the integration order and ``Y`` is the number of stages.
+     *
+     * Possible values: \link P2GAMMA_p2s1 ``"p2s1"`` \endlink, \link
+     * P2GAMMA_p4s3 ``"p4s3"`` \endlink, \link P2GAMMA_p4s5 ``"p4s5"`` \endlink,
+     * \link P2GAMMA_p6s9 ``"p6s9"`` \endlink and \link P2GAMMA_p8s15
+     * ``"p8s15"`` \endlink.
      */
     const char *composition_scheme;
 };
