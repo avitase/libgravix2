@@ -4,3 +4,7 @@
 ![Build docs](https://github.com/avitase/libgravix2/actions/workflows/build_doc.yml/badge.svg)
 
 Find our documentation here: [https://avitase.github.io/libgravix2/](https://avitase.github.io/libgravix2/) and [https://avitase.github.io/libgravix2/py-bindings/](https://avitase.github.io/libgravix2/py-bindings/)
+
+Required dependencies:
+ - ``libm.so.6``
+ - ``lic.so.6``
