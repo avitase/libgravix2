@@ -41,6 +41,10 @@
  * on the opposite side. We refer to this critical momentum as the escape
  * velocity, v_esc(), and to the integrated time between launching the missile
  * and its collision with the planet as the orbital periode, orb_period().
+ *
+ * Although not necessarily needed for dealing with the API, the static
+ * configurations set during compilation of the library can be readout via
+ * get_config(). 
  */
 
 #ifndef PHYSICS_API_H
