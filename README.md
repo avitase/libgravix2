@@ -7,7 +7,7 @@ A fast yet precise simulation of conservative, attractive forces acting on point
 The force fields are generate by static points that are embedded on the surface of the same unit sphere.
 We implement different symmetric and symplectic integrators and expose a simple C-API to generate and propagate particles.
 
-This library is meant to be a physics engine for small games, where, e.g., _missiles_ fly in the gravitational force fields of _planets_ in a curved universe.
+This library is meant to be a physics engine for small games where, e.g., _missiles_ fly in the gravitational force fields of _planets_ in a curved universe.
 It is fast, lightweight, and lends itself perfectly to be spawned in many concurrent instances.
 
 ## 🚧 WORK IN PROGRESS 🚧
@@ -22,7 +22,7 @@ Furthermore, our C-API can easily be wrapped in high-level languages.
 For example, we provide a minimalistic Python binding here: [avitase.github.io/libgravix2/py-bindings/](https://avitase.github.io/libgravix2/py-bindings/)
 
 ## How to build
-This is C library with (almost) no external dependencies, except for:
+This is a C library with (almost) no external dependencies, except for:
  - C mathematical operations from `math.h`, e.g., `libm.so.6`
  - Standard C library, e.g., `libc.so.6`
  - that's all
