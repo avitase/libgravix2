@@ -1,4 +1,5 @@
 add_library(gravix2 SHARED
+    config.c
     helpers.c
     integrators.c
     linalg.c

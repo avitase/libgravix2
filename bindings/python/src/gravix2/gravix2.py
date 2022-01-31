@@ -6,6 +6,7 @@ from typing import List, Tuple, Union
 from . import helper
 from . import missile
 from . import planet
+from . import config
 
 
 class Gravix2:
@@ -21,7 +22,17 @@ class Gravix2:
             raise ValueError(f"Invalid library path {lib}")
 
         self._lib = ctypes.cdll.LoadLibrary(str(lib.resolve()))
+        self._config = config.get_config(lib=self._lib)
         self._helper = helper.Helper(lib=self._lib)
+
+    @property
+    def config(self) -> config.Config:
+        """
+        Wraps ``libgravix2``'s ``Config`` object
+
+        :return: Static configuration as :class:`gravix2.config.Config` instance
+        """
+        return self._config
 
     def new_planets(self, planets: List[Tuple[float, float]]) -> planet.Planets:
         """

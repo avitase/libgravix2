@@ -40,3 +40,11 @@ Helper
    :members:
    :undoc-members:
    :show-inheritance:
+
+Config
+------
+
+.. automodule:: gravix2.config
+   :members:
+   :undoc-members:
+   :show-inheritance:

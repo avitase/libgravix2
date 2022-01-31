@@ -439,11 +439,21 @@ struct Config {
 };
 
 /*!
- * \brief Writes static configuration.
+ * \brief Returns static configuration.
  *
- * **NOT YET IMPLEMENTED**
+ * A new Config instance is allocated and returned. It is the obligation of the
+ * caller to free the object after use via free_config().
+ *
+ * @return Static configuration.
  */
-void get_config(struct Config *cfg);
+struct Config *get_config(void);
+
+/*!
+ * \brief Frees Config instance.
+ *
+ * @param cfg The Config instance.
+ */
+void free_config(struct Config * cfg);
 
 #endif // PHYSICS_API_H
 
