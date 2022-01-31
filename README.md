@@ -10,6 +10,11 @@ We implement different symmetric and symplectic integrators and expose a simple 
 This library is meant to be a physics engine for small games, where, e.g., _missiles_ fly in the gravitational force fields of _planets_ in a curved universe.
 It is fast, lightweight, and lends itself perfectly to be spawned in many concurrent instances.
 
+## 🚧 WORK IN PROGRESS 🚧
+This is all work in progress and any help is highly appreciated.
+If you find any bugs or want to improve the documentation, please [submit a pull request](https://github.com/avitase/libgravix2/pulls) or [open an issue](https://github.com/avitase/libgravix2/issues).
+There are already open issues and you can help to close them!
+
 ## Documentation
 Find the documentation of our C-API here: [avitase.github.io/libgravix2/](https://avitase.github.io/libgravix2/) 
 
