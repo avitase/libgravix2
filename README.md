@@ -1,4 +1,4 @@
-# libgravix2
+# libgravix2 🌎🚀
 
 ![Unit tests](https://github.com/avitase/libgravix2/actions/workflows/run_tests.yml/badge.svg)
 ![Build docs](https://github.com/avitase/libgravix2/actions/workflows/build_doc.yml/badge.svg)
