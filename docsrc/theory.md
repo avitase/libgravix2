@@ -172,7 +172,7 @@ However, for practical applications and finite integration times, one should alw
 Internally, our algorithms operate on Cartesian coordinates whereas the initialization of planets and missiles has to be given in spherical coordinates.
 Doing so takes the burden off the caller to correctly embed vectors onto the manifold and makes the physical interpretation of parameters easier.
 
-A point on the surface of a unit-sphere has two degrees of freedom which we refer to as latitude, \f$\phi\f$, and longitude, \f$\lambda\f$.
+A point on the surface of a unit sphere has two degrees of freedom which we refer to as latitude, \f$\phi\f$, and longitude, \f$\lambda\f$.
 In Cartesian coordinates such a point is given by
 \f[
     \vec{x} = \begin{pmatrix}
@@ -197,7 +197,7 @@ Similarly, a velocity vector is given by
     \end{pmatrix} ,
 \f]
 and is always orthogonal to \f$\vec x\f$ at the same latitude and longitude.
-We define \f$\dot\phi\f$ and \f$(\dot\lambda \, \cos\phi)\f$ as the latitudinal velocity, vlat(), and the (scaled) longitudinal velocity, vlon(), respectively.
+We define \f$\dot\phi\f$ and \f$\dot\lambda \, \cos\phi\f$ as the latitudinal velocity, vlat(), and the (scaled) longitudinal velocity, vlon(), respectively.
 Adding both in quadrature yields the magnitude of the Cartesian velocity,
 \f[
      v = \sqrt{\dot\phi^2 + (\dot\lambda \, \cos \phi)^2} \,.
@@ -223,8 +223,8 @@ where the rotating matrix \f$\boldsymbol{R}_{\phi, \lambda}\f$ rotates \f$\vec{\
 and \f$\psi\f$ is the initial longitude prior to the rotation.
 This velocity vector is located at a point with latitude \f$\phi' \neq \phi\f$ and longitude \f$\lambda' \neq \lambda\f$,
 \f{align*}{
-    \phi' &= \arcsin x_3 \\
-    \lambda' &= \operatorname{atan2}(x_1, x_2)
+    \phi' &= \arcsin x_3 \,, \\
+    \lambda' &= \operatorname{atan2}(x_1, x_2) \,,
 \f}
 where \f$(x_1, x_2, x_3)^\top\f$ is given by
 \f[
