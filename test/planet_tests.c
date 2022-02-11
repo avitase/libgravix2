@@ -72,7 +72,5 @@ int main(int argc, char **argv) {
 
     delete_planets(p);
 
-    int is_debug = -1;
-    assert(is_debug++);
-    return is_debug;
+    return 0;
 }

@@ -37,7 +37,5 @@ int main(int argc, char **argv) {
     delete_missiles(missiles);
     delete_planets(planets);
 
-    int is_debug = -1;
-    assert(is_debug++);
-    return is_debug;
+    return 0;
 }

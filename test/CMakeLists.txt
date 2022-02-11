@@ -1,3 +1,7 @@
+add_executable(check_asserts check_asserts.c)
+target_link_libraries(check_asserts PRIVATE project_warnings project_options)
+add_test(check_asserts check_asserts)
+
 add_executable(planet_tests
     planet_tests.c
     ${PROJECT_SOURCE_DIR}/src/planet.c

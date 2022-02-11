@@ -18,7 +18,5 @@ int main(int argc, char **argv) {
     assert(fabs(vlon(vx, vy, vz, .3 * RAD2DEG) -
                 (vx * cos(.3) - vy * sin(.3)) * RAD2DEG) < threshold);
 
-    int is_debug = -1;
-    assert(is_debug++);
-    return is_debug;
+    return 0;
 }
