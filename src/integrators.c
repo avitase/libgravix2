@@ -152,6 +152,7 @@ integration_step(struct QP *qp, double h, const struct Planets *planets) {
     qp->q.z *= q_norm;
 
     // TODO: necessary?
+    // ... probably not since strang2 normalizes p
     const double p_norm = 1. / mag(qp->p);
     qp->p.x *= p_norm;
     qp->p.y *= p_norm;
