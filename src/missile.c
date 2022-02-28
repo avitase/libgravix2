@@ -200,7 +200,7 @@ double orb_period(double v, double h) {
         .p_abs = v,
     };
 
-    PlanetsHandle planets = new_planets(1);
+    PlanetsHandle planets = new_planets(1);  // TODO(#7)
     set_planet(planets, 0, 0., 0.);
 
     double mdist = -1.;
@@ -213,7 +213,7 @@ double orb_period(double v, double h) {
         t += 1;
     } while (mdist < cos_threshold);
 
-    delete_planets(planets);
+    delete_planets(planets);  // TODO(#7)
 
     const double s = acos(qp.q.y) - THRESHOLD;
     const double a = qp2.p_abs - qp.p_abs;
