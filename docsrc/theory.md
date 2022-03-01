@@ -34,10 +34,10 @@ Following the line of sight of the missile on the manifold, the planet is *seen*
 
 We implement two different types of gravitation potentials \f$V_d(\sigma_i)\f$,
 \f{align*}{
-    V_{2\mathrm{D}}(\sigma_i) = -2 \sum\limits_{j=0}^\infty V^{(j)}_{2\mathrm{D}}(\sigma_i) &= -2 \sum\limits_{j=0}^\infty \big[ \ln(2\pi j + \sigma_i) + \ln(2\pi (j+1) - \sigma_i) - 2 \ln \pi (2j+1) \big] \\
-    &= -2 \ln \sin \frac{\sigma_i}{2}, \\
-    V_{3\mathrm{D}}(\sigma_i) = \frac{1}{4\pi} \sum\limits_{j=0}^\infty V^{(j)}_{3\mathrm{D}}(\sigma_i) &= \frac{1}{4\pi} \sum\limits_{j=0}^\infty \left[ \frac{1}{2\pi j + \sigma_i} + \frac{1}{2\pi (j+1) - \sigma_i} - \frac{2}{\pi (2j+1)} \right] \\
-    &= \frac{2 \psi\!\left( \frac{1}{2} \right) - \psi\!\left(\frac{\sigma_i}{2 \pi} \right) - \psi\!\left(1 - \frac{\sigma_i}{2 \pi} \right)}{8 \pi^2}
+    V_{2\mathrm{D}}(\sigma_i) = 2 \sum\limits_{j=0}^\infty V^{(j)}_{2\mathrm{D}}(\sigma_i) &= 2 \sum\limits_{j=0}^\infty \big[ \ln(2\pi j + \sigma_i) + \ln(2\pi (j+1) - \sigma_i) - 2 \ln \pi (2j+1) \big] \\
+    &= 2 \ln \sin \frac{\sigma_i}{2}, \\
+    V_{3\mathrm{D}}(\sigma_i) = \frac{1}{4\pi} \sum\limits_{j=0}^\infty V^{(j)}_{3\mathrm{D}}(\sigma_i) &= -\frac{1}{4\pi} \sum\limits_{j=0}^\infty \left[ \frac{1}{2\pi j + \sigma_i} + \frac{1}{2\pi (j+1) - \sigma_i} - \frac{2}{\pi (2j+1)} \right] \\
+    &= -\frac{2 \psi\!\left( \frac{1}{2} \right) - \psi\!\left(\frac{\sigma_i}{2 \pi} \right) - \psi\!\left(1 - \frac{\sigma_i}{2 \pi} \right)}{8 \pi^2}
 \f}
 with the digamma function \f$\psi\f$.
 The former contributes force fields \f$\sim \sigma_i^{-1}\f$ that correspond to a 2D field solely embedded on the manifold and the latter is motivated by the canonical \f$\sim \sigma_i^{-2}\f$ behavior of the unconstrained 3D case.
@@ -53,7 +53,7 @@ Furthermore, since \f$\sigma_i = \pi\f$ is the largest possible distance between
 
 The aforementioned gauging of the potentials makes the evaluation of the escape velocity, \f$p_\pi\f$, at a given distance to a planet, \f$\delta\f$, straightforward:
 \f[
-    p_\pi = \sqrt{2m \, V_d(\delta)} \,,
+    p_\pi = \sqrt{-2m \, V_d(\delta)} \,,
 \f]
 where we define \f$p_\pi\f$ as the minimal initial momentum necessary to asymptotically reach a distance \f$\sigma = \pi\f$ when launched at a distance \f$\delta\f$.
 In layman's terms: <em>The only way to not shoot yourself in the face is to launch a missile faster than \f$p_\pi\f$—then you will hit your back.</em>
@@ -65,12 +65,12 @@ Use v_esc() and orb_period() to get \f$p_\pi\f$ and the orbital period, respecti
 
 The force fields are given by the gradients of the respective potentials:
 \f[
-    \vec\nabla_{\!q} V(\vec{q}) = \sum\limits_{i=1}^n \frac{V'_d(\sigma_i)}{\sin \sigma_i} \, \vec{y}_i = \sum\limits_{i=1}^n f_d(\sigma_i) \, \vec{y}_i
+    -\vec\nabla_{\!q} V(\vec{q}) = -\sum\limits_{i=1}^n \frac{V'_d(\sigma_i)}{\sin \sigma_i} \, \vec{y}_i = \sum\limits_{i=1}^n f_d(\sigma_i) \, \vec{y}_i
 \f]
 where we introduced the abbreviations
 \f{align*}{
-    V'_{2\mathrm{D}}(\sigma) &= -\sum\limits_{i=1}^n \operatorname{cot} \frac{\sigma}{2} \\
-    V'_{3\mathrm{D}}(\sigma) &= -\sum\limits_{i=1}^n (\pi - \sigma) \sum\limits_{j=0}^\infty \frac{2j + 1}{\left[ (2j+1)^2 \pi^2 - (\pi - \sigma)^2 \right]^2}
+    V'_{2\mathrm{D}}(\sigma) &= \sum\limits_{i=1}^n \operatorname{cot} \frac{\sigma}{2} \\
+    V'_{3\mathrm{D}}(\sigma) &= \sum\limits_{i=1}^n (\pi - \sigma) \sum\limits_{j=0}^\infty \frac{2j + 1}{\left[ (2j+1)^2 \pi^2 - (\pi - \sigma)^2 \right]^2}
 \f}
 and 
 \f{align*}{
@@ -125,7 +125,7 @@ By using this convention, the integration steps read:
         \vec p + \vec a t
     \end{pmatrix} .
 \f}
-with \f$\vec a = (\vec q \cdot \vec\nabla_{\!q} V(\vec q)) \, \vec q - \vec\nabla_{\!q} V(\vec q)\f$.
+with \f$\vec a = (\vec q \cdot \vec\nabla_{\!q} V(\vec q)) \, \vec q - \vec\nabla_{\!q} V(\vec q)\f$. (\f$\phi_t^{[1]}\f$ propagates the missile on a great-circle as if no gravitational forces were present and \f$\phi_t^{[2]}\f$ corrects the momentum.)
 
 Alternatively, the phase space can be parametrized with \f$(\hat q, \hat p, p)\f$ where \f$\hat\bullet\f$ are unit vectors and \f$p\f$ is the momentum magnitude:
 \f{align*}
