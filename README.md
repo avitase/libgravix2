@@ -51,4 +51,4 @@ There are several configuration options that can be set during compilation eithe
  - `P_MIN`: Momentum threshold. (Default: `0.0001`)
  - `COMPOSITION_SCHEME`: `p2s1` , `p4s3` , `p4s5` , `p6s9` or `p8s15` (default).
 
-We refer to our [documentation](https://avitase.github.io/libgravix2/) for more information about these options.
+Have a look into our [documentation](https://avitase.github.io/libgravix2/) for more information about these options.
