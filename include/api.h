@@ -44,7 +44,7 @@
  *
  * Although not necessarily needed for dealing with the API, the static
  * configurations set during compilation of the library can be readout via
- * get_config(). 
+ * get_config().
  */
 
 #ifndef PHYSICS_API_H
@@ -311,6 +311,17 @@ double vlon(double vx, double vy, double vz, double lon);
 double v_esc(void);
 
 /*!
+ * \brief Velocity of a missile on a small circle for isolated planets.
+ *
+ * For isolated planets: Velocity of a missile on a small circle with radius \p
+ * r and centered at the isolated planet.
+ *
+ * @param r Radius of small circle in degrees.
+ * @return Constant velocity for the given small circle.
+ */
+double v_scrcl(double r);
+
+/*!
  * \brief Orbital period for isolated planets.
  *
  * For isolated planets: Integrated time between launching and touching the rim
@@ -457,7 +468,7 @@ struct Config *get_config(void);
  *
  * @param cfg The Config instance.
  */
-void free_config(struct Config * cfg);
+void free_config(struct Config *cfg);
 
 #endif // PHYSICS_API_H
 

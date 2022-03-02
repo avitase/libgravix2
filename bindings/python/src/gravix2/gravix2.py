@@ -110,6 +110,16 @@ class Gravix2:
         """
         return self._helper.get_vesc()
 
+    def v_scrcl(self, r) -> float:
+        """
+        Wraps call to ``libgravix2``'s helper function ``v_scrcl()`` 
+
+        :param r: Radius of small circle in degrees
+        :return: Small circle velocity
+        """
+        return self._helper.get_vscrcl(r)
+
+
     @functools.lru_cache
     def estimate_orb_period(self, *, v0: float, h: float) -> float:
         """

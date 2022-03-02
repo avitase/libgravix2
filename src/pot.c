@@ -70,7 +70,10 @@ double gradV(struct Vec3D *x, const struct Planets *planets) {
 }
 
 double v_esc(void) {
-    const double x = MIN_DIST / 180. * M_PI;
+    const double DEG2RAD = M_PI / 180.;
+    const double RAD2DEG = 180. / M_PI;
+
+    const double x = MIN_DIST * DEG2RAD;
 
 #if POT_TYPE == POT_TYPE_2D
     const double pot = -2. * log(sin(x / 2.));
@@ -78,6 +81,20 @@ double v_esc(void) {
     const double pot = pot3D_approx(x);
 #endif
 
-    const double RAD2DEG = 180. / M_PI;
     return sqrt(2. * pot) * RAD2DEG;
+}
+
+double v_scrcl(double r) {
+    const double DEG2RAD = M_PI / 180.;
+    const double RAD2DEG = 180. / M_PI;
+
+    r *= DEG2RAD;
+
+#if POT_TYPE == POT_TYPE_2D
+    const double v = sqrt((1. + cos(r)) / fabs(cos(r)));
+#elif POT_TYPE == POT_TYPE_3D
+    const double v = sin(r) * sqrt(-f3D_approx(r - M_PI) / fabs(cos(r)));
+#endif
+
+    return v * RAD2DEG;
 }

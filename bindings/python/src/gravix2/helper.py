@@ -29,6 +29,11 @@ class Helper:
         get_vesc.restype = c_double
         self.get_vesc = get_vesc
 
+        get_vscrcl = lib.v_scrcl
+        get_vscrcl.argtypes = [c_double]
+        get_vscrcl.restype = c_double
+        self.get_vscrcl = get_vscrcl
+
         get_orb_period = lib.orb_period
         get_orb_period.argtypes = [c_double, c_double]
         get_orb_period.restype = c_double

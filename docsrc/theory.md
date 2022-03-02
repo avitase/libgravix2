@@ -94,6 +94,47 @@ In particular, the deviation is largest where the force field is weakest and the
 
 [<img src="f3D_ratio.png" width="400"/>](f3D_ratio.png)
 
+## Just in case you care
+For a given universe with a single planet, there are circular orbits which keep a constant distance \f$r = \sigma_1\f$ to the planet (aka [_small circles_](https://en.wikipedia.org/wiki/Circle_of_a_sphere)), as well as a constant velocity \f$v_\mathrm{orb}\f$.
+By setting the planet at one of the poles, \f$y_1 = (0, 0, 1)^\top\f$, we obtain a simple ODE from the Hamiltonian:
+\f[
+    \begin{pmatrix} \ddot x_1 \\ \ddot x_2 \\ \ddot x_3 \end{pmatrix} =
+    f_d \!\left( \arccos(x_3) \right) \begin{pmatrix} 0 \\ 0 \\ 1 \end{pmatrix}
+    \mp \lambda \begin{pmatrix} x_1 \\ x_2 \\ x_3 \end{pmatrix},
+\f]
+where \f$r = \arccos x_3\f$ is the distance to the planet.
+Here, a constant distance is equivalent to \f$\dot x_3 = \ddot x_3 = 0\f$ and thus:
+\f[
+    \ddot x_3 = 0 \qquad \Leftrightarrow \qquad \lambda = \frac{f_d \!\left( \arccos(x_3) \right)}{|x_3|} = v_\lambda^2 = \text{const.}
+\f]
+Hence, a possible solution reads:
+\f[
+    \begin{pmatrix} x_1 \\ x_2 \\ x_3 \end{pmatrix} =
+    \begin{pmatrix}
+        \cos\phi_0 \, \sin v_\lambda t \\
+        \cos\phi_0 \, \cos v_\lambda t \\
+        \sin\phi_0
+    \end{pmatrix}.
+\f]
+The velocity \f$v_\mathrm{orb}\f$ for a given force field \f$f_d\f$ and distance \f$r\f$ can thus be obtained by setting \f$\phi_0 = \pi/2 - r\f$ and evaluating:
+\f[
+    v_{\mathrm{orb},d} \equiv \dot x = v_\lambda \cos \phi_0 = \sqrt{ \frac{-f_d(r)}{|\cos r|}} \, \sin r
+\f]
+For convenience, we provide a helper function v_scrcl() which returns \f$v_\mathrm{orb}\f$ if provided with \f$r\f$.
+
+Note, that for \f$d=2\mathrm{D}\f$ the relation simplifies significantly and allows for a straightforward evaluation of \f$v_{\mathrm{orb},2\mathrm{D}}\f$:
+\f[
+    v_{\mathrm{orb},2\mathrm{D}} = \sqrt{ \frac{1 + \cos r}{|\cos r|}}.
+\f]
+
+Below, we show \f$v_{\mathrm{orb},d}(r)\f$ for both types of potentials:
+Naïvely, one might expect a similar \f$\sim 1/\sqrt{r}\f$ behavior that we know from our canonical \f$\sim 1/r\f$ potential on earth.
+In curved space, however, free particles propagate on [great circles](https://en.wikipedia.org/wiki/Great_circle) and thus increasingly higher velocities are needed if the small circle converges towards a great circle at a distance of \f$r = \pi / 2\f$.
+At the maximal distance \f$r = \pi\f$, the small circle converges into a (unstable) fix point.
+For \f$r \to 0\f$, our 2D potential becomes \f$\sqrt{2}\f$ (in the figure below velocities are given in degrees) whereas \f$v_{\mathrm{orb},3\mathrm{D}}\f$ diverges.
+
+[<img src="vscrcl.png" width="400"/>](vscrcl.png)
+
 # Symplectic integration
 
 We use a [Strang splitting](https://doi.org/10.1137/0705041) \f$\phi_t = \phi_{t/2}^{[1]} \circ \phi_t^{[2]} \circ \phi_{t/2}^{[1]}\f$ to integrate the Hamiltonian system \f$H = H^{[1]} + H^{[2]}\f$ with
@@ -127,7 +168,7 @@ By using this convention, the integration steps read:
 \f}
 with \f$\vec a = (\vec q \cdot \vec\nabla_{\!q} V(\vec q)) \, \vec q - \vec\nabla_{\!q} V(\vec q)\f$. (\f$\phi_t^{[1]}\f$ propagates the missile on a great-circle as if no gravitational forces were present and \f$\phi_t^{[2]}\f$ corrects the momentum.)
 
-Alternatively, the phase space can be parametrized with \f$(\hat q, \hat p, p)\f$ where \f$\hat\bullet\f$ are unit vectors and \f$p\f$ is the momentum magnitude:
+Alternatively, the phase space can be parametrized with \f$(\hat q = \vec q, \hat p = \vec p / p, p)\f$ where \f$\hat\bullet\f$ are unit vectors and \f$p\f$ is the momentum magnitude:
 \f{align*}
     \begin{pmatrix}
         \hat q \\ \hat p \\ p
@@ -203,7 +244,7 @@ Adding both in quadrature yields the magnitude of the Cartesian velocity,
      v = \sqrt{\dot\phi^2 + (\dot\lambda \, \cos \phi)^2} \,.
  \f]
 
-Typically, missiles are launched at the rim of a planet, where <em>rim</em> refers to a small circle centered at the given planet.
+Typically, missiles are launched at the rim of a planet, where _rim_ refers to a small circle centered at the given planet.
 The velocity vector of a missile launched at a distance \f$\sigma\f$ to \f$(\phi, \lambda)\f$ is given by
 \f[
     \vec v = v \, \boldsymbol{R}_{\phi, \lambda} \begin{pmatrix}
