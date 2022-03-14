@@ -39,10 +39,8 @@ static double f3D_approx(double x) {
 }
 #endif
 
-double gradV(struct Vec3D *x, const struct Planets *planets) {
+void gradV(struct Vec3D *x, const struct Planets *planets) {
     struct Vec3D acc = {0., 0., 0.};
-    double mdist = -1.;
-
     for (unsigned i = 0; i < planets->n; i++) {
         struct Vec3D planet = {
             planets->data[3 * i],
@@ -50,8 +48,6 @@ double gradV(struct Vec3D *x, const struct Planets *planets) {
             planets->data[3 * i + 2],
         };
         const double d = dot(*x, planet);
-        // assert(fabs(d) <= 1.);
-        mdist = d > mdist ? d : mdist;
 
 #if POT_TYPE == POT_TYPE_2D
         const double s = -1. / (1. - d);
@@ -65,6 +61,20 @@ double gradV(struct Vec3D *x, const struct Planets *planets) {
     }
 
     *x = acc;
+}
+
+double min_dist(const struct Vec3D *x, const struct Planets *planets) {
+    double mdist = -1.;
+
+    for (unsigned i = 0; i < planets->n; i++) {
+        struct Vec3D planet = {
+            planets->data[3 * i],
+            planets->data[3 * i + 1],
+            planets->data[3 * i + 2],
+        };
+        const double d = dot(*x, planet);
+        mdist = d > mdist ? d : mdist;
+    }
 
     return mdist;
 }

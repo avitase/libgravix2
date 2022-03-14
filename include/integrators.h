@@ -27,10 +27,8 @@ struct QP {
  * @param qp Phase space.
  * @param h Step size.
  * @param planets Planets handle.
- * @return Closest distance to any planet after applying step as returned by
- * gradV().
  */
-double integration_step(struct QP *qp, double h, const struct Planets *planets);
+void integration_step(struct QP *qp, double h, const struct Planets *planets);
 
 /*!
  * \brief Multiple integration steps.

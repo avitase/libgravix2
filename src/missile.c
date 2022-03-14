@@ -1,6 +1,7 @@
 #include "api.h"
 #include "integrators.h"
 #include "planet.h"
+#include "pot.h"
 #include <assert.h>
 #include <math.h>
 #include <stdlib.h>
@@ -209,7 +210,8 @@ double orb_period(double v, double h) {
     int t = 0;
     do {
         qp = qp2;
-        mdist = integration_step(&qp2, h, planets);
+        integration_step(&qp2, h, planets);
+        mdist = min_dist(&qp2.q, planets);
         t += 1;
     } while (mdist < cos_threshold);
 

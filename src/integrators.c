@@ -106,9 +106,9 @@ static void strang1(struct QP *qp, double h) {
     *qp = qp2;
 }
 
-static double strang2(struct QP *qp, double h, const struct Planets *planets) {
+static void strang2(struct QP *qp, double h, const struct Planets *planets) {
     struct Vec3D v = qp->q;
-    const double mdist = gradV(&v, planets);
+    gradV(&v, planets);
     const double q_dot_gradV = dot(qp->q, v);
 
     struct Vec3D ah = {
@@ -128,20 +128,15 @@ static double strang2(struct QP *qp, double h, const struct Planets *planets) {
     qp->p.y = too_small ? qp->p.y : v.y / qp->p_abs;
     qp->p.z = too_small ? qp->p.z : v.z / qp->p_abs;
     qp->p_abs = too_small ? 0. : qp->p_abs;
-
-    return mdist;
 }
 
-double
-integration_step(struct QP *qp, double h, const struct Planets *planets) {
-    double mdist = -1.;
-
+void integration_step(struct QP *qp, double h, const struct Planets *planets) {
     strang1(qp, GAMMA[0] * h / 2.);
     for (unsigned i = 0; i < N_STAGES; i++) {
         const double g2 = GAMMA[i];
         const double g1 = g2 + (i + 1 < N_STAGES ? GAMMA[i + 1] : 0.);
 
-        mdist = strang2(qp, g2 * h, planets);
+        strang2(qp, g2 * h, planets);
         strang1(qp, g1 * h / 2.);
     }
 
@@ -157,8 +152,6 @@ integration_step(struct QP *qp, double h, const struct Planets *planets) {
     qp->p.x *= p_norm;
     qp->p.y *= p_norm;
     qp->p.z *= p_norm;
-
-    return mdist;
 }
 
 unsigned integration_loop(struct QP *qp,
@@ -169,7 +162,8 @@ unsigned integration_loop(struct QP *qp,
     const double threshold = cos(THRESHOLD);
 
     for (; n > 0 && mdist < threshold; n--) {
-        mdist = integration_step(qp, h, planets);
+        integration_step(qp, h, planets);
+        mdist = min_dist(&qp->q, planets);
     }
 
     return n;

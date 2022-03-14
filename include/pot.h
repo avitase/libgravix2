@@ -18,8 +18,16 @@ struct Planets;
  * @param q The position where the gradient is evaluated. The result overwrites
  * this variable.
  * @param planets Planets handle which generates the force field.
+ */
+void gradV(struct Vec3D *q, const struct Planets *planets);
+
+/*!
+ * \brief Minimal distance to any planet.
+ *
+ * @param q The position of the missile.
+ * @param planets Planets handle which generates the force field.
  * @return Cosine of smallest angle between \p q and any planet.
  */
-double gradV(struct Vec3D *q, const struct Planets *planets);
+double min_dist(const struct Vec3D *q, const struct Planets *planets);
 
 #endif // PHYSICS_POT_H
