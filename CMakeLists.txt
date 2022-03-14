@@ -31,6 +31,11 @@ if (ENABLE_TESTING)
     endif ()
 endif ()
 
+option(ENABLE_BENCHMARKS "Enable benchmarks" ON)
+if (ENABLE_BENCHMARKS)
+    add_subdirectory(benchmark)
+endif ()
+
 add_subdirectory(src)
 
 set(POT_TYPE "2D" CACHE STRING "Type of potential")
@@ -64,5 +69,6 @@ endif ()
 
 
 configure_file(${PROJECT_SOURCE_DIR}/include/config.h.in src/config.h @ONLY)
+configure_file(${PROJECT_SOURCE_DIR}/include/config.h.in benchmark/config.h @ONLY)
 configure_file(${PROJECT_SOURCE_DIR}/include/config.h.in test/config.h @ONLY)
 
