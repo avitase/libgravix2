@@ -178,6 +178,12 @@ Alternatively, the phase space can be parametrized with \f$(\hat q = \vec q, \ha
         +\hat q \, \cos pt + \hat p \, \sin pt \\
         -\hat q \, \sin pt + \hat p \, \cos pt \\
         p
+    \end{pmatrix} = \begin{pmatrix}
+        \hat q \\ \hat p \\ p
+    \end{pmatrix} + \begin{pmatrix} 
+        -2 \hat q \sin^2 pt/2 + \hat p \sin pt \\
+        -2 \hat p \sin^2 pt/2 - \hat q \sin pt \\
+        0
     \end{pmatrix} , \\
     \begin{pmatrix}
         \hat q \\ \hat p \\ p
@@ -187,8 +193,9 @@ Alternatively, the phase space can be parametrized with \f$(\hat q = \vec q, \ha
         \hat q \\
         \left| p \hat p + \vec a t \right|^{-1} \, \left( p \hat p + \vec a t \right) \\
         |p\hat p + \vec a t|
-    \end{pmatrix} .
+    \end{pmatrix} ,
 \f}
+where the second formulation of \f$\phi_t^{[1]}\f$ lends itself for an efficient numerical implementation using [Higham's summation scheme](https://doi.org/10.1137/0914050).
 The update step for \f$\hat p\f$ can become error-prone if \f$\left| p \hat p + \vec a t \right| \ll 1\f$.
 This is the case if either \f$p \hat p \approx -\vec a t\f$ but \f$p \gg 0\f$ or if \f$\mathcal{O}(p) = \mathcal{O}(|\vec a t |) \ll 1\f$.
 In both cases, keeping the old value of \f$\hat p\f$ but setting \f$p = 0\f$ gives a reasonable approximation and pins the missile in the latter case onto a fix point—see the configuration parameter Config.p_min.

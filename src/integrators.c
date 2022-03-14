@@ -93,16 +93,15 @@ static const double THRESHOLD = MIN_DIST / 180. * M_PI;
 
 static void strang1(struct QP *qp, double h) {
     const double sin_ph = sin(qp->p_abs * h);
-    const double cos_ph = cos(qp->p_abs * h);
-    struct QP qp2 = {
-        .q.x = qp->q.x * cos_ph + qp->p.x * sin_ph,
-        .q.y = qp->q.y * cos_ph + qp->p.y * sin_ph,
-        .q.z = qp->q.z * cos_ph + qp->p.z * sin_ph,
-        .p.x = -qp->q.x * sin_ph + qp->p.x * cos_ph,
-        .p.y = -qp->q.y * sin_ph + qp->p.y * cos_ph,
-        .p.z = -qp->q.z * sin_ph + qp->p.z * cos_ph,
-        .p_abs = qp->p_abs,
-    };
+    const double cos_ph_minus_one = -2. * pow(sin(qp->p_abs * h / 2.), 2);
+
+    struct QP qp2 = *qp;
+    qp2.q.x += qp->q.x * cos_ph_minus_one + qp->p.x * sin_ph;
+    qp2.q.y += qp->q.y * cos_ph_minus_one + qp->p.y * sin_ph;
+    qp2.q.z += qp->q.z * cos_ph_minus_one + qp->p.z * sin_ph;
+    qp2.p.x += qp->p.x * cos_ph_minus_one - qp->q.x * sin_ph;
+    qp2.p.y += qp->p.y * cos_ph_minus_one - qp->q.y * sin_ph;
+    qp2.p.z += qp->p.z * cos_ph_minus_one - qp->q.z * sin_ph;
     *qp = qp2;
 }
 
@@ -140,14 +139,13 @@ void integration_step(struct QP *qp, double h, const struct Planets *planets) {
         strang1(qp, g1 * h / 2.);
     }
 
-    // TODO: necessary?
+    // compensate error accumulation in strang1
     const double q_norm = 1. / mag(qp->q);
     qp->q.x *= q_norm;
     qp->q.y *= q_norm;
     qp->q.z *= q_norm;
 
-    // TODO: necessary?
-    // ... probably not since strang2 normalizes p
+    // compensate error accumulation in strang1
     const double p_norm = 1. / mag(qp->p);
     qp->p.x *= p_norm;
     qp->p.y *= p_norm;
@@ -164,6 +162,7 @@ unsigned integration_loop(struct QP *qp,
     for (; n > 0 && mdist < threshold; n--) {
         integration_step(qp, h, planets);
         mdist = min_dist(&qp->q, planets);
+        assert(mdist >= -1. && mdist <= 1.);
     }
 
     return n;
