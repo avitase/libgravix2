@@ -82,7 +82,7 @@ static void rotation_matrix(double lat, double lon, struct Vec3D rot[3]) {
 }
 
 int launch_missile(struct Trajectory *t,
-                   const PlanetsHandle planets,
+                   PlanetsHandle planets,
                    unsigned planet,
                    double v,
                    double psi) {
@@ -151,7 +151,7 @@ int launch_missile(struct Trajectory *t,
 }
 
 unsigned propagate_missile(struct Trajectory *trj,
-                           const PlanetsHandle planets,
+                           PlanetsHandle planets,
                            double h,
                            int *premature) {
     const double DEG2RAD = M_PI / 180.;

@@ -211,7 +211,7 @@ int init_missile(struct Trajectory *trj,
  * @return Zero on success.
  */
 int launch_missile(struct Trajectory *trj,
-                   const PlanetsHandle planets_handle,
+                   PlanetsHandle planets_handle,
                    unsigned planet_id,
                    double v,
                    double psi);
@@ -251,7 +251,7 @@ int launch_missile(struct Trajectory *trj,
  * \p premature flag is still set in this case.)
  */
 unsigned propagate_missile(struct Trajectory *trj,
-                           const PlanetsHandle planets,
+                           PlanetsHandle planets,
                            double h,
                            int *premature);
 
