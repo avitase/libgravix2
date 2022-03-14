@@ -25,10 +25,15 @@ struct QP {
  * \p qp is advanced by the integrator for a single step.
  *
  * @param qp Phase space.
+ * @param eq Accumulation of error for compensated summation. Initialize with
+ * zero for first iteration.
  * @param h Step size.
  * @param planets Planets handle.
  */
-void integration_step(struct QP *qp, double h, const struct Planets *planets);
+void integration_step(struct QP *qp,
+                      struct Vec3D *eq,
+                      double h,
+                      const struct Planets *planets);
 
 /*!
  * \brief Multiple integration steps.

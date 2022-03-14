@@ -212,10 +212,11 @@ double orb_period(double v, double h) {
     double mdist = -1.;
 
     struct QP qp2 = qp;
+    struct Vec3D eq = {0., 0., 0.};
     int t = 0;
     do {
         qp = qp2;
-        integration_step(&qp2, h, planets);
+        integration_step(&qp2, &eq, h, planets);
         mdist = min_dist(&qp2.q, planets);
         t += 1;
     } while (mdist < cos_threshold);

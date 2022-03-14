@@ -91,17 +91,37 @@ static const unsigned N_STAGES =
 
 static const double THRESHOLD = MIN_DIST / 180. * M_PI;
 
-static void strang1(struct QP *qp, double h) {
+static void strang1(struct QP *qp, struct Vec3D *eq, double h) {
     const double sin_ph = sin(qp->p_abs * h);
     const double cos_ph_minus_one = -2. * pow(sin(qp->p_abs * h / 2.), 2);
 
-    struct QP qp2 = *qp;
-    qp2.q.x += qp->q.x * cos_ph_minus_one + qp->p.x * sin_ph;
-    qp2.q.y += qp->q.y * cos_ph_minus_one + qp->p.y * sin_ph;
-    qp2.q.z += qp->q.z * cos_ph_minus_one + qp->p.z * sin_ph;
-    qp2.p.x += qp->p.x * cos_ph_minus_one - qp->q.x * sin_ph;
-    qp2.p.y += qp->p.y * cos_ph_minus_one - qp->q.y * sin_ph;
-    qp2.p.z += qp->p.z * cos_ph_minus_one - qp->q.z * sin_ph;
+    const double dqx = qp->q.x * cos_ph_minus_one + qp->p.x * sin_ph;
+    const double dqy = qp->q.y * cos_ph_minus_one + qp->p.y * sin_ph;
+    const double dqz = qp->q.z * cos_ph_minus_one + qp->p.z * sin_ph;
+
+    const double dpx = qp->p.x * cos_ph_minus_one - qp->q.x * sin_ph;
+    const double dpy = qp->p.y * cos_ph_minus_one - qp->q.y * sin_ph;
+    const double dpz = qp->p.z * cos_ph_minus_one - qp->q.z * sin_ph;
+
+    eq->x += dqx;
+    eq->y += dqy;
+    eq->z += dqz;
+
+    struct QP qp2 = {
+        .q.x = qp->q.x + eq->x,
+        .q.y = qp->q.y + eq->y,
+        .q.z = qp->q.z + eq->z,
+        .p.x = qp->p.x + dpx,
+        .p.y = qp->p.y + dpy,
+        .p.z = qp->p.z + dpz,
+        .p_abs = qp->p_abs,
+    };
+
+    // compensated summation, see DOI:10.1137/0914050 for more information
+    eq->x += qp->q.x - qp2.q.x;
+    eq->y += qp->q.y - qp2.q.y;
+    eq->z += qp->q.z - qp2.q.z;
+
     *qp = qp2;
 }
 
@@ -129,14 +149,32 @@ static void strang2(struct QP *qp, double h, const struct Planets *planets) {
     qp->p_abs = too_small ? 0. : qp->p_abs;
 }
 
-void integration_step(struct QP *qp, double h, const struct Planets *planets) {
-    strang1(qp, GAMMA[0] * h / 2.);
+void integration_step(struct QP *qp,
+                      struct Vec3D *eq,
+                      double h,
+                      const struct Planets *planets) {
+    strang1(qp, eq, GAMMA[0] * h / 2.);
     for (unsigned i = 0; i < N_STAGES; i++) {
         const double g2 = GAMMA[i];
         const double g1 = g2 + (i + 1 < N_STAGES ? GAMMA[i + 1] : 0.);
 
         strang2(qp, g2 * h, planets);
-        strang1(qp, g1 * h / 2.);
+        strang1(qp, eq, g1 * h / 2.);
+    }
+}
+
+unsigned integration_loop(struct QP *qp,
+                          double h,
+                          unsigned n,
+                          const struct Planets *planets) {
+    double mdist = -1.;
+    const double threshold = cos(THRESHOLD);
+
+    struct Vec3D eq = {0., 0., 0.};
+    for (; n > 0 && mdist < threshold; n--) {
+        integration_step(qp, &eq, h, planets);
+        mdist = min_dist(&qp->q, planets);
+        assert(mdist >= -1. && mdist <= 1.);
     }
 
     // compensate error accumulation in strang1
@@ -150,20 +188,6 @@ void integration_step(struct QP *qp, double h, const struct Planets *planets) {
     qp->p.x *= p_norm;
     qp->p.y *= p_norm;
     qp->p.z *= p_norm;
-}
-
-unsigned integration_loop(struct QP *qp,
-                          double h,
-                          unsigned n,
-                          const struct Planets *planets) {
-    double mdist = -1.;
-    const double threshold = cos(THRESHOLD);
-
-    for (; n > 0 && mdist < threshold; n--) {
-        integration_step(qp, h, planets);
-        mdist = min_dist(&qp->q, planets);
-        assert(mdist >= -1. && mdist <= 1.);
-    }
 
     return n;
 }
