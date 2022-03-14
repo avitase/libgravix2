@@ -215,10 +215,9 @@ double orb_period(double v, double h) {
         t += 1;
     } while (mdist < cos_threshold);
 
-    delete_planets(planets);  // TODO(#7)
-
     const double s = acos(qp.q.y) - THRESHOLD;
-    const double a = qp2.p_abs - qp.p_abs;
+    assert(s > 0.);
+    const double a = fabs(qp2.p_abs - qp.p_abs);
     const double dt = sqrt(2 * s / a);
     assert(dt < 1.);
 
