@@ -201,7 +201,12 @@ double orb_period(double v, double h) {
         .p_abs = v,
     };
 
-    PlanetsHandle planets = new_planets(1);  // TODO(#7)
+    struct Planets p;
+    double planets_data[3];
+    p.data = planets_data;
+    p.n = 1;
+
+    PlanetsHandle planets = &p;
     set_planet(planets, 0, 0., 0.);
 
     double mdist = -1.;
