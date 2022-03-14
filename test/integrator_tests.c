@@ -3,7 +3,7 @@
 #include <math.h>
 
 int main(int argc, char **argv) {
-    const double threshold = 1e-10;
+    const double THRESHOLD = 1e-10;
 
     PlanetsHandle planets = new_planets(1);
     int rc = set_planet(planets, 0, 0., 0.);
@@ -22,12 +22,12 @@ int main(int argc, char **argv) {
     const double vy0 = m->v[TRAJECTORY_SIZE - 1][1];
     const double vz0 = m->v[TRAJECTORY_SIZE - 1][2];
 
-    assert(fabs(m->x[0][0] - x0) < threshold);
-    assert(fabs(m->x[0][1] - y0) < threshold);
-    assert(fabs(m->x[0][2] - z0) < threshold);
-    assert(fabs(m->v[0][0] - vx0) < threshold);
-    assert(fabs(m->v[0][1] - vy0) < threshold);
-    assert(fabs(m->v[0][2] - vz0) < threshold);
+    assert(fabs(m->x[0][0] - x0) < THRESHOLD);
+    assert(fabs(m->x[0][1] - y0) < THRESHOLD);
+    assert(fabs(m->x[0][2] - z0) < THRESHOLD);
+    assert(fabs(m->v[0][0] - vx0) < THRESHOLD);
+    assert(fabs(m->v[0][1] - vy0) < THRESHOLD);
+    assert(fabs(m->v[0][2] - vz0) < THRESHOLD);
 
     int premature;
     unsigned n = propagate_missile(m, planets, 1e-4, &premature);

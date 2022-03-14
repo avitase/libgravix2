@@ -3,12 +3,12 @@
 #include <math.h>
 
 int main(int argc, char **argv) {
-    const double h = 1e-3;
+    const double H = 1e-3;
 
     const double V = v_esc();
     assert(!isnan(V) && V > 0.);
 
-    const double T = orb_period(2. * V, h);
+    const double T = orb_period(2. * V, H);
     assert(!isnan(T) && T > 0.);
 
     PlanetsHandle planets = new_planets(1);
@@ -21,7 +21,7 @@ int main(int argc, char **argv) {
     unsigned n = 0;
     int premature = 0;
     while (premature == 0) {
-        n += propagate_missile(m, planets, h, &premature);
+        n += propagate_missile(m, planets, H, &premature);
     }
     assert(n == ((unsigned)T + 1));
 
@@ -29,7 +29,7 @@ int main(int argc, char **argv) {
     premature = 0;
     const int N = (int)(30. * T / TRAJECTORY_SIZE);
     for (int i = 0; i < N && premature == 0; i++) {
-        propagate_missile(m, planets, h, &premature);
+        propagate_missile(m, planets, H, &premature);
     }
     assert(premature == 0);
 
