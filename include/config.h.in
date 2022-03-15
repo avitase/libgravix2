@@ -4,7 +4,6 @@
 #define TRAJECTORY_SIZE @TRAJECTORY_SIZE@
 #define INT_STEPS @INT_STEPS@
 #define MIN_DIST @MIN_DIST@
-#define P_MIN @P_MIN@
 
 #define POT_TYPE_2D 2
 #define POT_TYPE_3D 3

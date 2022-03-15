@@ -13,7 +13,6 @@ class Config:
     :param trajectory_size: Same as ``TRAJECTORY_SIZE``
     :param int_steps: Same as ``INT_STEPS``
     :param min_dist: Same as ``MIN_DIST``
-    :param p_min: Same as ``p_min``
     :param composition_scheme: Same as ``COMPOSITION_SCHEME``
     """
     pot_type: str
@@ -21,7 +20,6 @@ class Config:
     trajectory_size: int
     int_steps: int
     min_dist: float
-    p_min: float
     composition_scheme: str
 
 
@@ -39,7 +37,6 @@ def get_config(*, lib: ctypes.CDLL) -> Config:
             ("trajectory_size", c_int),
             ("int_steps", c_int),
             ("min_dist", c_double),
-            ("p_min", c_double),
             ("composition_scheme", c_char_p),
         ]
 
@@ -54,7 +51,6 @@ def get_config(*, lib: ctypes.CDLL) -> Config:
         cfg.contents.trajectory_size,
         cfg.contents.int_steps,
         cfg.contents.min_dist,
-        cfg.contents.p_min,
         cfg.contents.composition_scheme.decode("ascii"),
     )
 

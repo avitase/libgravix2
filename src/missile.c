@@ -34,16 +34,14 @@ int init_missile(struct Trajectory *t,
     t->x[0][2] = sin_lat;
 
     const double dv = sqrt(dlat * dlat + dlon * dlon);
-    t->v[0][0] = (-dlat * sin_lat * sin_lon + dlon * cos_lon) / dv;
-    t->v[0][1] = (-dlat * sin_lat * cos_lon - dlon * sin_lon) / dv;
-    t->v[0][2] = dlat * cos_lat / dv;
-    t->v[0][3] = v;
+    t->v[0][0] = v * (-dlat * sin_lat * sin_lon + dlon * cos_lon) / dv;
+    t->v[0][1] = v * (-dlat * sin_lat * cos_lon - dlon * sin_lon) / dv;
+    t->v[0][2] = v * dlat * cos_lat / dv;
 
     for (int i = 0; i < 3; i++) {
         t->x[TRAJECTORY_SIZE - 1][i] = t->x[0][i];
         t->v[TRAJECTORY_SIZE - 1][i] = t->v[0][i];
     }
-    t->v[TRAJECTORY_SIZE - 1][3] = v;
 
     return 0;
 }
@@ -150,7 +148,6 @@ unsigned propagate_missile(struct Trajectory *trj,
         .p.x = trj->v[TRAJECTORY_SIZE - 1][0],
         .p.y = trj->v[TRAJECTORY_SIZE - 1][1],
         .p.z = trj->v[TRAJECTORY_SIZE - 1][2],
-        .p_abs = trj->v[TRAJECTORY_SIZE - 1][3],
     };
 
     unsigned i = 0;
@@ -159,7 +156,6 @@ unsigned propagate_missile(struct Trajectory *trj,
         *premature = (n_left != 0);
 
         assert(fabs(dot(qp.q, qp.q) - 1.) < 1e-10);
-        assert(fabs(dot(qp.p, qp.p) - 1.) < 1e-10);
         assert(fabs(dot(qp.p, qp.q)) < 1e-10);
 
         trj->x[i][0] = qp.q.x;
@@ -168,7 +164,6 @@ unsigned propagate_missile(struct Trajectory *trj,
         trj->v[i][0] = qp.p.x;
         trj->v[i][1] = qp.p.y;
         trj->v[i][2] = qp.p.z;
-        trj->v[i][3] = qp.p_abs;
     }
 
     return i;
@@ -183,9 +178,8 @@ double orb_period(double v, double h) {
         .q.y = cos_threshold,
         .q.z = sin_threshold,
         .p.x = 0.,
-        .p.y = -sin_threshold,
-        .p.z = cos_threshold,
-        .p_abs = v,
+        .p.y = -v * sin_threshold,
+        .p.z = v * cos_threshold,
     };
 
     struct Planets p;
@@ -199,11 +193,13 @@ double orb_period(double v, double h) {
     double mdist = -1.;
 
     struct QP qp2 = qp;
-    struct Vec3D eq = {0., 0., 0.};
+    struct QP e = {
+        0., 0., 0., 0., 0., 0.,
+    };
     int t = 0;
     do {
         qp = qp2;
-        integration_step(&qp2, &eq, h, planets);
+        integration_step(&qp2, &e, h, planets);
         mdist = min_dist(&qp2.q, planets);
         t += 1;
     } while (mdist < cos_threshold);
@@ -211,7 +207,7 @@ double orb_period(double v, double h) {
     const double s = acos(qp.q.y) - MIN_DIST;
     assert(s > 0.);
 
-    const double a = qp2.p_abs - qp.p_abs;
+    const double a = mag(qp2.p) - mag(qp.p);
     assert(a > 0.);
 
     const double dt = sqrt(2 * s / a);

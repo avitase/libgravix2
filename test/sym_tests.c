@@ -21,7 +21,7 @@ int main(int argc, char **argv) {
     struct Trajectory *m1 = get_trajectory(trj, 0);
     struct Trajectory *m2 = get_trajectory(trj, 1);
 
-    rc = launch_missile(m1, p, 0, V0, -M_PI/2);
+    rc = launch_missile(m1, p, 0, V0, -M_PI / 2);
     assert(rc == 0);
 
     int premature;
@@ -41,7 +41,8 @@ int main(int argc, char **argv) {
     const double lon2 = lon(x[0], x[1]);
     const double vlat2 = vlat(v[0], v[1], v[2], lat2, lon2);
     const double vlon2 = vlon(v[0], v[1], v[2], lon2);
-    rc = init_missile(m2, lat2, lon2, -v[3], vlat2, vlon2);
+    const double v2_mag = sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+    rc = init_missile(m2, lat2, lon2, v2_mag, -vlat2, -vlon2);
     assert(rc == 0);
 
     unsigned n2 = propagate_missile(m2, p, H, &premature);
@@ -58,7 +59,6 @@ int main(int argc, char **argv) {
         assert(fabs(m1->v[j][0] + m2->v[i][0]) < THRESHOLD);
         assert(fabs(m1->v[j][1] + m2->v[i][1]) < THRESHOLD);
         assert(fabs(m1->v[j][2] + m2->v[i][2]) < THRESHOLD);
-        assert(fabs(m1->v[j][3] - m2->v[i][3]) < THRESHOLD);
     }
 
     delete_missiles(trj);

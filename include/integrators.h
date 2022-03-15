@@ -15,23 +15,23 @@ struct Planets;
  */
 struct QP {
     struct Vec3D q; /*!< Vector of canonical coordinates. */
-    struct Vec3D p; /*!< Normalized conjugate momentum vector. */
-    double p_abs;   /*!< Magnitude of conjugate momentum. */
+    struct Vec3D p; /*!< Vector of conjugate momenta. */
 };
 
 /*!
  * \brief Single integration step.
  *
- * \p qp is advanced by the integrator for a single step.
+ * \p qp is advanced by the integrator for a single step. Accumulation errors
+ * are compensated by tracking them in \p e. Initialize it with zeros for the
+ * first iteration.
  *
  * @param qp Phase space.
- * @param eq Accumulation of error for compensated summation. Initialize with
- * zero for first iteration.
+ * @param e Accumulation error.
  * @param h Step size.
  * @param planets Planets handle.
  */
 void integration_step(struct QP *qp,
-                      struct Vec3D *eq,
+                      struct QP *eq,
                       double h,
                       const struct Planets *planets);
 

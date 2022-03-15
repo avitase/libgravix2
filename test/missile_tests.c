@@ -30,7 +30,6 @@ int main(int argc, char **argv) {
             struct Vec3D q = {m->x[i][0], m->x[i][1], m->x[i][2]};
             struct Vec3D p = {m->v[i][0], m->v[i][1], m->v[i][2]};
             assert(fabs(dot(q, q) - 1.) < THRESHOLD);
-            assert(fabs(dot(p, p) - 1.) < THRESHOLD);
             assert(fabs(dot(q, p)) < THRESHOLD);
         }
     }

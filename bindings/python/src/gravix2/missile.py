@@ -16,12 +16,10 @@ class Trajectory:
     A sequence of positional and velocity data in Cartesian coordinates
 
     :param x: Position
-    :param n: Orientation
     :param v: Velocity
     """
 
     x: ArrayLike
-    n: ArrayLike
     v: ArrayLike
 
 
@@ -152,14 +150,13 @@ class Missile:
         class _Trajectory(ctypes.Structure):
             _fields_ = [
                 ("x", c_double * (n * 3)),
-                ("v", c_double * (n * 4)),
+                ("v", c_double * (n * 3)),
             ]
 
         raw = ctypes.cast(self._missile, POINTER(_Trajectory))
         self._trajectory = Trajectory(
             np.ctypeslib.as_array(raw.contents.x).reshape(n, 3),
-            np.ctypeslib.as_array(raw.contents.v).reshape(n, 4)[:, :3],
-            np.ctypeslib.as_array(raw.contents.v).reshape(n, 4)[:, 3],
+            np.ctypeslib.as_array(raw.contents.v).reshape(n, 3),
         )
 
         return premature
