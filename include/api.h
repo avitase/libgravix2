@@ -68,7 +68,7 @@ typedef struct Planets *PlanetsHandle;
  */
 struct Trajectory {
     double x[TRAJECTORY_SIZE][3]; /*!< Cartesian position. */
-    double v[TRAJECTORY_SIZE][4]; /*!< Normalized velocity and magnitude. */
+    double v[TRAJECTORY_SIZE][3]; /*!< Cartesian velocity. */
 };
 
 /*!
@@ -426,17 +426,6 @@ struct Config {
      * Possible values: Positive floating point values.
      */
     double min_dist;
-
-    /*!
-     * \brief Momentum threshold.
-     *
-     * If the momentum of a missile is lower than this threshold for two
-     * consecutive integration steps, the momentum is set to zero to ensure
-     * numeric stability.
-     *
-     * Possible values: Positive floating point values.
-     */
-    double p_min;
 
     /*!
      * \brief Composition method of integrator

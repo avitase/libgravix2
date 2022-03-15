@@ -31,7 +31,11 @@ int main(int argc, char **argv) {
 
         for (int j = 0; j < n; j++) {
             const double dr = dist(m->x[j]) - r;
-            const double dv = m->v[j][3] - v;
+
+            double vx = m->v[j][0];
+            double vy = m->v[j][1];
+            double vz = m->v[j][2];
+            const double dv = sqrt(pow(vx, 2) + pow(vy, 2) + pow(vz, 2)) - v;
             assert(fabs(dr) < THRESHOLD);
             assert(fabs(dv) < THRESHOLD);
         }

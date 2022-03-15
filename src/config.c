@@ -16,7 +16,6 @@ struct Config *get_config(void) {
     cfg->trajectory_size = TRAJECTORY_SIZE;
     cfg->int_steps = INT_STEPS;
     cfg->min_dist = MIN_DIST;
-    cfg->p_min = P_MIN;
     cfg->composition_scheme = COMPOSITION_SCHEME_STR;
 
     return cfg;

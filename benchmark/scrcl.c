@@ -27,7 +27,11 @@ int main(int argc, char **argv) {
     }
 
     const double dr = fabs(dist(m->x[n - 1]) - r);
-    const double dv = fabs(m->v[n - 1][3] - v);
+
+    double vx = m->v[n - 1][0];
+    double vy = m->v[n - 1][1];
+    double vz = m->v[n - 1][2];
+    const double dv = sqrt(pow(vx, 2) + pow(vy, 2) + pow(vz, 2)) - v;
     printf("%d %g %g\n", premature, dr, dv);
 
     delete_missiles(trj);
