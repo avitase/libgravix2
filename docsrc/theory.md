@@ -159,8 +159,8 @@ By using this convention, the integration steps read:
     \end{pmatrix} = \begin{pmatrix}
         \vec q \\ \vec p
     \end{pmatrix} + \begin{pmatrix} 
-        -2 \vec q \sin^2 pt/2 + \vec p \, t \operatorname{sinc} pt \\
-        -2 \vec p \sin^2 pt/2 - \vec q p^2 \, t \operatorname{sinc} pt
+        \vec p \, t \operatorname{sinc} pt - 2 \vec q \sin^2 pt/2 \\
+        -\vec q p^2 \, t \operatorname{sinc} pt - 2 \vec p \sin^2 pt/2
     \end{pmatrix} , \\
     \begin{pmatrix}
         \vec q \\ \vec p
