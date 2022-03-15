@@ -1,14 +1,13 @@
 #include "api.h"
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
-
-static const double RAD2DEG = 180. / M_PI;
-static const double DEG2RAD = M_PI / 180.;
 
 static double dist_deg(double xyz[3]) {
     double lat = asin(xyz[2]);
     double lon = atan2(xyz[0], xyz[1]);
+
+    const double RAD2DEG = 180. / M_PI;
     return acos(cos(lat) * cos(lon)) * RAD2DEG;
 }
 
@@ -31,8 +30,8 @@ int main(int argc, char **argv) {
         n = propagate_missile(m, p, H, &premature);
     }
 
-    const double dr= dist_deg(m->x[n-1]) - r_deg;
-    const double dv = m->v[n-1][3] - v;
+    const double dr = fabs(dist_deg(m->x[n - 1]) - r_deg);
+    const double dv = fabs(m->v[n - 1][3] - v);
     printf("%f %f\n", dr, dv);
 
     delete_missiles(trj);
