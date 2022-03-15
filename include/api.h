@@ -32,7 +32,10 @@
  * spatial and velocity data, represented in Cartesian coordinates. In order
  * to transform this parametrization back into a spherical parametrization using
  * latitude and longitude pairs, the helper functions lat(), lon(), vlat() and
- * vlon() can be used.
+ * vlon() can be used. **Note that all spherical coordinates, such as the
+ * latitutude and longitude, are always given in radians.** Simply scale those
+ * values with \f$180^\circ / \pi \approx 57.296^\circ\f$ to obtain the
+ * corresponding values in units of degrees.
  *
  * For universes with a single planet, missiles launched at this planet will
  * always come back. If launched with a sufficiently large momentum, missiles
