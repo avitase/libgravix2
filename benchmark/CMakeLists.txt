@@ -12,4 +12,3 @@ target_include_directories(scrcl BEFORE PUBLIC
     ${PROJECT_SOURCE_DIR}/include
 )
 target_link_libraries(scrcl PRIVATE project_warnings project_options m)
-add_test(scrcl scrcl)
