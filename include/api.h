@@ -32,8 +32,7 @@
  * spatial and velocity data, represented in Cartesian coordinates. In order
  * to transform this parametrization back into a spherical parametrization using
  * latitude and longitude pairs, the helper functions lat(), lon(), vlat() and
- * vlon() can be used. **Note that spherical arguments have to be given in
- * units of degrees.**
+ * vlon() can be used.
  *
  * For universes with a single planet, missiles launched at this planet will
  * always come back. If launched with a sufficiently large momentum, missiles
@@ -102,8 +101,8 @@ void delete_planets(PlanetsHandle handle);
  *
  * @param handle The planets handle.
  * @param i ID of the planet to be initialized.
- * @param lat Latitude in degrees.
- * @param lon Longitude in degrees.
+ * @param lat Latitude.
+ * @param lon Longitude.
  * @return Zero on success.
  */
 int set_planet(PlanetsHandle handle, unsigned i, double lat, double lon);
@@ -172,8 +171,8 @@ struct Trajectory *get_trajectory(TrajectoryBatch batch, unsigned i);
  * Note that this value is overwritten by calling propagate_missile().
  *
  * @param trj The trajectory handle as obtained from get_trajectory().
- * @param lat The initial latitude, \f$\phi\f$, in units of degrees.
- * @param lon The initial longitude, \f$\lambda\f$, in units of degrees.
+ * @param lat The initial latitude, \f$\phi\f$.
+ * @param lon The initial longitude, \f$\lambda\f$.
  * @param v The intitial velocity, \f$\sqrt{\dot\phi^2 + (\dot\lambda \,
  * \cos\phi)^2}\f$.
  * @param dlat The intitial latitudinal orientation, \f$\Delta \phi\f$.
@@ -205,9 +204,9 @@ int init_missile(struct Trajectory *trj,
  * @param planet_id The planet ID.
  * @param v Magnitude of the initial velocity, \f$\sqrt{\dot\phi^2 +
  * (\dot\lambda \cos\phi)^2}\f$, where \f$\phi\f$ and \f$\lambda\f$ are the
- * latitudinal and longitudinal position on the rim in degrees, respectively,
- * and the dot indicates temporal derivatives.
- * @param psi The azimuthal position on the rim in units of degrees.
+ * latitudinal and longitudinal position on the rim, respectively, and the dot
+ * indicates temporal derivatives.
+ * @param psi The azimuthal position on the rim.
  * @return Zero on success.
  */
 int launch_missile(struct Trajectory *trj,
@@ -260,7 +259,7 @@ unsigned propagate_missile(struct Trajectory *trj,
  * coordinates.
  *
  * @param z (Third) \f$z\f$-coordinate of Cartesian representation.
- * @return Latitude, \f$\phi\f$, in units of degrees.
+ * @return Latitude, \f$\phi\f$.
  */
 double lat(double z);
 
@@ -270,7 +269,7 @@ double lat(double z);
  *
  * @param x (First) \f$x\f$-coordinate of Cartesian representation.
  * @param y (Second) \f$y\f$-coordinate of Cartesian representation.
- * @return Longitude, \f$\lambda\f$, in units of degrees.
+ * @return Longitude, \f$\lambda\f$.
  */
 double lon(double x, double y);
 
@@ -281,8 +280,8 @@ double lon(double x, double y);
  * @param vx (First) \f$x\f$-component of velocity in Cartesian representation.
  * @param vy (Second) \f$y\f$-component of velocity in Cartesian representation.
  * @param vz (Third) \f$z\f$-component of velocity in Cartesian representation.
- * @param lat Latitude, \f$\phi\f$, in degrees as obtained from lat().
- * @param lon Longitude, \f$\lambda\f$, in degrees as obtained from lon().
+ * @param lat Latitude, \f$\phi\f$ as obtained from lat().
+ * @param lon Longitude, \f$\lambda\f$ as obtained from lon().
  * @return Latitudinal speed, \f$\dot\phi\f$.
  */
 double vlat(double vx, double vy, double vz, double lat, double lon);
@@ -294,7 +293,7 @@ double vlat(double vx, double vy, double vz, double lat, double lon);
  * @param vx (First) \f$x\f$-component of velocity in Cartesian representation.
  * @param vy (Second) \f$y\f$-component of velocity in Cartesian representation.
  * @param vz (Third) \f$z\f$-component of velocity in Cartesian representation.
- * @param lon Longitude, \f$\lambda\f$, in degrees as obtained from lon().
+ * @param lon Longitude, \f$\lambda\f$ as obtained from lon().
  * @return (Scaled) longitudinal speed, \f$\dot\lambda \cos\phi\f$.
  */
 double vlon(double vx, double vy, double vz, double lon);
@@ -316,7 +315,7 @@ double v_esc(void);
  * For isolated planets: Velocity of a missile on a small circle with radius \p
  * r and centered at the isolated planet.
  *
- * @param r Radius of small circle in degrees.
+ * @param r Radius of small circle.
  * @return Constant velocity for the given small circle.
  */
 double v_scrcl(double r);
@@ -421,8 +420,8 @@ struct Config {
     /*!
      * \brief Min. allowed distance between missiles and planets.
      *
-     * If missiles approach planets closer than this minimal distance (given in
-     * degrees), propagation is stopped.
+     * If missiles approach planets closer than this minimal distance,
+     * propagation is stopped.
      *
      * Possible values: Positive floating point values.
      */

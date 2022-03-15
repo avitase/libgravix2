@@ -65,10 +65,10 @@ class Missile:
         Wrapper for ``libgravix2``'s ``init_missile()`` function
 
         The initial position and orientation can either be passed as 2D tuples of
-        latitudinal and longitudinal components (in units of degrees) or as 3D tuples
-        in their respective Cartesian representation. If passed as 2D tuples
-        ``libgravix2``'s helper functions ``lat()``, ``lon()``, ``v_lat()`` and
-        ``v_lon()`` are used for conversions.
+        latitudinal and longitudinal components or as 3D tuples in their respective
+        Cartesian representation. If passed as 2D tuples ``libgravix2``'s helper
+        functions ``lat()``, ``lon()``, ``v_lat()`` and ``v_lon()`` are used for
+        conversions.
 
         :param pos: Initial position
         :param orientation: Initial orientation
@@ -110,7 +110,7 @@ class Missile:
         :param planets: The planets
         :param planet_id: The planet index (not ID)
         :param v: Initial velocity
-        :param psi: Initial azimuthal position in units of degrees
+        :param psi: Initial azimuthal position
         :return: None
         """
         rc = self._launch(

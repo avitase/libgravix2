@@ -6,8 +6,6 @@
 #include <math.h>
 #include <stdlib.h>
 
-static const double THRESHOLD = MIN_DIST / 180. * M_PI;
-
 TrajectoryBatch new_missiles(unsigned n) {
     return malloc(sizeof(struct Trajectory) * n);
 }
@@ -26,10 +24,6 @@ int init_missile(struct Trajectory *t,
                  double v,
                  double dlat,
                  double dlon) {
-    const double DEG2RAD = M_PI / 180.;
-    lat *= DEG2RAD;
-    lon *= DEG2RAD;
-
     const double sin_lat = sin(lat);
     const double cos_lat = cos(lat);
     const double sin_lon = sin(lon);
@@ -90,17 +84,13 @@ int launch_missile(struct Trajectory *t,
         return -1;
     }
 
-    const double DEG2RAD = M_PI / 180.;
-    psi *= DEG2RAD;
-
     struct Vec3D rot[3];
     rotation_matrix(
-        asin(planets->data[3 * planet + 2]),                             // lat.
-        atan2(planets->data[3 * planet], planets->data[3 * planet + 1]), // lon.
-        rot);
+        lat(planets->data[3 * planet + 2]),
+        lon(planets->data[3 * planet], planets->data[3 * planet + 1]), rot);
 
-    const double sin_r = sin(THRESHOLD);
-    const double cos_r = cos(THRESHOLD);
+    const double sin_r = sin(MIN_DIST);
+    const double cos_r = cos(MIN_DIST);
     const double sin_psi = sin(psi);
     const double cos_psi = cos(psi);
 
@@ -125,13 +115,13 @@ int launch_missile(struct Trajectory *t,
         dot(rot[2], v0),
     };
 
-    const double lat = asin(x1.z);
-    const double lon = atan2(x1.x, x1.y);
+    const double lat1 = lat(x1.z);
+    const double lon1 = lon(x1.x, x1.y);
 
-    const double sin_lat = sin(lat);
-    const double cos_lat = cos(lat);
-    const double sin_lon = sin(lon);
-    const double cos_lon = cos(lon);
+    const double sin_lat = sin(lat1);
+    const double cos_lat = cos(lat1);
+    const double sin_lon = sin(lon1);
+    const double cos_lon = cos(lon1);
 
     struct Vec3D e_lat = {
         -sin_lat * sin_lon,
@@ -144,19 +134,15 @@ int launch_missile(struct Trajectory *t,
         0.,
     };
 
-    const double RAD2DEG = 180. / M_PI;
-    const double dlat = dot(v1, e_lat);
-    const double dlon = dot(v1, e_lon);
-    return init_missile(t, lat * RAD2DEG, lon * RAD2DEG, v, dlat, dlon);
+    const double dlat1 = dot(v1, e_lat);
+    const double dlon1 = dot(v1, e_lon);
+    return init_missile(t, lat1, lon1, v, dlat1, dlon1);
 }
 
 unsigned propagate_missile(struct Trajectory *trj,
                            PlanetsHandle planets,
                            double h,
                            int *premature) {
-    const double DEG2RAD = M_PI / 180.;
-    const double RAD2DEG = 180. / M_PI;
-
     struct QP qp = {
         .q.x = trj->x[TRAJECTORY_SIZE - 1][0],
         .q.y = trj->x[TRAJECTORY_SIZE - 1][1],
@@ -164,7 +150,7 @@ unsigned propagate_missile(struct Trajectory *trj,
         .p.x = trj->v[TRAJECTORY_SIZE - 1][0],
         .p.y = trj->v[TRAJECTORY_SIZE - 1][1],
         .p.z = trj->v[TRAJECTORY_SIZE - 1][2],
-        .p_abs = trj->v[TRAJECTORY_SIZE - 1][3] * DEG2RAD,
+        .p_abs = trj->v[TRAJECTORY_SIZE - 1][3],
     };
 
     unsigned i = 0;
@@ -172,24 +158,25 @@ unsigned propagate_missile(struct Trajectory *trj,
         unsigned n_left = integration_loop(&qp, h, INT_STEPS, planets);
         *premature = (n_left != 0);
 
+        assert(fabs(dot(qp.q, qp.q) - 1.) < 1e-10);
+        assert(fabs(dot(qp.p, qp.p) - 1.) < 1e-10);
+        assert(fabs(dot(qp.p, qp.q)) < 1e-10);
+
         trj->x[i][0] = qp.q.x;
         trj->x[i][1] = qp.q.y;
         trj->x[i][2] = qp.q.z;
         trj->v[i][0] = qp.p.x;
         trj->v[i][1] = qp.p.y;
         trj->v[i][2] = qp.p.z;
-        trj->v[i][3] = qp.p_abs * RAD2DEG;
+        trj->v[i][3] = qp.p_abs;
     }
 
     return i;
 }
 
 double orb_period(double v, double h) {
-    const double DEG2RAD = M_PI / 180.;
-    v *= DEG2RAD;
-
-    const double sin_threshold = sin(THRESHOLD);
-    const double cos_threshold = cos(THRESHOLD);
+    const double sin_threshold = sin(MIN_DIST);
+    const double cos_threshold = cos(MIN_DIST);
 
     struct QP qp = {
         .q.x = 0.,
@@ -221,11 +208,14 @@ double orb_period(double v, double h) {
         t += 1;
     } while (mdist < cos_threshold);
 
-    const double s = acos(qp.q.y) - THRESHOLD;
+    const double s = acos(qp.q.y) - MIN_DIST;
     assert(s > 0.);
-    const double a = fabs(qp2.p_abs - qp.p_abs);
+
+    const double a = qp2.p_abs - qp.p_abs;
+    assert(a > 0.);
+
     const double dt = sqrt(2 * s / a);
-    assert(dt < 1.);
+    assert(!isnan(dt) && dt < 1.);
 
     return ((double)t + dt) / INT_STEPS;
 }

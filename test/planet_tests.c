@@ -9,11 +9,10 @@ int main(int argc, char **argv) {
     struct Planets *p = new_planets(4);
     assert(p->n == 4);
 
-    const double RAD2DEG = 180. / M_PI;
-    assert(set_planet(p, 0, 0. * RAD2DEG, 1. * RAD2DEG) == 0);
-    assert(set_planet(p, 1, 2. * RAD2DEG, 3. * RAD2DEG) == 0);
-    assert(set_planet(p, 2, 4. * RAD2DEG, 5. * RAD2DEG) == 0);
-    assert(set_planet(p, 3, 6. * RAD2DEG, 7. * RAD2DEG) == 0);
+    assert(set_planet(p, 0, 0., 1.) == 0);
+    assert(set_planet(p, 1, 2., 3.) == 0);
+    assert(set_planet(p, 2, 4., 5.) == 0);
+    assert(set_planet(p, 3, 6., 7.) == 0);
 
     for (unsigned i = 0; i < p->n; i++) {
         const double lat = 2. * (double)i;
@@ -55,8 +54,8 @@ int main(int argc, char **argv) {
 
     const double lat = -1.;
     const double lon = -2.;
-    assert(set_planet(p, 4, lat * RAD2DEG, lon * RAD2DEG) != 0);
-    assert(set_planet(p, 0, lat * RAD2DEG, lon * RAD2DEG) == 0);
+    assert(set_planet(p, 4, lat, lon) != 0);
+    assert(set_planet(p, 0, lat, lon) == 0);
     assert(p->n == 1);
 
     const double sin_lat = sin(lat);

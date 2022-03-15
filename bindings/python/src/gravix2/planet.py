@@ -15,7 +15,7 @@ class Planets:
 
     Use :func:`gravix2.gravix2.Gravix2.new_planets` to create a new instance.
 
-    :param planets: List of latitude and longitude pairs given in units of degrees
+    :param planets: List of latitude and longitude pairs
     :param lib: ``libgravix2`` library
     """
 

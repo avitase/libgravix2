@@ -38,7 +38,7 @@ class Gravix2:
         """
         Creates a new set of planets
 
-        :param planets: List of latitude and longitude pairs given in units of degrees
+        :param planets: List of latitude and longitude pairs
         :return: A new set of planets
         """
         return planet.Planets(planets, lib=self._lib)
@@ -114,7 +114,7 @@ class Gravix2:
         """
         Wraps call to ``libgravix2``'s helper function ``v_scrcl()`` 
 
-        :param r: Radius of small circle in degrees
+        :param r: Radius of small circle
         :return: Small circle velocity
         """
         return self._helper.get_vscrcl(r)

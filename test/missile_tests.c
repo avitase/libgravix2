@@ -1,8 +1,10 @@
 #include "api.h"
+#include "linalg.h"
 #include <assert.h>
 #include <math.h>
 
 int main(int argc, char **argv) {
+    const double THRESHOLD = 1e-10;
     const double H = 1e-3;
 
     const double V = v_esc();
@@ -17,15 +19,24 @@ int main(int argc, char **argv) {
     TrajectoryBatch missiles = new_missiles(1);
     struct Trajectory *m = get_trajectory(missiles, 0);
 
-    launch_missile(m, planets, 0, 2. * V, 30.);
-    unsigned n = 0;
+    launch_missile(m, planets, 0, 2. * V, 0.);
+    unsigned n_acc = 0;
     int premature = 0;
     while (premature == 0) {
-        n += propagate_missile(m, planets, H, &premature);
-    }
-    assert(n == ((unsigned)T + 1));
+        unsigned n = propagate_missile(m, planets, H, &premature);
+        n_acc += n;
 
-    launch_missile(m, planets, 0, V, -20.);
+        for (unsigned i = 0; i < n; i++) {
+            struct Vec3D q = {m->x[i][0], m->x[i][1], m->x[i][2]};
+            struct Vec3D p = {m->v[i][0], m->v[i][1], m->v[i][2]};
+            assert(fabs(dot(q, q) - 1.) < THRESHOLD);
+            assert(fabs(dot(p, p) - 1.) < THRESHOLD);
+            assert(fabs(dot(q, p)) < THRESHOLD);
+        }
+    }
+    assert(n_acc == ((unsigned)T + 1));
+
+    launch_missile(m, planets, 0, V, -1.5);
     premature = 0;
     const int N = (int)(30. * T / TRAJECTORY_SIZE);
     for (int i = 0; i < N && premature == 0; i++) {

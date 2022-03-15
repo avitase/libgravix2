@@ -30,7 +30,7 @@ static void test(double v, double psi) {
 int main(int argc, char **argv) {
     const double v = v_esc();
     test(.5 * v, 0.);
-    test(0.99 * v, 90.);
-    test(1.01 * v, -45.);
+    test(0.99 * v, M_PI / 2.);
+    test(1.01 * v, -M_PI / 4.);
     test(2. * v, 1337.);
 }

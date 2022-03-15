@@ -21,7 +21,7 @@ int main(int argc, char **argv) {
     struct Trajectory *m1 = get_trajectory(trj, 0);
     struct Trajectory *m2 = get_trajectory(trj, 1);
 
-    rc = launch_missile(m1, p, 0, V0, -90.);
+    rc = launch_missile(m1, p, 0, V0, -M_PI/2);
     assert(rc == 0);
 
     int premature;

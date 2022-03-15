@@ -89,8 +89,6 @@ static const double *const GAMMA = COMPOSITION_SCHEME;
 static const unsigned N_STAGES =
     sizeof(COMPOSITION_SCHEME) / sizeof(*COMPOSITION_SCHEME);
 
-static const double THRESHOLD = MIN_DIST / 180. * M_PI;
-
 static void strang1(struct QP *qp, struct Vec3D *eq, double h) {
     const double sin_ph = sin(qp->p_abs * h);
     const double cos_ph_minus_one = -2. * pow(sin(qp->p_abs * h / 2.), 2);
@@ -168,7 +166,7 @@ unsigned integration_loop(struct QP *qp,
                           unsigned n,
                           const struct Planets *planets) {
     double mdist = -1.;
-    const double threshold = cos(THRESHOLD);
+    const double threshold = cos(MIN_DIST);
 
     struct Vec3D eq = {0., 0., 0.};
     for (; n > 0 && mdist < threshold; n--) {
@@ -177,13 +175,16 @@ unsigned integration_loop(struct QP *qp,
         assert(mdist >= -1. && mdist <= 1.);
     }
 
-    // compensate error accumulation in strang1
     const double q_norm = 1. / mag(qp->q);
     qp->q.x *= q_norm;
     qp->q.y *= q_norm;
     qp->q.z *= q_norm;
 
-    // compensate error accumulation in strang1
+    const double error = dot(qp->q, qp->p);
+    qp->p.x -= error * qp->q.x;
+    qp->p.y -= error * qp->q.y;
+    qp->p.z -= error * qp->q.z;
+
     const double p_norm = 1. / mag(qp->p);
     qp->p.x *= p_norm;
     qp->p.y *= p_norm;
