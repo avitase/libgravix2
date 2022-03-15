@@ -78,7 +78,7 @@ and
     f_{3\mathrm{D}}(\sigma_i) &= \lim\limits_{J \to \infty} \sum\limits_{j=0}^J f^{(j)}_{3\mathrm{D}}(\sigma_i) \\
     &= -\frac{1}{\operatorname{sinc}(\sigma_i - \pi)} \, \lim\limits_{J \to \infty} \sum\limits_{j=0}^J \frac{2j + 1}{\left[ (2j+1)^2 \pi^2 - (\sigma_i - \pi)^2 \right]^2}
 \f}
-with \f$d \in \{2\mathrm{D}, 3\mathrm{D}\}\f$.
+with \f$d \in \{2\mathrm{D}, 3\mathrm{D}\}\f$ and \f$\operatorname{sinc} \bullet = (\sin \bullet) / \bullet\f$.
 Below, we show both types of the scaling factors \f$f_d\f$ as functions of \f$\sigma_i\f$.
 Note that we use different scales of the ordinate to compensate effects of our arbitrarly chosen coupling constants.
 Furthermore, note that \f$f_d\f$ is a scaling factor and not the force field.
