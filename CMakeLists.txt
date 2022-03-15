@@ -49,7 +49,7 @@ else ()
 endif ()
 
 if ("${POT_TYPE}" STREQUAL "3D")
-    set(N_POT "1" CACHE STRING "Approximation order of potential")
+    set(N_POT "2" CACHE STRING "Approximation order of potential")
 endif()
 
 set(TRAJECTORY_SIZE "100" CACHE STRING "Size of trajectory")
