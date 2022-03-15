@@ -32,7 +32,7 @@ int main(int argc, char **argv) {
     double vy = m->v[n - 1][1];
     double vz = m->v[n - 1][2];
     const double dv = sqrt(pow(vx, 2) + pow(vy, 2) + pow(vz, 2)) - v;
-    printf("%d %f %f\n", premature, dr, dv);
+    printf("%d %g %g\n", premature, dr, dv);
 
     delete_missiles(trj);
     delete_planets(p);
