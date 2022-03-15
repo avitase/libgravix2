@@ -18,4 +18,4 @@ def test_missiles(libgravix2):
 
         premature = m.propagate(planets=planets, h=1e-4)
         assert premature
-        assert m.trajectory.x.shape == m.trajectory.n.shape
+        assert m.trajectory.x.shape == m.trajectory.v.shape
