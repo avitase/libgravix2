@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
 
     const double dr = fabs(dist(m->x[n - 1]) - r);
     const double dv = fabs(m->v[n - 1][3] - v);
-    printf("%d %f %f\n", premature, dr, dv);
+    printf("%d %g %g\n", premature, dr, dv);
 
     delete_missiles(trj);
     delete_planets(p);
