@@ -1,7 +1,15 @@
 import ctypes
 from pathlib import Path
+import numpy as np
+import random as rand
 
 import pytest
+
+
+@pytest.fixture
+def random():
+    rand.seed(42)
+    np.random.seed(42)
 
 
 @pytest.fixture

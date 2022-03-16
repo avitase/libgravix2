@@ -3,10 +3,13 @@ import functools
 from pathlib import Path
 from typing import Sequence, Tuple, Union
 
+import numpy as np
+from numpy.typing import ArrayLike
+
+from . import config
 from . import helper
 from . import missile
 from . import planet
-from . import config
 
 
 class Gravix2:
@@ -56,51 +59,99 @@ class Gravix2:
         """
         return missile.Missiles(int(missiles), lib=self._lib)
 
-    def get_lat(self, *, z: float) -> float:
+    def get_lat(
+        self, *, z: Union[float, ArrayLike], fwd: bool = False
+    ) -> Union[float, ArrayLike]:
         """
-        Wraps call to ``libgravix2``'s helper function ``lat()``
+        Reimplements ``libgravix2``'s helper function ``lat()`` for NumPy arrays
 
-        :param z: First parameter of ``lat()``
-        :return: Latitude
+        :param z: (Batch of) First parameter of ``lat()``
+        :param fwd: Forward call to `libgravix2`` (does not work for NumPy arrays)
+        :return: (Batch of) Latitude
         """
-        return self._helper.get_lat(float(z))
+        return self._helper.get_lat(float(z)) if fwd else np.arcsin(z)
 
-    def get_lon(self, *, x: float, y: float) -> float:
+    def get_lon(
+        self,
+        *,
+        x: Union[float, ArrayLike],
+        y: Union[float, ArrayLike],
+        fwd: bool = False,
+    ) -> Union[float, ArrayLike]:
         """
-        Wraps call to ``libgravix2``'s helper function ``lon()``
+        Reimplements ``libgravix2``'s helper function ``lon()`` for NumPy arrays
 
-        :param x: First parameter of ``lon()``
-        :param y: Second parameter of ``lon()``
-        :return: Longitude
+        :param x: (Batch of) First parameter of ``lon()``
+        :param y: (Batch of) Second parameter of ``lon()``
+        :param fwd: Forward call to `libgravix2`` (does not work for NumPy arrays)
+        :return: (Batch of) Longitude
         """
-        return self._helper.get_lon(float(x), float(y))
+        return self._helper.get_lon(float(x), float(y)) if fwd else np.arctan2(x, y)
 
     def get_vlat(
-        self, v: Tuple[float, float, float], *, lat: float, lon: float
-    ) -> float:
+        self,
+        v: Union[Tuple[float, float, float], ArrayLike],
+        *,
+        lat: Union[float, ArrayLike],
+        lon: Union[float, ArrayLike],
+        fwd: bool = False,
+    ) -> Union[float, ArrayLike]:
         """
-        Wraps call to ``libgravix2``'s helper function ``v_lat()``
+        Reimplements ``libgravix2``'s helper function ``v_lat()`` for NumPy arrays
 
-        :param v: Tuple of first three parameters of ``v_lat()``
-        :param lat: Fourth parameter of ``v_lat()``
-        :param lon: Fifth parameter of ``v_lat()``
-        :return: Latitudinal speed
+        :param v: Tuple of first three parameters of ``v_lat()`` or NumPy array of
+        shape (*, 3)
+        :param lat: (Batch of) Fourth parameter of ``v_lat()``
+        :param lon: (Batch of) Fifth parameter of ``v_lat()``
+        :param fwd: Forward call to `libgravix2`` (does not work for NumPy arrays)
+        :return: (Batch of) Latitudinal speed
         """
-        vx, vy, vz = v
-        return self._helper.get_vlat(
-            float(vx), float(vy), float(vz), float(lat), float(lon)
+        if fwd:
+            vx, vy, vz = v
+            return self._helper.get_vlat(
+                float(vx), float(vy), float(vz), float(lat), float(lon)
+            )
+
+        v = np.array(v)
+        if v.shape[0] != 3:
+            raise ValueError("Last dimension of v has to be of size 3")
+
+        vx = v[0]
+        vy = v[1]
+        vz = v[2]
+
+        return (
+            -vx * np.sin(lat) * np.sin(lon)
+            - vy * np.sin(lat) * np.cos(lon)
+            + vz * np.cos(lat)
         )
 
-    def get_vlon(self, v: Tuple[float, float, float], *, lon: float) -> float:
+    def get_vlon(
+        self,
+        v: Union[Tuple[float, float, float], ArrayLike],
+        *,
+        lon: Union[float, ArrayLike],
+        fwd: bool = False,
+    ) -> Union[float, ArrayLike]:
         """
-        Wraps call to ``libgravix2``'s helper function ``v_lon()``
+        Reimplements ``libgravix2``'s helper function ``v_lat()`` for NumPy arrays
 
-        :param v: Tuple of first three parameters of ``v_lon()``
-        :param lon: Fourth parameter of ``v_lat()``
-        :return: (Scaled) longitudinal speed
+        :param v: (Batch of) Tuple of first three parameters of ``v_lon()``
+        :param lon: (Batch of) Fourth parameter of ``v_lat()``
+        :param fwd: Forward call to `libgravix2`` (does not work for NumPy arrays)
+        :return: (Batch of) Scaled longitudinal speed
         """
-        vx, vy, vz = v
-        return self._helper.get_vlon(float(vx), float(vy), float(vz), float(lon))
+        if fwd:
+            vx, vy, vz = v
+            return self._helper.get_vlon(float(vx), float(vy), float(vz), float(lon))
+
+        v = np.array(v)
+        if v.shape[0] != 3:
+            raise ValueError("Last dimension of v has to be of size 3")
+
+        vx = v[0]
+        vy = v[1]
+        return vx * np.cos(lon) - vy * np.sin(lon)
 
     @functools.cached_property
     def v_esc(self) -> float:
