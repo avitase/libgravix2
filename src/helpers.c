@@ -28,7 +28,7 @@ double vlon(double vx, double vy, double vz, double lon) {
     const double cos_lon = cos(lon);
 
     struct Vec3D v = {vx, vy, vz};
-    struct Vec3D e_lon = {cos_lon, -sin_lon};
+    struct Vec3D e_lon = {cos_lon, -sin_lon, 0.};
 
     /*
      * WARNING: this is \f$\dot\lambda \, \cos\phi\f$
