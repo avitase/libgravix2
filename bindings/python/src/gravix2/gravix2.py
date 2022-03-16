@@ -16,12 +16,16 @@ class Gravix2:
     :param lib: Library path to ``libgravix2.so``
     """
 
-    def __init__(self, lib: Union[str, Path]) -> None:
-        lib = Path(lib)
-        if not lib.is_file():
-            raise ValueError(f"Invalid library path {lib}")
+    def __init__(self, lib: Union[str, Path, ctypes.CDLL]) -> None:
+        if type(lib) is ctypes.CDLL:
+            self._lib = lib
+        else:
+            lib = Path(lib)
+            if not lib.is_file():
+                raise ValueError(f"Invalid library path {lib}")
 
-        self._lib = ctypes.cdll.LoadLibrary(str(lib.resolve()))
+            self._lib = ctypes.cdll.LoadLibrary(str(lib.resolve()))
+
         self._config = config.get_config(lib=self._lib)
         self._helper = helper.Helper(lib=self._lib)
 
