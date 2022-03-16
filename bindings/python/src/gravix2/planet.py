@@ -1,6 +1,6 @@
 import ctypes
 from ctypes import c_double, c_int, c_uint, c_void_p
-from typing import List, Tuple
+from typing import List, Sequence, Tuple
 
 
 class Planets:
@@ -19,7 +19,9 @@ class Planets:
     :param lib: ``libgravix2`` library
     """
 
-    def __init__(self, planets: List[Tuple[float, float]], *, lib: ctypes.CDLL) -> None:
+    def __init__(
+        self, planets: Sequence[Tuple[float, float]], *, lib: ctypes.CDLL
+    ) -> None:
         new_planets = lib.new_planets
         new_planets.argtypes = [c_uint]
         new_planets.restype = c_void_p
@@ -33,7 +35,7 @@ class Planets:
             rc = set_planet(self.handle, i, float(lat), float(lon))
             assert rc == 0
 
-        self._planet_pos = planets
+        self._planet_pos = list(planets)
         self._planet_id = list(range(len(planets)))
 
         pop_planet = lib.pop_planet

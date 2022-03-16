@@ -1,7 +1,7 @@
 import ctypes
 import functools
 from pathlib import Path
-from typing import List, Tuple, Union
+from typing import Sequence, Tuple, Union
 
 from . import helper
 from . import missile
@@ -34,7 +34,7 @@ class Gravix2:
         """
         return self._config
 
-    def new_planets(self, planets: List[Tuple[float, float]]) -> planet.Planets:
+    def new_planets(self, planets: Sequence[Tuple[float, float]]) -> planet.Planets:
         """
         Creates a new set of planets
 
@@ -112,13 +112,12 @@ class Gravix2:
 
     def v_scrcl(self, r) -> float:
         """
-        Wraps call to ``libgravix2``'s helper function ``v_scrcl()`` 
+        Wraps call to ``libgravix2``'s helper function ``v_scrcl()``
 
         :param r: Radius of small circle
         :return: Small circle velocity
         """
         return self._helper.get_vscrcl(r)
-
 
     @functools.lru_cache
     def estimate_orb_period(self, *, v0: float, h: float) -> float:

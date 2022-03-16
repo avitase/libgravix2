@@ -1,7 +1,7 @@
 import ctypes
 from ctypes import c_double, c_int, c_uint, c_void_p, POINTER
 from dataclasses import dataclass
-from typing import List, Union
+from typing import Sequence, Union
 
 import numpy as np
 from numpy.typing import ArrayLike
@@ -58,7 +58,9 @@ class Missile:
 
         self._helper = Helper(lib=lib)
 
-    def set(self, *, pos: List[float], orientation: List[float], v: float) -> None:
+    def set(
+        self, *, pos: Sequence[float], orientation: Sequence[float], v: float
+    ) -> None:
         """
         Wrapper for ``libgravix2``'s ``init_missile()`` function
 
