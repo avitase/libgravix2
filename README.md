@@ -19,7 +19,7 @@ There are already open issues and you can help to close them!
 Find the documentation of our C-API here: [avitase.github.io/libgravix2/](https://avitase.github.io/libgravix2/) 
 
 Furthermore, our C-API can easily be wrapped in high-level languages.
-For example, we provide a minimalistic Python binding here: [avitase.github.io/libgravix2/py-bindings/](https://avitase.github.io/libgravix2/py-bindings/)
+For example, we provide a minimalistic Python binding here: [avitase.github.io/libgravix2/py-bindings/](https://avitase.github.io/libgravix2/py-bindings/) and use it to showcase a few simple application here: [bindings/python/example.ipynb](bindings/python/example.ipynb)
 
 ## How to build
 This is a C library with (almost) no external dependencies, except for:
