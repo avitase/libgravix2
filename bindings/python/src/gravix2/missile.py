@@ -106,7 +106,7 @@ class Missile:
         Wrapper for ``libgravix2``'s ``launch_missile()`` function
 
         :param planets: The planets
-        :param planet_id: The planet index (not ID)
+        :param planet_idx: The planet index (not ID)
         :param v: Initial velocity
         :param psi: Initial azimuthal position
         :return: None
