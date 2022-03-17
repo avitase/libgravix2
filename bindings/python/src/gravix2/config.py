@@ -1,6 +1,7 @@
 import ctypes
 from ctypes import c_char_p, c_double, c_int, POINTER
 from dataclasses import dataclass
+from typing import Optional
 
 
 @dataclass(eq=False, order=False, frozen=True)
@@ -16,7 +17,7 @@ class Config:
     :param composition_scheme: Same as ``COMPOSITION_SCHEME``
     """
     pot_type: str
-    n_pot: int
+    n_pot: Optional[int]
     trajectory_size: int
     int_steps: int
     min_dist: float

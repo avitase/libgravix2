@@ -37,7 +37,7 @@ class Gravix2:
         """
         Wraps ``libgravix2``'s ``Config`` object
 
-        :return: Static configuration as :class:`gravix2.config.Config` instance
+        :return: Static configuration as a :class:`gravix2.config.Config` instance
         """
         return self._config
 
@@ -66,7 +66,7 @@ class Gravix2:
         Reimplements ``libgravix2``'s helper function ``lat()`` for NumPy arrays
 
         :param z: (Batch of) First parameter of ``lat()``
-        :param fwd: Forward call to `libgravix2`` (does not work for NumPy arrays)
+        :param fwd: Bypass reimplementation and forward call to ``libgravix2`` (does not work for NumPy arrays)
         :return: (Batch of) Latitude
         """
         return self._helper.get_lat(float(z)) if fwd else np.arcsin(z)
@@ -83,7 +83,7 @@ class Gravix2:
 
         :param x: (Batch of) First parameter of ``lon()``
         :param y: (Batch of) Second parameter of ``lon()``
-        :param fwd: Forward call to `libgravix2`` (does not work for NumPy arrays)
+        :param fwd: Bypass reimplementation and forward call to ``libgravix2`` (does not work for NumPy arrays)
         :return: (Batch of) Longitude
         """
         return self._helper.get_lon(float(x), float(y)) if fwd else np.arctan2(x, y)
@@ -99,11 +99,10 @@ class Gravix2:
         """
         Reimplements ``libgravix2``'s helper function ``v_lat()`` for NumPy arrays
 
-        :param v: Tuple of first three parameters of ``v_lat()`` or NumPy array of
-        shape (*, 3)
+        :param v: Tuple of first three parameters of ``v_lat()`` or NumPy array of shape (\*, 3)
         :param lat: (Batch of) Fourth parameter of ``v_lat()``
         :param lon: (Batch of) Fifth parameter of ``v_lat()``
-        :param fwd: Forward call to `libgravix2`` (does not work for NumPy arrays)
+        :param fwd: Bypass reimplementation and forward call to ``libgravix2`` (does not work for NumPy arrays)
         :return: (Batch of) Latitudinal speed
         """
         if fwd:
@@ -138,7 +137,7 @@ class Gravix2:
 
         :param v: (Batch of) Tuple of first three parameters of ``v_lon()``
         :param lon: (Batch of) Fourth parameter of ``v_lat()``
-        :param fwd: Forward call to `libgravix2`` (does not work for NumPy arrays)
+        :param fwd: Bypass reimplementation and forward call to ``libgravix2`` (does not work for NumPy arrays)
         :return: (Batch of) Scaled longitudinal speed
         """
         if fwd:
