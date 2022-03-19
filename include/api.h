@@ -165,7 +165,7 @@ struct Trajectory *get_trajectory(TrajectoryBatch batch, unsigned i);
  * \brief Initializes the position and velocity of a missile on the sphere.
  *
  * The missile is aligned on the surface of the sphere s.t. it is pointing
- * towards \f$\Delta \phi\f$ and \f$(\Delta \lambda \, \cos \phi)\f$ where the
+ * towards \f$\Delta \phi\f$ and \f$\Delta \lambda \, \cos \phi\f$ where the
  * former (latter) is the difference in latitude (longitude). The magnitude of
  * the vector is given separately by \p v.
  *
