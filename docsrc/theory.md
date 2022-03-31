@@ -18,6 +18,11 @@ where \f$g(\vec q)\f$ is the constraint of the manifold
     g(\vec q) &= \frac{1}{2} \left( q^2 - 1 \right) = 0 \,, \\
     \vec\nabla g(\vec q) &= \vec{q} \,.
 \f}
+
+**NB** Differentiating the constraint \f$g(\vec q) = 0\f$ w.r.t. time we get the identity \f$\vec q \perp \vec p\f$, and differentiating a second time a physical interpretation of the Lagrange multiplier \f$\lambda = p^2 - \vec{q} \cdot \vec\nabla V\f$:
+For particles at rest the projection of the gravitational force along the position vector of a given particle thus has to be compensated in order to fulfill the constraint of our manifold.
+If the particle has a finite momentum, this constraining force can be reduced (note that \f$\operatorname{sign}(\vec{q} \cdot \vec\nabla V) > 0\f$) until the gravitational force pulls the particle on a circular orbit (\f$ \lambda = 0\f$) and eventually changes from a _pulling_ force into a _pushing_ force if the momentum becomes even larger.
+
 The conservative potential \f$V(\vec q)\f$ is the linear superposition of the contributions of each planet \f$i\f$ at position \f$\vec{y}_i \in \mathbb{R}^3\f$,
 \f[
     V(\vec q) = \sum\limits_{i=1}^n V_d(\sigma_i) \,,
