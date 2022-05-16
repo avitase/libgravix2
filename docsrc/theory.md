@@ -74,8 +74,8 @@ The force fields are given by the gradients of the respective potentials:
 \f]
 where we introduced the abbreviations
 \f{align*}{
-    V'_{2\mathrm{D}}(\sigma) &= \sum\limits_{i=1}^n \operatorname{cot} \frac{\sigma}{2} \\
-    V'_{3\mathrm{D}}(\sigma) &= \sum\limits_{i=1}^n (\pi - \sigma) \sum\limits_{j=0}^\infty \frac{2j + 1}{\left[ (2j+1)^2 \pi^2 - (\pi - \sigma)^2 \right]^2}
+    V'_{2\mathrm{D}}(\sigma_i) &= \operatorname{cot} \frac{\sigma_i}{2} \\
+    V'_{3\mathrm{D}}(\sigma_i) &= (\pi - \sigma_i) \sum\limits_{j=0}^\infty \frac{2j + 1}{\left[ (2j+1)^2 \pi^2 - (\pi - \sigma_i)^2 \right]^2}
 \f}
 and 
 \f{align*}{
