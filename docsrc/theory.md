@@ -318,6 +318,72 @@ that allows for a straightforward extraction of the longitudinal and (scaled) la
     \end{pmatrix}.
 \f]
 
+# Using the adjoint method to infer planet configuration
+\f[
+    F(\vec q) = \int\limits_0^T \!\mathrm{d}t \, f(\vec q, t) = \int\limits_0^T \!\mathrm{d}t \, \sum\limits_{k=1}^M \delta(t-t_k) \, \varepsilon_k(\vec q(t))
+\f]
+
+\f[
+    \frac{\mathrm{d}F}{\mathrm{d}\vec{y}_i} = -\int\limits_0^T \!\mathrm{d}t \, a^\top \frac{\partial \vec h}{\partial \vec{y}_i}
+\f]
+
+\f[
+    \dot{\vec{a}}(t) = -\left( \frac{\partial \vec h}{\partial (\vec q, \vec p)} \right)^{\!\top} \vec a(t) + \left( \frac{\partial f}{\partial (\vec q, \vec p)} \right)^{\!\top}
+\f]
+
+\f[
+    \vec h(\vec q, \vec p, \vec y_1, \ldots, \vec y_n) = \begin{pmatrix}
+        \vec p \\
+        -\vec\nabla_{\!q} V - \vec q \left( p^2 - \vec q \cdot \vec\nabla_{\!q} V \right)
+    \end{pmatrix}
+\f]
+
+\f[
+    \left( \frac{\partial f}{\partial (\vec q, \vec p)} \right)^{\!\top} =
+    \begin{pmatrix}
+        \sum_k \delta(t-t_k) \, \vec\nabla_{\!q} \varepsilon_k(\vec q(t)) \\
+        0
+    \end{pmatrix}
+\f]
+
+\f{align*}
+    \left( \frac{\partial \vec h}{\partial (\vec q, \vec p)} \right)^{\!\top} &=
+    \begin{pmatrix}
+        0 &
+        -\vec\nabla_{\!q} \otimes \vec\nabla_{\!q} V - \left( p^2 - \vec q \cdot \vec\nabla_{\!q} V \right) \boldsymbol{1} + \vec q \otimes \vec\nabla V \\
+        \boldsymbol{1} &
+        -2 \, \vec q \otimes \vec p
+    \end{pmatrix} \\
+    &= \begin{pmatrix}
+        0 &
+        -p^2 \boldsymbol{1} + \sum_i \left( f_d(\sigma_i) \left( \vec q \otimes \vec{y}_i - \boldsymbol{1} \cos \sigma_i \right) + \frac{f'_d(\sigma_i)}{\sin \sigma_i} \vec{y}_i \otimes \vec{y}_i \right) \\
+        \boldsymbol{1} &
+        -2 \, \vec q \otimes \vec p
+    \end{pmatrix}
+\f}
+
+\f{align*}
+    \frac{\partial \vec h}{\partial \vec{y}_i} &=
+    \begin{pmatrix}
+        0 \\
+        -\vec\nabla_{\!q} \otimes \vec\nabla_{\!y_i} V + \vec q \otimes \left( \left( \vec\nabla_{\!q} \otimes \vec\nabla_{\!y_i} V \right)^{\!\top} \vec q \right)
+    \end{pmatrix} \\
+    &= \frac{f'_d(\sigma_i)}{\sin \sigma_i} \begin{pmatrix}
+        0 \\
+        \boldsymbol{1} - \vec q \otimes \vec q 
+    \end{pmatrix}
+\f}
+
+\f{align*}
+    \frac{\partial}{\partial \vec q} \left( \vec\nabla_{\!q} V \right)
+    &\equiv \vec\nabla_{\!q} \otimes \vec\nabla_{\!q} V
+    = -\sum_{i=1}^n \frac{f'_d(\sigma_i)}{\sin \sigma_i} \, \vec{y}_i \otimes \vec{y}_i \\
+    \frac{\partial}{\partial \vec{y}_i} \left( \vec\nabla_{\!q} V \right)
+    &\equiv \vec\nabla_{\!q} \otimes \vec\nabla_{\!y_i} V
+    = -\frac{f'_d(\sigma_i)}{\sin \sigma_i} \left( \vec{q} \otimes \vec{y}_i + \boldsymbol{1} \right)
+\f}
+
+
 # Detailed description of API
 You now have all the information necessary to efficiently deal with [our API](@ref API).
 Go there to find out how to use it in practice for fun and profit.
