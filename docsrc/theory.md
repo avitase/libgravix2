@@ -136,7 +136,7 @@ Below, we show \f$v_{\mathrm{orb},d}(r)\f$ for both types of potentials:
 Naïvely, one might expect a similar \f$\sim 1/\sqrt{r}\f$ behavior that we know from our canonical \f$\sim 1/r\f$ potential on earth.
 In curved space, however, free particles propagate on [great circles](https://en.wikipedia.org/wiki/Great_circle) and thus increasingly higher velocities are needed if the small circle converges towards a great circle at a distance of \f$r = \pi / 2\f$.
 At the maximal distance \f$r = \pi\f$, the small circle converges into a (unstable) fix point.
-For \f$r \to 0\f$, our 2D potential becomes \f$\sqrt{2}\f$ (in the figure below velocities are given in degrees) whereas \f$v_{\mathrm{orb},3\mathrm{D}}\f$ diverges.
+For \f$r \to 0\f$, our 2D potential becomes \f$\sqrt{2}\f$ whereas \f$v_{\mathrm{orb},3\mathrm{D}}\f$ diverges.
 
 [<img src="vscrcl.png" width="400"/>](vscrcl.png)
 
