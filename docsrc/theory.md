@@ -350,15 +350,15 @@ that allows for a straightforward extraction of the longitudinal and (scaled) la
     \left( \frac{\partial \vec h}{\partial (\vec q, \vec p)} \right)^{\!\top} &=
     \begin{pmatrix}
         0 &
-        -\vec\nabla_{\!q} \otimes \vec\nabla_{\!q} V - \boldsymbol{1} \left( p^2 - \vec q \cdot \vec\nabla_{\!q} V \right) + \vec q \otimes \vec\nabla V + \vec q \otimes \vec q \vec\nabla_{\!q} \otimes \vec\nabla_{\!q} V \\
+        -\vec\nabla_{\!q} \otimes \vec\nabla_{\!q} V - \boldsymbol{1} \left( p^2 - \vec q \cdot \vec\nabla_{\!q} V \right) + \vec q \otimes \vec\nabla V + \left( \vec q \otimes \vec q \right) \left( \vec\nabla_{\!q} \otimes \vec\nabla_{\!q} V \right) \\
         \boldsymbol{1} &
         -2 \, \vec q \otimes \vec p
     \end{pmatrix} \\
-    &= \begin{pmatrix}
+    &= -\begin{pmatrix}
         0 &
-        -\boldsymbol{1} p^2 - \sum_i \left( f_d(\sigma_i) \left( \vec q \otimes \vec{y}_i + \boldsymbol{1} \cos \sigma_i \right) + \frac{f'_d(\sigma_i)}{\sin \sigma_i} \left( \vec{y}_i \otimes \vec{y}_i - \vec q \otimes \vec{y}_i \cos \sigma_i \right) \right) \\
-        \boldsymbol{1} &
-        -2 \, \vec q \otimes \vec p
+        \boldsymbol{1} p^2 + \sum_i f_d(\sigma_i) \left( \vec q \otimes \vec{y}_i + \boldsymbol{1} \cos \sigma_i \right) + \sum_i \frac{f'_d(\sigma_i)}{\sin \sigma_i} \left( \vec{y}_i \otimes \vec{y}_i - \vec q \otimes \vec{y}_i \cos \sigma_i \right) \\
+        -\boldsymbol{1} &
+        2 \, \vec q \otimes \vec p
     \end{pmatrix}
 \f}
 
@@ -366,21 +366,21 @@ that allows for a straightforward extraction of the longitudinal and (scaled) la
     \frac{\partial \vec h}{\partial \vec{y}_i} &=
     \begin{pmatrix}
         0 \\
-        -\vec\nabla_{\!q} \otimes \vec\nabla_{\!y_i} V + \vec q \otimes \left( \left( \vec\nabla_{\!q} \otimes \vec\nabla_{\!y_i} V \right)^{\!\top} \vec q \right)
+        -\vec\nabla_{\!q} \otimes \vec\nabla_{\!y_i} V + \left( \vec q \otimes \vec q \right) \left( \vec\nabla_{\!q} \otimes \vec\nabla_{\!y_i} V \right)
     \end{pmatrix} \\
     &= \frac{f'_d(\sigma_i)}{\sin \sigma_i} \begin{pmatrix}
         0 \\
-        \boldsymbol{1} - \vec q \otimes \vec q 
+        \left( \vec q \otimes \vec q \, (1 + \cos \sigma_i) - \vec{y}_i \otimes \vec q - \boldsymbol{1} \right)
     \end{pmatrix}
 \f}
 
 \f{align*}
     \frac{\partial}{\partial \vec q} \left( \vec\nabla_{\!q} V \right)
     &\equiv \vec\nabla_{\!q} \otimes \vec\nabla_{\!q} V
-    = -\sum_{i=1}^n \frac{f'_d(\sigma_i)}{\sin \sigma_i} \, \vec{y}_i \otimes \vec{y}_i \\
+    = \sum_{i=1}^n \frac{f'_d(\sigma_i)}{\sin \sigma_i} \, \vec{y}_i \otimes \vec{y}_i \\
     \frac{\partial}{\partial \vec{y}_i} \left( \vec\nabla_{\!q} V \right)
     &\equiv \vec\nabla_{\!q} \otimes \vec\nabla_{\!y_i} V
-    = -\frac{f'_d(\sigma_i)}{\sin \sigma_i} \left( \vec{y}_i \otimes \vec q + \boldsymbol{1} \right)
+    = \frac{f'_d(\sigma_i)}{\sin \sigma_i} \left( \vec{y}_i \otimes \vec q  + \boldsymbol{1} \right)
 \f}
 
 
