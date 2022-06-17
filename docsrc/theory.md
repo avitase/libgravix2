@@ -361,7 +361,7 @@ that allows for a straightforward extraction of the longitudinal and (scaled) la
         2 \, \vec q \otimes \vec p
     \end{pmatrix} - \sum_{i=1}^n \begin{pmatrix}
         0 &
-        f_d(\sigma_i) \cos \sigma_i  + \left( f_d(\sigma_i) \, \vec q + \frac{f'_d(\sigma_i)}{\sin \sigma_i} \left( \vec{y}_i - \vec q \cos \sigma_i \right) \right) \otimes \vec{y}_i \\
+        f_d(\sigma_i) \cos \sigma_i  + \vec{\rho}_i \otimes \vec{y}_i \\
         0 & 0
     \end{pmatrix}
 \f}
@@ -374,9 +374,13 @@ that allows for a straightforward extraction of the longitudinal and (scaled) la
     \end{pmatrix} \\
     &= -\begin{pmatrix}
         0 \\
-        -f_d(\sigma_i) + \left( f_d(\sigma_i) \, \vec q + \frac{f'_d(\sigma_i)}{\sin \sigma_i} \left( \vec{y}_i - \vec q \cos \sigma_i \right) \right) \otimes \vec q
+        -f_d(\sigma_i) + \vec{\rho}_i \otimes \vec q
     \end{pmatrix}
 \f}
+
+with \f[
+    \vec{\rho}_i = f_d(\sigma_i) \, \vec q + \frac{f'_d(\sigma_i)}{\sin \sigma_i} \left( \vec{y}_i - \vec q \cos \sigma_i \right)
+\f]
 
 \f{align*}
     \frac{\partial}{\partial \vec q} \left( \vec\nabla_{\!q} V \right)
