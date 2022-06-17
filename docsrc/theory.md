@@ -372,9 +372,9 @@ that allows for a straightforward extraction of the longitudinal and (scaled) la
         0 \\
         -\vec\nabla_{\!q} \otimes \vec\nabla_{\!y_i} V + \left( \vec q \otimes \vec q \right) \left( \vec\nabla_{\!q} \otimes \vec\nabla_{\!y_i} V \right)
     \end{pmatrix} \\
-    &= -\frac{f'_d(\sigma_i)}{\sin \sigma_i} \begin{pmatrix}
+    &= -\begin{pmatrix}
         0 \\
-        1 + \left( \vec{y}_i - \vec q \, (1 + \cos \sigma_i) \right) \otimes \vec q 
+        -f_d(\sigma_i) + \left( f_d(\sigma_i) \, \vec q + \frac{f'_d(\sigma_i)}{\sin \sigma_i} \left( \vec{y}_i - \vec q \cos \sigma_i \right) \right) \otimes \vec q
     \end{pmatrix}
 \f}
 
@@ -384,7 +384,7 @@ that allows for a straightforward extraction of the longitudinal and (scaled) la
     = \sum_{i=1}^n \frac{f'_d(\sigma_i)}{\sin \sigma_i} \, \vec{y}_i \otimes \vec{y}_i \\
     \frac{\partial}{\partial \vec{y}_i} \left( \vec\nabla_{\!q} V \right)
     &\equiv \vec\nabla_{\!q} \otimes \vec\nabla_{\!y_i} V
-    = \frac{f'_d(\sigma_i)}{\sin \sigma_i} \left( 1 + \vec{y}_i \otimes \vec q  \right)
+    = -f_d(\sigma_i) + \frac{f'_d(\sigma_i)}{\sin \sigma_i} \vec{y}_i \otimes \vec q 
 \f}
 
 
