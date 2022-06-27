@@ -324,8 +324,9 @@ that allows for a straightforward extraction of the longitudinal and (scaled) la
 \f]
 
 \f[
-    \frac{\mathrm{d}F}{\mathrm{d}\vec{y}_i} = -\int\limits_0^T \!\mathrm{d}t \, a^\top \frac{\partial \vec h}{\partial \vec{y}_i}
+    \frac{\mathrm{d}F}{\mathrm{d}\vec{y}_i} = \int\limits_T^0 \!\mathrm{d}t \, a^\top \frac{\partial \vec h}{\partial \vec{y}_i}
 \f]
+with \f$a(T) = 0\f$
 
 \f[
     \dot{\vec{a}}(t) = -\left( \frac{\partial \vec h}{\partial (\vec q, \vec p)} \right)^{\!\top} \vec a(t) + \left( \frac{\partial f}{\partial (\vec q, \vec p)} \right)^{\!\top}
@@ -354,14 +355,14 @@ that allows for a straightforward extraction of the longitudinal and (scaled) la
         \boldsymbol{1} &
         -2 \, \vec q \otimes \vec p
     \end{pmatrix} \\
-    &= -\begin{pmatrix}
+    &= \begin{pmatrix}
         0 &
-        p^2 \\
-        -\boldsymbol{1} &
-        2 \, \vec q \otimes \vec p
+        -p^2 \\
+        \boldsymbol{1} &
+        -2 \, \vec q \otimes \vec p
     \end{pmatrix} - \sum_{i=1}^n \begin{pmatrix}
         0 &
-        f_d(\sigma_i) \cos \sigma_i  + \vec{\rho}_i \otimes \vec{y}_i \\
+        f_d(\sigma_i) \cos \sigma_i  + \vec{\rho}_{i,d} \otimes \vec{y}_i \\
         0 & 0
     \end{pmatrix}
 \f}
@@ -372,14 +373,18 @@ that allows for a straightforward extraction of the longitudinal and (scaled) la
         0 \\
         -\vec\nabla_{\!q} \otimes \vec\nabla_{\!y_i} V + \left( \vec q \otimes \vec q \right) \left( \vec\nabla_{\!q} \otimes \vec\nabla_{\!y_i} V \right)
     \end{pmatrix} \\
-    &= -\begin{pmatrix}
+    &= \begin{pmatrix}
         0 \\
-        -f_d(\sigma_i) + \vec{\rho}_i \otimes \vec q
+        f_d(\sigma_i) - \vec{\rho}_{i,d} \otimes \vec q
     \end{pmatrix}
 \f}
 
 with \f[
-    \vec{\rho}_i = f_d(\sigma_i) \, \vec q + \frac{f'_d(\sigma_i)}{\sin \sigma_i} \left( \vec{y}_i - \vec q \cos \sigma_i \right)
+    \vec{\rho}_{i,d} = f_d(\sigma_i) \, \vec q + \frac{f'_d(\sigma_i)}{\sin \sigma_i} \left( \vec{y}_i - \vec q \cos \sigma_i \right)
+\f]
+
+\f[
+    \vec{\rho}_{i,2\mathrm{D}} = \frac{\vec{y}_i - \vec q}{(1 - \cos \sigma_i)^2}
 \f]
 
 \f{align*}
@@ -391,6 +396,33 @@ with \f[
     = -f_d(\sigma_i) + \frac{f'_d(\sigma_i)}{\sin \sigma_i} \vec{y}_i \otimes \vec q 
 \f}
 
+TODO: symmetrize ODEs with implicit midpoint rule:
+\f[
+    \dot z = A(t) \, z + b(t)
+\f]
+\f[
+    \left[ 1 - \frac{h}{2} A(t_2) \right] z_2 = z_1 + \frac{h}{2} \left[ A(t_1) z_1 + b(t_1) + b(t_2) \right]
+\f]
+Use Sherman-Morrison formula for inverting ODE in dF/dy:
+
+\f[
+    \vec\nabla_{y_i} F = \int\limits_T^0 \!\mathrm{d}t \, \left( f_d(\sigma_i) - \vec q \otimes \vec{\rho}_{i,d} \right) \vec{a}_p
+\f]
+
+Solve with ODE:
+
+\f[
+    \dot{\vec z} = \left( f - \vec q \otimes \vec \rho \right) \vec z
+\f]
+with \f$\vec z(T) = 0\f$, \f$f \equiv f_d(\sigma_i(t))\f$, \f$\vec q = \vec{q}(t)\f$, \f$\vec \rho \equiv \vec{\rho}_{i,d}(t)\f$
+
+\f[
+    \left[ 1 - \frac{h}{2} f_2 + \frac{h}{2} \vec{q}_2 \otimes \vec{\rho}_2 \right] z_2 = \left( 1 + \frac{h}{2} f_1 \right) \vec{z}_1 - \frac{h}{2} \left( \vec{\rho}_1 \cdot \vec{z}_1 \right) \vec{q}_1
+\f]
+where indices now refer to time steps
+\f[
+    \vec{z}_2 = \frac{1 + \frac{h}{2}}{1 - \frac{h}{2}} \left( \vec{z}_1 - \frac{\left( \vec{\rho}_2 \cdot \vec{z}_1 \right) \vec{q}_2}{1 - \frac{h}{2} f_2 + \vec{q}_2 \cdot \vec{\rho}_2} \right) - \frac{h \left( \vec{\rho}_1 \cdot \vec{z}_1 \right)}{2 - hf_2} \left( \vec{q}_1  - \frac{\left( \vec{\rho}_2 \cdot \vec{q}_1 \right) \vec{q}_2}{1 - \frac{h}{2} f_2 + \vec{q}_2 \cdot \vec{\rho}_2} \right)
+\f]
 
 # Detailed description of API
 You now have all the information necessary to efficiently deal with [our API](@ref API).
