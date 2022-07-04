@@ -383,22 +383,22 @@ with \f[
     \vec{\rho}_{i,d} = f_d(\sigma_i) \, \vec q + f'_d(\sigma_i) \, \underbrace{\frac{\vec{y}_i - \vec q \cos \sigma_i}{\sin \sigma_i}}_{\vec{q}_{\!\perp}}
 \f]
 
-\f$\vec{q}_{\!\perp} = \vec{q}_{\!\perp}^{(j)}\f$ with \f$j = \operatorname{argmax} \vec q\f$
+\f$\vec{q}_{\!\perp} = \vec{q}_{\!\perp}^{(j)}\f$ with \f$j = \operatorname{argmax} \vec q\f$ and \f$q_{\!\perp} = 1\f$
 
 \f$\vec{q}_{\!\perp} \perp \vec q\f$ and \f$\vec{q}_{\!\perp} \perp (\vec q \times \vec{y}_i)\f$
 
 \f{align*}
-    \vec{q}_{\!\perp}^{(1)} &= \begin{pmatrix}
+    \vec{q}_{\!\perp}^{(1)} &\sim \begin{pmatrix}
         q_2 c_2 + q_3 c_3 \\
         -q_1 c_2 \\
         -q_1 c_3
     \end{pmatrix} &
-    \vec{q}_{\!\perp}^{(2)} &= \begin{pmatrix}
+    \vec{q}_{\!\perp}^{(2)} &\sim \begin{pmatrix}
         -q_2 c_1 \\
         q_1 c_1 + q_3 c_3 \\
         -q_2 c_3
     \end{pmatrix} &
-    \vec{q}_{\!\perp}^{(3)} &= \begin{pmatrix}
+    \vec{q}_{\!\perp}^{(3)} &\sim \begin{pmatrix}
         -q_3 c_1 \\
         -q_3 c_2 \\
         q_1 c_1 + q_2 c_2 \\
