@@ -31,7 +31,7 @@ with
 \f[
     \sigma_i = \arccos(\vec{q} \cdot \vec{y}_i) \,,
 \f]
-where \f$\sigma_i\f$ is the (shortest) distance between \f$\vec q\f$ and \f$\vec{y}_i\f$ on the manifold.
+where \f$0 \le \sigma_i \le \pi \f$ is the (shortest) distance between \f$\vec q\f$ and \f$\vec{y}_i\f$ on the manifold.
 On a sphere, the shortest distance is an orthodrome, also known as a great circle.
 Without loss of generality, the kinematics of a missile in the force field of a single planet can thus be reduced to the movement on a (static) unit circle.
 Further, let's assume that the missile is at the azimuth \f$\varphi = \sigma \in [0, 2\pi)\f$ and is attracted by the planet at \f$\varphi = 0\f$.
@@ -324,7 +324,7 @@ that allows for a straightforward extraction of the longitudinal and (scaled) la
 \f]
 
 \f[
-    \frac{\mathrm{d}F}{\mathrm{d}\vec{y}_i} = \int\limits_T^0 \!\mathrm{d}t \, a^\top \frac{\partial \vec h}{\partial \vec{y}_i}
+    \vec\nabla_{y_i}F = \int\limits_T^0 \!\mathrm{d}t \, \left( \frac{\partial \vec h}{\partial \vec{y}_i} \right)^\top a(t)
 \f]
 with \f$a(T) = 0\f$
 
@@ -357,7 +357,7 @@ with \f$a(T) = 0\f$
     \end{pmatrix} \\
     &= \begin{pmatrix}
         0 &
-        -p^2 \\
+        -\boldsymbol{1} p^2 \\
         \boldsymbol{1} &
         -2 \, \vec q \otimes \vec p
     \end{pmatrix} - \sum_{i=1}^n \begin{pmatrix}
@@ -380,12 +380,35 @@ with \f$a(T) = 0\f$
 \f}
 
 with \f[
-    \vec{\rho}_{i,d} = f_d(\sigma_i) \, \vec q + \frac{f'_d(\sigma_i)}{\sin \sigma_i} \left( \vec{y}_i - \vec q \cos \sigma_i \right)
+    \vec{\rho}_{i,d} = f_d(\sigma_i) \, \vec q + f'_d(\sigma_i) \, \underbrace{\frac{\vec{y}_i - \vec q \cos \sigma_i}{\sin \sigma_i}}_{\vec{q}_{\!\perp}}
 \f]
 
-\f[
-    \vec{\rho}_{i,2\mathrm{D}} = \frac{\vec{y}_i - \vec q}{(1 - \cos \sigma_i)^2}
-\f]
+\f$\vec{q}_{\!\perp} = \vec{q}_{\!\perp}^{(j)}\f$ with \f$j = \operatorname{argmax} \vec q\f$
+
+\f$\vec{q}_{\!\perp} \perp \vec q\f$ and \f$\vec{q}_{\!\perp} \perp (\vec q \times \vec{y}_i)\f$
+
+\f{align*}
+    \vec{q}_{\!\perp}^{(1)} &= \begin{pmatrix}
+        q_2 c_2 + q_3 c_3 \\
+        -q_1 c_2 \\
+        -q_1 c_3
+    \end{pmatrix} &
+    \vec{q}_{\!\perp}^{(2)} &= \begin{pmatrix}
+        -q_2 c_1 \\
+        q_1 c_1 + q_3 c_3 \\
+        -q_2 c_3
+    \end{pmatrix} &
+    \vec{q}_{\!\perp}^{(3)} &= \begin{pmatrix}
+        -q_3 c_1 \\
+        -q_3 c_2 \\
+        q_1 c_1 + q_2 c_2 \\
+    \end{pmatrix} &
+\f}
+
+with \f$ \vec c = \vec q \times (\vec q \times \vec y_i)\f$
+
+Note that \f$f'_d(\sigma_i)\f$ is symmetric around \f$\sigma_i = \pi\f$, hence symmetric finite difference schemes can be used here! (Not true for \f$\sigma_i = 0\f$, though!)
+
 
 \f{align*}
     \frac{\partial}{\partial \vec q} \left( \vec\nabla_{\!q} V \right)
@@ -396,7 +419,7 @@ with \f[
     = -f_d(\sigma_i) + \frac{f'_d(\sigma_i)}{\sin \sigma_i} \vec{y}_i \otimes \vec q 
 \f}
 
-TODO: symmetrize ODEs with implicit midpoint rule:
+TODO: symmetrize ODEs with (implicit) trapezoidal rule:
 \f[
     \dot z = A(t) \, z + b(t)
 \f]
