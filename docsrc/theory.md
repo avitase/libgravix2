@@ -31,7 +31,7 @@ with
 \f[
     \sigma_i = \arccos(\vec{q} \cdot \vec{y}_i) \,,
 \f]
-where \f$\sigma_i\f$ is the (shortest) distance between \f$\vec q\f$ and \f$\vec{y}_i\f$ on the manifold.
+where \f$0 \le \sigma_i \le \pi \f$ is the (shortest) distance between \f$\vec q\f$ and \f$\vec{y}_i\f$ on the manifold.
 On a sphere, the shortest distance is an orthodrome, also known as a great circle.
 Without loss of generality, the kinematics of a missile in the force field of a single planet can thus be reduced to the movement on a (static) unit circle.
 Further, let's assume that the missile is at the azimuth \f$\varphi = \sigma \in [0, 2\pi)\f$ and is attracted by the planet at \f$\varphi = 0\f$.
@@ -317,6 +317,121 @@ that allows for a straightforward extraction of the longitudinal and (scaled) la
         0
     \end{pmatrix}.
 \f]
+
+# Using the adjoint method to infer planet configurations
+**TL;DR:** We don't expose an implementation of the adjoint method (yet).
+
+The adjoint method is an effective tool to find the gradient of a scalar loss \f$F\f$ w.r.t. a set of parameters of a differential equation. (Have a look into Bradley's tutorial about the adjoint method, ["PDE-constrained optimization and the adjoint method" (2010)](https://cs.stanford.edu/~ambrad/adjoint_tutorial.pdf), to learn more!)
+In our case, \f$F\f$ could be the integrated error between the actual and a predicted trajectory, where the latter is the result of an _exact_ simulation based on spurious planet positions \f$\vec{y}_i\f$.
+\f[
+    F(\vec q) = \int\limits_0^T \!\mathrm{d}t \, f(\vec q, t) = \int\limits_0^T \!\mathrm{d}t \, \sum\limits_{k=1}^M \delta(t-t_k) \, \varepsilon_k(\vec q(t)),
+\f]
+where \f$\varepsilon_k\f$ with \f$k = 1, \ldots, M\f$ is the residual of the \f$k\f$-th measurement at time \f$t = t_k\f$.
+
+The adjoint method gives a recipe to find the trajectory of a new variable \f$\vec a \in \mathbb{R}^6\f$, referred to as "the adjoint", that can be used to find the exact gradient
+\f[
+    \vec\nabla_{y_i}F = \int\limits_T^0 \!\mathrm{d}t \, \left( \frac{\partial \vec h}{\partial \vec{y}_i} \right)^\top \vec{a}(t) \,,
+\f]
+where \f$\vec h\f$ summarizes the dynamics of our Hamiltonian system:
+\f[
+    \vec h(\vec q, \vec p, \vec y_1, \ldots, \vec y_n) = \begin{pmatrix}
+        \vec p \\
+        -\vec\nabla_{\!q} V - \vec q \left( p^2 - \vec q \cdot \vec\nabla_{\!q} V \right)
+    \end{pmatrix}.
+\f]
+
+The gradient \f$\vec\nabla_{y_i}F\f$ can be used in a optimization framework, such as gradient descent, to infer the _genuine_ planet configuration starting only with an initial guess.
+Clearly, the same method can be used to solve similar problems, e.g., finding optimal initial conditions for a missile's launch to hit a certain target.
+
+The adjoint \f$\vec{a}(t)\f$ is the solution of an ODE:
+\f[
+    \dot{\vec{a}}(t) = -\left( \frac{\partial \vec h}{\partial (\vec q, \vec p)} \right)^{\!\top} \vec a(t) + \left( \frac{\partial f}{\partial (\vec q, \vec p)} \right)^{\!\top}
+\f]
+with the initial condition \f$a(T) = 0\f$.
+
+Note that solving this new ODE and the integral used for obtaining the gradient requires the adjoint to be solved backwards in time.
+Luckily, our solver for finding \f$(\vec q, \vec p)\f$ is symmetric such that we can avoid a memory intense caching by simply simulating a missile with inverted momentum!
+
+The three Jacobians needed for finding the gradients are
+\f{align*}
+    \left( \frac{\partial f}{\partial (\vec q, \vec p)} \right)^{\!\top} &=
+    \sum_{k=1}^M \begin{pmatrix}
+        \delta(t-t_k) \, \vec\nabla_{\!q} \varepsilon_k(\vec q(t)) \\
+        \boldsymbol{0}
+    \end{pmatrix}, \\
+    \left( \frac{\partial \vec h}{\partial (\vec q, \vec p)} \right)^{\!\top} &=
+    \begin{pmatrix}
+        \boldsymbol{0} &
+        -\vec\nabla_{\!q} \otimes \vec\nabla_{\!q} V - \boldsymbol{1} \left( p^2 - \vec q \cdot \vec\nabla_{\!q} V \right) + \vec q \otimes \vec\nabla V + \left( \vec q \otimes \vec q \right) \left( \vec\nabla_{\!q} \otimes \vec\nabla_{\!q} V \right) \\
+        \boldsymbol{1} &
+        -2 \, \vec q \otimes \vec p
+    \end{pmatrix} \\
+    &= \begin{pmatrix}
+        \boldsymbol{0} &
+        -\boldsymbol{1} p^2 \\
+        \boldsymbol{1} &
+        -2 \, \vec q \otimes \vec p
+    \end{pmatrix} - \sum_{i=1}^n \begin{pmatrix}
+        \boldsymbol{0} &
+        f_d(\sigma_i) \cos \sigma_i  + \vec{\rho}_{i,d} \otimes \vec{y}_i \\
+        \boldsymbol{0} & \boldsymbol{0}
+    \end{pmatrix}, \\
+    \left( \frac{\partial \vec h}{\partial \vec{y}_i} \right)^{\!\top} &=
+    \begin{pmatrix}
+        \boldsymbol{0} \\
+        -\vec\nabla_{\!q} \otimes \vec\nabla_{\!y_i} V + \left( \vec q \otimes \vec q \right) \left( \vec\nabla_{\!q} \otimes \vec\nabla_{\!y_i} V \right)
+    \end{pmatrix}^{\!\top} \\
+    &= \begin{pmatrix}
+        \boldsymbol{0} \\
+        f_d(\sigma_i) - \vec{\rho}_{i,d} \otimes \vec q
+    \end{pmatrix}^{\!\top},
+\f}
+where we introduced
+\f[
+    \vec{\rho}_{i,d} = f_d(\sigma_i) \, \vec q + f'_d(\sigma_i) \, \underbrace{\frac{\vec{y}_i - \vec q \cos \sigma_i}{\sin \sigma_i}}_{\vec{q}_{\!\perp}}
+\f]
+and already inserted the results of the Jacobians
+\f{align*}
+    \frac{\partial}{\partial \vec q} \left( \vec\nabla_{\!q} V \right)
+    &\equiv \vec\nabla_{\!q} \otimes \vec\nabla_{\!q} V
+    = \sum_{i=1}^n \frac{f'_d(\sigma_i)}{\sin \sigma_i} \, \vec{y}_i \otimes \vec{y}_i \,, \\
+    \frac{\partial}{\partial \vec{y}_i} \left( \vec\nabla_{\!q} V \right)
+    &\equiv \vec\nabla_{\!q} \otimes \vec\nabla_{\!y_i} V
+    = -f_d(\sigma_i) + \frac{f'_d(\sigma_i)}{\sin \sigma_i} \vec{y}_i \otimes \vec q \,.
+\f}
+
+Note that \f$\vec{q}_{\!\perp} \perp \vec q\f$, \f$\vec{q}_{\!\perp} \perp (\vec q \times \vec{y}_i)\f$ and \f$q_{\!\perp} = 1\f$.
+Numerically stable solutions of \f$\vec{q}_{\!\perp} = \vec{q}_{\!\perp}^{(j)}\f$ are given by \f$j = \operatorname{argmax} \vec q\f$ and
+\f{align*}
+    \vec{q}_{\!\perp}^{(1)} &\sim \begin{pmatrix}
+        q_2 c_2 + q_3 c_3 \\
+        -q_1 c_2 \\
+        -q_1 c_3
+    \end{pmatrix} &
+    \vec{q}_{\!\perp}^{(2)} &\sim \begin{pmatrix}
+        -q_2 c_1 \\
+        q_1 c_1 + q_3 c_3 \\
+        -q_2 c_3
+    \end{pmatrix} &
+    \vec{q}_{\!\perp}^{(3)} &\sim \begin{pmatrix}
+        -q_3 c_1 \\
+        -q_3 c_2 \\
+        q_1 c_1 + q_2 c_2 \\
+    \end{pmatrix} &
+\f}
+with \f$ \vec c = \vec q \times (\vec q \times \vec y_i)\f$.
+
+We conjecture that the newly introduced ODEs should be symmetrized, e.g., using the (implicit) trapezoidal rule to stabilize the evaluation for long trajectories.
+Although being implicit in general, the ODE for the gradient 
+\f[
+    \vec\nabla_{y_i} F = \int\limits_T^0 \!\mathrm{d}t \, \left( f_d(\sigma_i) - \vec q \otimes \vec{\rho}_{i,d} \right) \vec{a}_p
+\f]
+becomes explicit by using the [Sherman-Morrison formula](https://doi.org/10.1137%2F1031049).
+However, the same does not hold for the adjoint ODE thus driving the application of the adjoint method numerically costly, in particular for \f$d=3\mathrm{D}\f$ where the derivative \f$f'_{3D}\f$ has to be found as well.
+
+In this light, approximating the gradient in a finite-difference (FD) scheme appears to be favorable if the number of parameters, \f$3\times n\f$, is small.
+We therefore refrain from implementing the adjoint method for the time being and motivate practioners to implement a parallelized FD scheme on top of our API.
+Besides the fact that a similar parallelization of the adjoint method is not straight-forward to implement, an FD scheme also allows the direct extraction of the gradients w.r.t. two spherical coordinates per planet instead of three Cartesian coordinates.
 
 # Detailed description of API
 You now have all the information necessary to efficiently deal with [our API](@ref API).
