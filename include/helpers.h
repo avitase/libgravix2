@@ -3,8 +3,8 @@
  * \brief Compilation of helper functions.
  */
 
-#ifndef LIBGRAVIX2_HELPERS_H
-#define LIBGRAVIX2_HELPERS_H
+#ifndef GRVX_HELPERS_H
+#define GRVX_HELPERS_H
 
 /*!
  * \brief Computes \f$\sin(x) / x\f$.
@@ -15,6 +15,6 @@
  * @param x \f$x\f$.
  * @return \f$\sin(x) / x\f$.
  */
-double sinc(double);
+double grvx_sinc(double);
 
-#endif // LIBGRAVIX2_HELPERS_H
+#endif // GRVX_HELPERS_H

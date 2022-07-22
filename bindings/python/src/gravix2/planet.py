@@ -22,12 +22,12 @@ class Planets:
     def __init__(
         self, planets: Sequence[Tuple[float, float]], *, lib: ctypes.CDLL
     ) -> None:
-        new_planets = lib.new_planets
+        new_planets = lib.grvx_new_planets
         new_planets.argtypes = [c_uint]
         new_planets.restype = c_void_p
         self.handle = new_planets(len(planets))
 
-        set_planet = lib.set_planet
+        set_planet = lib.grvx_set_planet
         set_planet.argtypes = [c_void_p, c_uint, c_double, c_double]
         set_planet.restype = c_int
 
@@ -38,12 +38,12 @@ class Planets:
         self._planet_pos = list(planets)
         self._planet_id = list(range(len(planets)))
 
-        pop_planet = lib.pop_planet
+        pop_planet = lib.grvx_pop_planet
         pop_planet.argtypes = [c_void_p]
         pop_planet.restype = c_uint
         self._pop_planet = pop_planet
 
-        delete_planets = lib.delete_planets
+        delete_planets = lib.grvx_delete_planets
         delete_planets.argtypes = [c_void_p]
         delete_planets.restype = None
         self._delete_planets = delete_planets

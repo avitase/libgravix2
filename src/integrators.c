@@ -85,18 +85,18 @@ const double P2GAMMA_p8s15[] = {
     0.74167036435061295345,  // 1, 15
 };
 
-static const double *const GAMMA = COMPOSITION_SCHEME;
+static const double *const GAMMA = GRVX_COMPOSITION_SCHEME;
 static const unsigned N_STAGES =
-    sizeof(COMPOSITION_SCHEME) / sizeof(*COMPOSITION_SCHEME);
+    sizeof(GRVX_COMPOSITION_SCHEME) / sizeof(*GRVX_COMPOSITION_SCHEME);
 
-static void strang1(struct QP *qp, struct QP *e, double h) {
-    const double p2 = dot(qp->p, qp->p);
+static void strang1(struct GrvxQP *qp, struct GrvxQP *e, double h) {
+    const double p2 = grvx_dot(qp->p, qp->p);
     const double ph = sqrt(p2) * h;
 
-    const double h_sinc_ph = h * sinc(ph);
+    const double h_sinc_ph = h * grvx_sinc(ph);
     const double cos_ph_minus_one = -2. * pow(sin(ph / 2.), 2);
 
-    struct QP d = {
+    struct GrvxQP d = {
         .q.x = qp->q.x * cos_ph_minus_one + qp->p.x * h_sinc_ph,
         .q.y = qp->q.y * cos_ph_minus_one + qp->p.y * h_sinc_ph,
         .q.z = qp->q.z * cos_ph_minus_one + qp->p.z * h_sinc_ph,
@@ -112,7 +112,7 @@ static void strang1(struct QP *qp, struct QP *e, double h) {
     e->p.y += d.p.y;
     e->p.z += d.p.z;
 
-    struct QP qp2 = {
+    struct GrvxQP qp2 = {
         .q.x = qp->q.x + e->q.x,
         .q.y = qp->q.y + e->q.y,
         .q.z = qp->q.z + e->q.z,
@@ -131,13 +131,15 @@ static void strang1(struct QP *qp, struct QP *e, double h) {
     *qp = qp2;
 }
 
-static void
-strang2(struct QP *qp, struct QP *e, double h, const struct Planets *planets) {
-    struct Vec3D v = qp->q;
-    gradV(&v, planets);
-    const double q_dot_gradV = dot(qp->q, v);
+static void strang2(struct GrvxQP *qp,
+                    struct GrvxQP *e,
+                    double h,
+                    const struct GrvxPlanets *planets) {
+    struct GrvxVec3D v = qp->q;
+    grvx_gradV(&v, planets);
+    const double q_dot_gradV = grvx_dot(qp->q, v);
 
-    struct Vec3D dp = {
+    struct GrvxVec3D dp = {
         (q_dot_gradV * qp->q.x - v.x) * h,
         (q_dot_gradV * qp->q.y - v.y) * h,
         (q_dot_gradV * qp->q.z - v.z) * h,
@@ -147,7 +149,7 @@ strang2(struct QP *qp, struct QP *e, double h, const struct Planets *planets) {
     e->p.y += dp.y;
     e->p.z += dp.z;
 
-    struct QP qp2 = {
+    struct GrvxQP qp2 = {
         .q.x = qp->q.x,
         .q.y = qp->q.y,
         .q.z = qp->q.z,
@@ -163,10 +165,10 @@ strang2(struct QP *qp, struct QP *e, double h, const struct Planets *planets) {
     *qp = qp2;
 }
 
-void integration_step(struct QP *qp,
-                      struct QP *e,
-                      double h,
-                      const struct Planets *planets) {
+void grvx_integration_step(struct GrvxQP *qp,
+                           struct GrvxQP *e,
+                           double h,
+                           const struct GrvxPlanets *planets) {
     strang1(qp, e, GAMMA[0] * h / 2.);
     for (unsigned i = 0; i < N_STAGES; i++) {
         const double g2 = GAMMA[i];
@@ -177,28 +179,28 @@ void integration_step(struct QP *qp,
     }
 }
 
-unsigned integration_loop(struct QP *qp,
-                          double h,
-                          unsigned n,
-                          const struct Planets *planets) {
+unsigned grvx_integration_loop(struct GrvxQP *qp,
+                               double h,
+                               unsigned n,
+                               const struct GrvxPlanets *planets) {
     double mdist = -1.;
-    const double threshold = cos(MIN_DIST);
+    const double threshold = cos(GRVX_MIN_DIST);
 
-    struct QP e = {
+    struct GrvxQP e = {
         0., 0., 0., 0., 0., 0.,
     };
     for (; n > 0 && mdist < threshold; n--) {
-        integration_step(qp, &e, h, planets);
-        mdist = min_dist(&qp->q, planets);
+        grvx_integration_step(qp, &e, h, planets);
+        mdist = grvx_min_dist(&qp->q, planets);
         assert(mdist >= -1. && mdist <= 1.);
     }
 
-    const double q_norm = 1. / mag(qp->q);
+    const double q_norm = 1. / grvx_mag(qp->q);
     qp->q.x *= q_norm;
     qp->q.y *= q_norm;
     qp->q.z *= q_norm;
 
-    const double error = dot(qp->q, qp->p);
+    const double error = grvx_dot(qp->q, qp->p);
     qp->p.x -= error * qp->q.x;
     qp->p.y -= error * qp->q.y;
     qp->p.z -= error * qp->q.z;

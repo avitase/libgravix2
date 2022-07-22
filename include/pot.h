@@ -3,11 +3,11 @@
  * \brief Gradient estimations of the potential.
  */
 
-#ifndef PHYSICS_POT_H
-#define PHYSICS_POT_H
+#ifndef GRVX_PHYSICS_POT_H
+#define GRVX_PHYSICS_POT_H
 
-struct Vec3D;
-struct Planets;
+struct GrvxVec3D;
+struct GrvxPlanets;
 
 /*!
  * \brief Gradient of the potential at position \p q.
@@ -19,7 +19,7 @@ struct Planets;
  * this variable.
  * @param planets Planets handle that generates the force field.
  */
-void gradV(struct Vec3D *q, const struct Planets *planets);
+void grvx_gradV(struct GrvxVec3D *q, const struct GrvxPlanets *planets);
 
 /*!
  * \brief Minimal distance to any planet.
@@ -28,6 +28,7 @@ void gradV(struct Vec3D *q, const struct Planets *planets);
  * @param planets Planets handle that generates the force field.
  * @return Cosine of smallest angle between \p q and any planet.
  */
-double min_dist(const struct Vec3D *q, const struct Planets *planets);
+double grvx_min_dist(const struct GrvxVec3D *q,
+                     const struct GrvxPlanets *planets);
 
-#endif // PHYSICS_POT_H
+#endif // GRVX_PHYSICS_POT_H

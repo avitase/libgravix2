@@ -6,24 +6,25 @@
 #include <math.h>
 #include <stdlib.h>
 
-TrajectoryBatch new_missiles(unsigned n) {
-    return malloc(sizeof(struct Trajectory) * n);
+GrvxTrajectoryBatch grvx_new_missiles(unsigned n) {
+    return malloc(sizeof(struct GrvxTrajectory) * n);
 }
 
-void delete_missiles(TrajectoryBatch batch) {
+void grvx_delete_missiles(GrvxTrajectoryBatch batch) {
     free(batch);
 }
 
-struct Trajectory *get_trajectory(TrajectoryBatch batch, unsigned i) {
+struct GrvxTrajectory *grvx_get_trajectory(GrvxTrajectoryBatch batch,
+                                           unsigned i) {
     return batch + i;
 }
 
-int init_missile(struct Trajectory *t,
-                 double lat,
-                 double lon,
-                 double v,
-                 double dlat,
-                 double dlon) {
+int grvx_init_missile(struct GrvxTrajectory *t,
+                      double lat,
+                      double lon,
+                      double v,
+                      double dlat,
+                      double dlon) {
     const double sin_lat = sin(lat);
     const double cos_lat = cos(lat);
     const double sin_lon = sin(lon);
@@ -39,30 +40,30 @@ int init_missile(struct Trajectory *t,
     t->v[0][2] = v * dlat * cos_lat / dv;
 
     for (int i = 0; i < 3; i++) {
-        t->x[TRAJECTORY_SIZE - 1][i] = t->x[0][i];
-        t->v[TRAJECTORY_SIZE - 1][i] = t->v[0][i];
+        t->x[GRVX_TRAJECTORY_SIZE - 1][i] = t->x[0][i];
+        t->v[GRVX_TRAJECTORY_SIZE - 1][i] = t->v[0][i];
     }
 
     return 0;
 }
 
-static void rotation_matrix(double lat, double lon, struct Vec3D rot[3]) {
+static void rotation_matrix(double lat, double lon, struct GrvxVec3D rot[3]) {
     double sin_lat = sin(lat);
     double cos_lat = cos(lat);
     double sin_lon = sin(lon);
     double cos_lon = cos(lon);
 
-    struct Vec3D r1 = {
+    struct GrvxVec3D r1 = {
         -cos_lon,
         -sin_lat * sin_lon,
         cos_lat * sin_lon,
     };
-    struct Vec3D r2 = {
+    struct GrvxVec3D r2 = {
         sin_lon,
         -sin_lat * cos_lon,
         cos_lat * cos_lon,
     };
-    struct Vec3D r3 = {
+    struct GrvxVec3D r3 = {
         0.,
         cos_lat,
         sin_lat,
@@ -73,90 +74,92 @@ static void rotation_matrix(double lat, double lon, struct Vec3D rot[3]) {
     rot[2] = r3;
 }
 
-int launch_missile(struct Trajectory *t,
-                   PlanetsHandle planets,
-                   unsigned planet,
-                   double v,
-                   double psi) {
+int grvx_launch_missile(struct GrvxTrajectory *t,
+                        GrvxPlanetsHandle planets,
+                        unsigned planet,
+                        double v,
+                        double psi) {
     if (planet >= planets->n) {
         return -1;
     }
 
-    struct Vec3D rot[3];
+    struct GrvxVec3D rot[3];
     rotation_matrix(
-        lat(planets->data[3 * planet + 2]),
-        lon(planets->data[3 * planet], planets->data[3 * planet + 1]), rot);
+        grvx_lat(planets->data[3 * planet + 2]),
+        grvx_lon(planets->data[3 * planet], planets->data[3 * planet + 1]),
+        rot);
 
-    const double sin_r = sin(MIN_DIST);
-    const double cos_r = cos(MIN_DIST);
+    const double sin_r = sin(GRVX_MIN_DIST);
+    const double cos_r = cos(GRVX_MIN_DIST);
     const double sin_psi = sin(psi);
     const double cos_psi = cos(psi);
 
-    struct Vec3D x0 = {
+    struct GrvxVec3D x0 = {
         sin_r * sin_psi,
         sin_r * cos_psi,
         cos_r,
     };
-    struct Vec3D x1 = {
-        dot(rot[0], x0),
-        dot(rot[1], x0),
-        dot(rot[2], x0),
+    struct GrvxVec3D x1 = {
+        grvx_dot(rot[0], x0),
+        grvx_dot(rot[1], x0),
+        grvx_dot(rot[2], x0),
     };
-    struct Vec3D v0 = {
+    struct GrvxVec3D v0 = {
         cos_r * sin_psi,
         cos_r * cos_psi,
         -sin_r,
     };
-    struct Vec3D v1 = {
-        dot(rot[0], v0),
-        dot(rot[1], v0),
-        dot(rot[2], v0),
+    struct GrvxVec3D v1 = {
+        grvx_dot(rot[0], v0),
+        grvx_dot(rot[1], v0),
+        grvx_dot(rot[2], v0),
     };
 
-    const double lat1 = lat(x1.z);
-    const double lon1 = lon(x1.x, x1.y);
+    const double lat1 = grvx_lat(x1.z);
+    const double lon1 = grvx_lon(x1.x, x1.y);
 
     const double sin_lat = sin(lat1);
     const double cos_lat = cos(lat1);
     const double sin_lon = sin(lon1);
     const double cos_lon = cos(lon1);
 
-    struct Vec3D e_lat = {
+    struct GrvxVec3D e_lat = {
         -sin_lat * sin_lon,
         -sin_lat * cos_lon,
         cos_lat,
     };
-    struct Vec3D e_lon = {
+    struct GrvxVec3D e_lon = {
         cos_lon,
         -sin_lon,
         0.,
     };
 
-    const double dlat1 = dot(v1, e_lat);
-    const double dlon1 = dot(v1, e_lon);
-    return init_missile(t, lat1, lon1, v, dlat1, dlon1);
+    const double dlat1 = grvx_dot(v1, e_lat);
+    const double dlon1 = grvx_dot(v1, e_lon);
+    return grvx_init_missile(t, lat1, lon1, v, dlat1, dlon1);
 }
 
-unsigned propagate_missile(struct Trajectory *trj,
-                           PlanetsHandle planets,
-                           double h,
-                           int *premature) {
-    struct QP qp = {
-        .q.x = trj->x[TRAJECTORY_SIZE - 1][0],
-        .q.y = trj->x[TRAJECTORY_SIZE - 1][1],
-        .q.z = trj->x[TRAJECTORY_SIZE - 1][2],
-        .p.x = trj->v[TRAJECTORY_SIZE - 1][0],
-        .p.y = trj->v[TRAJECTORY_SIZE - 1][1],
-        .p.z = trj->v[TRAJECTORY_SIZE - 1][2],
+unsigned grvx_propagate_missile(struct GrvxTrajectory *trj,
+                                GrvxPlanetsHandle planets,
+                                double h,
+                                int *premature) {
+    struct GrvxQP qp = {
+        .q.x = trj->x[GRVX_TRAJECTORY_SIZE - 1][0],
+        .q.y = trj->x[GRVX_TRAJECTORY_SIZE - 1][1],
+        .q.z = trj->x[GRVX_TRAJECTORY_SIZE - 1][2],
+        .p.x = trj->v[GRVX_TRAJECTORY_SIZE - 1][0],
+        .p.y = trj->v[GRVX_TRAJECTORY_SIZE - 1][1],
+        .p.z = trj->v[GRVX_TRAJECTORY_SIZE - 1][2],
     };
 
     unsigned i = 0;
-    for (*premature = 0; i < TRAJECTORY_SIZE && !*premature; i++) {
-        unsigned n_left = integration_loop(&qp, h, INT_STEPS, planets);
+    for (*premature = 0; i < GRVX_TRAJECTORY_SIZE && !*premature; i++) {
+        unsigned n_left =
+            grvx_integration_loop(&qp, h, GRVX_INT_STEPS, planets);
         *premature = (n_left != 0);
 
-        assert(fabs(dot(qp.q, qp.q) - 1.) < 1e-10);
-        assert(fabs(dot(qp.p, qp.q)) < 1e-10);
+        assert(fabs(grvx_dot(qp.q, qp.q) - 1.) < 1e-10);
+        assert(fabs(grvx_dot(qp.p, qp.q)) < 1e-10);
 
         trj->x[i][0] = qp.q.x;
         trj->x[i][1] = qp.q.y;
@@ -169,11 +172,11 @@ unsigned propagate_missile(struct Trajectory *trj,
     return i;
 }
 
-double orb_period(double v, double h) {
-    const double sin_threshold = sin(MIN_DIST);
-    const double cos_threshold = cos(MIN_DIST);
+double grvx_orb_period(double v, double h) {
+    const double sin_threshold = sin(GRVX_MIN_DIST);
+    const double cos_threshold = cos(GRVX_MIN_DIST);
 
-    struct QP qp = {
+    struct GrvxQP qp = {
         .q.x = 0.,
         .q.y = cos_threshold,
         .q.z = sin_threshold,
@@ -182,36 +185,36 @@ double orb_period(double v, double h) {
         .p.z = v * cos_threshold,
     };
 
-    struct Planets p;
+    struct GrvxPlanets p;
     double planets_data[3];
     p.data = planets_data;
     p.n = 1;
 
-    PlanetsHandle planets = &p;
-    set_planet(planets, 0, 0., 0.);
+    GrvxPlanetsHandle planets = &p;
+    grvx_set_planet(planets, 0, 0., 0.);
 
     double mdist = -1.;
 
-    struct QP qp2 = qp;
-    struct QP e = {
+    struct GrvxQP qp2 = qp;
+    struct GrvxQP e = {
         0., 0., 0., 0., 0., 0.,
     };
     int t = 0;
     do {
         qp = qp2;
-        integration_step(&qp2, &e, h, planets);
-        mdist = min_dist(&qp2.q, planets);
+        grvx_integration_step(&qp2, &e, h, planets);
+        mdist = grvx_min_dist(&qp2.q, planets);
         t += 1;
     } while (mdist < cos_threshold);
 
-    const double s = acos(qp.q.y) - MIN_DIST;
+    const double s = acos(qp.q.y) - GRVX_MIN_DIST;
     assert(s > 0.);
 
-    const double a = mag(qp2.p) - mag(qp.p);
+    const double a = grvx_mag(qp2.p) - grvx_mag(qp.p);
     assert(a > 0.);
 
     const double dt = sqrt(2 * s / a);
     assert(!isnan(dt) && dt < 1.);
 
-    return ((double)t + dt) / INT_STEPS;
+    return ((double)t + dt) / GRVX_INT_STEPS;
 }

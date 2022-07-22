@@ -35,7 +35,7 @@ class Gravix2:
     @property
     def config(self) -> config.Config:
         """
-        Wraps ``libgravix2``'s ``Config`` object
+        Wraps ``libgravix2``'s ``GrvxConfig`` object
 
         :return: Static configuration as a :class:`gravix2.config.Config` instance
         """
@@ -63,9 +63,9 @@ class Gravix2:
         self, *, z: Union[float, ArrayLike], fwd: bool = False
     ) -> Union[float, ArrayLike]:
         """
-        Reimplements ``libgravix2``'s helper function ``lat()`` for NumPy arrays
+        Reimplements ``libgravix2``'s helper function ``grvx_lat()`` for NumPy arrays
 
-        :param z: (Batch of) First parameter of ``lat()``
+        :param z: (Batch of) First parameter of ``grvx_lat()``
         :param fwd: Bypass reimplementation and forward call to ``libgravix2`` (does not work for NumPy arrays)
         :return: (Batch of) Latitude
         """
@@ -79,10 +79,10 @@ class Gravix2:
         fwd: bool = False,
     ) -> Union[float, ArrayLike]:
         """
-        Reimplements ``libgravix2``'s helper function ``lon()`` for NumPy arrays
+        Reimplements ``libgravix2``'s helper function ``grvx_lon()`` for NumPy arrays
 
-        :param x: (Batch of) First parameter of ``lon()``
-        :param y: (Batch of) Second parameter of ``lon()``
+        :param x: (Batch of) First parameter of ``grvx_lon()``
+        :param y: (Batch of) Second parameter of ``grvx_lon()``
         :param fwd: Bypass reimplementation and forward call to ``libgravix2`` (does not work for NumPy arrays)
         :return: (Batch of) Longitude
         """
@@ -97,11 +97,11 @@ class Gravix2:
         fwd: bool = False,
     ) -> Union[float, ArrayLike]:
         """
-        Reimplements ``libgravix2``'s helper function ``v_lat()`` for NumPy arrays
+        Reimplements ``libgravix2``'s helper function ``grvx_v_lat()`` for NumPy arrays
 
-        :param v: Tuple of first three parameters of ``v_lat()`` or NumPy array of shape (\*, 3)
-        :param lat: (Batch of) Fourth parameter of ``v_lat()``
-        :param lon: (Batch of) Fifth parameter of ``v_lat()``
+        :param v: Tuple of first three parameters of ``grvx_v_lat()`` or NumPy array of shape (\*, 3)
+        :param lat: (Batch of) Fourth parameter of ``grvx_v_lat()``
+        :param lon: (Batch of) Fifth parameter of ``grvx_v_lat()``
         :param fwd: Bypass reimplementation and forward call to ``libgravix2`` (does not work for NumPy arrays)
         :return: (Batch of) Latitudinal speed
         """
@@ -133,11 +133,12 @@ class Gravix2:
         fwd: bool = False,
     ) -> Union[float, ArrayLike]:
         """
-        Reimplements ``libgravix2``'s helper function ``v_lat()`` for NumPy arrays
+        Reimplements ``libgravix2``'s helper function ``grvx_v_lat()`` for NumPy arrays
 
-        :param v: (Batch of) Tuple of first three parameters of ``v_lon()``
-        :param lon: (Batch of) Fourth parameter of ``v_lat()``
-        :param fwd: Bypass reimplementation and forward call to ``libgravix2`` (does not work for NumPy arrays)
+        :param v: (Batch of) Tuple of first three parameters of ``grvx_v_lon()``
+        :param lon: (Batch of) Fourth parameter of ``grvx_v_lat()``
+        :param fwd: Bypass reimplementation and forward call to ``libgravix2`` (does not
+                    work for NumPy arrays)
         :return: (Batch of) Scaled longitudinal speed
         """
         if fwd:
@@ -157,8 +158,8 @@ class Gravix2:
         """
         Returns the escape velocity
 
-        Calls ``libgravix2``'s helper function ``v_esc()`` on first call. The result is
-        saved and returned on this and all subsequent calls.
+        Calls ``libgravix2``'s helper function ``grvx_v_esc()`` on first call. The
+        result is saved and returned on this and all subsequent calls.
 
         :return: Escape velocity
         """
@@ -166,7 +167,7 @@ class Gravix2:
 
     def v_scrcl(self, r) -> float:
         """
-        Wraps call to ``libgravix2``'s helper function ``v_scrcl()``
+        Wraps call to ``libgravix2``'s helper function ``grvx_v_scrcl()``
 
         :param r: Radius of small circle
         :return: Small circle velocity
@@ -176,7 +177,7 @@ class Gravix2:
     @functools.lru_cache
     def estimate_orb_period(self, *, v0: float, h: float) -> float:
         """
-        Wraps call to ``libgravix2``'s helper function ``orb_period()``
+        Wraps call to ``libgravix2``'s helper function ``grvx_orb_period()``
 
         :param v0: Initial velocity
         :param h: Step size

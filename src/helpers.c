@@ -3,39 +3,39 @@
 #include "linalg.h"
 #include <math.h>
 
-double lat(double z) {
+double grvx_lat(double z) {
     return asin(z);
 }
 
-double lon(double x, double y) {
+double grvx_lon(double x, double y) {
     return atan2(x, y);
 }
 
-double vlat(double vx, double vy, double vz, double lat, double lon) {
+double grvx_vlat(double vx, double vy, double vz, double lat, double lon) {
     const double sin_lat = sin(lat);
     const double cos_lat = cos(lat);
     const double sin_lon = sin(lon);
     const double cos_lon = cos(lon);
 
-    struct Vec3D v = {vx, vy, vz};
-    struct Vec3D e_lat = {-sin_lat * sin_lon, -sin_lat * cos_lon, cos_lat};
+    struct GrvxVec3D v = {vx, vy, vz};
+    struct GrvxVec3D e_lat = {-sin_lat * sin_lon, -sin_lat * cos_lon, cos_lat};
 
-    return dot(v, e_lat);
+    return grvx_dot(v, e_lat);
 }
 
-double vlon(double vx, double vy, double vz, double lon) {
+double grvx_vlon(double vx, double vy, double vz, double lon) {
     const double sin_lon = sin(lon);
     const double cos_lon = cos(lon);
 
-    struct Vec3D v = {vx, vy, vz};
-    struct Vec3D e_lon = {cos_lon, -sin_lon, 0.};
+    struct GrvxVec3D v = {vx, vy, vz};
+    struct GrvxVec3D e_lon = {cos_lon, -sin_lon, 0.};
 
     /*
      * WARNING: this is \f$\dot\lambda \, \cos\phi\f$
      */
-    return dot(v, e_lon);
+    return grvx_dot(v, e_lon);
 }
 
-double sinc(double x) {
+double grvx_sinc(double x) {
     return x != 0. ? sin(x) / x : 1.;
 }

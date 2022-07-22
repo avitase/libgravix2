@@ -66,7 +66,7 @@ Obviously, these definitions only hold for a single planet.
 
 **Tip:** In practical applications \f$p_\pi\f$ can be used as a natural unit for velocities and time.
 For example, velocities can be given in multiples of \f$p_\pi\f$ and durations in multiples of the orbital period if missiles are launched with \f$2p_\pi\f$.
-Use v_esc() and orb_period() to get \f$p_\pi\f$ and the orbital period, respectively, of the given potential.
+Use grvx_v_esc() and grvx_orb_period() to get \f$p_\pi\f$ and the orbital period, respectively, of the given potential.
 
 The force fields are given by the gradients of the respective potentials:
 \f[
@@ -125,7 +125,7 @@ The velocity \f$v_\mathrm{orb}\f$ for a given force field \f$f_d\f$ and distance
 \f[
     v_{\mathrm{orb},d} \equiv \dot x = v_\lambda \cos \phi_0 = \sqrt{ \frac{-f_d(r)}{|\cos r|}} \, \sin r
 \f]
-For convenience, we provide a helper function v_scrcl() which returns \f$v_\mathrm{orb}\f$ if provided with \f$r\f$.
+For convenience, we provide a helper function grvx_v_scrcl() which returns \f$v_\mathrm{orb}\f$ if provided with \f$r\f$.
 
 Note, that for \f$d=2\mathrm{D}\f$ the relation simplifies significantly and allows for a straightforward evaluation of \f$v_{\mathrm{orb},2\mathrm{D}}\f$:
 \f[
@@ -253,7 +253,7 @@ Similarly, a velocity vector is given by
     \end{pmatrix} ,
 \f]
 and is always orthogonal to \f$\vec x\f$ at the same latitude and longitude.
-We define \f$\dot\phi\f$ and \f$\dot\lambda \, \cos\phi\f$ as the latitudinal velocity, vlat(), and the (scaled) longitudinal velocity, vlon(), respectively.
+We define \f$\dot\phi\f$ and \f$\dot\lambda \, \cos\phi\f$ as the latitudinal velocity, grvx_vlat(), and the (scaled) longitudinal velocity, grvx_vlon(), respectively.
 Adding both in quadrature yields the magnitude of the Cartesian velocity,
 \f[
      v = \sqrt{\dot\phi^2 + (\dot\lambda \, \cos \phi)^2} \,.

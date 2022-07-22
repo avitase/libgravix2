@@ -6,26 +6,26 @@ int main(int argc, char **argv) {
     const double H = 1e-3;
     const double THRESHOLD = 1e-10;
 
-    const double V0 = 2 * v_esc();
+    const double V0 = 2 * grvx_v_esc();
     const unsigned N = 50;
-    assert(N < TRAJECTORY_SIZE);
-    assert(N < orb_period(V0, H));
+    assert(N < GRVX_TRAJECTORY_SIZE);
+    assert(N < grvx_orb_period(V0, H));
 
-    PlanetsHandle p = new_planets(1);
+    GrvxPlanetsHandle p = grvx_new_planets(1);
 
-    int rc = set_planet(p, 0, 0., 0.);
+    int rc = grvx_set_planet(p, 0, 0., 0.);
     assert(rc == 0);
 
-    TrajectoryBatch trj = new_missiles(2);
+    GrvxTrajectoryBatch trj = grvx_new_missiles(2);
 
-    struct Trajectory *m1 = get_trajectory(trj, 0);
-    struct Trajectory *m2 = get_trajectory(trj, 1);
+    struct GrvxTrajectory *m1 = grvx_get_trajectory(trj, 0);
+    struct GrvxTrajectory *m2 = grvx_get_trajectory(trj, 1);
 
-    rc = launch_missile(m1, p, 0, V0, -M_PI / 2);
+    rc = grvx_launch_missile(m1, p, 0, V0, -M_PI / 2);
     assert(rc == 0);
 
     int premature;
-    unsigned n = propagate_missile(m1, p, H, &premature);
+    unsigned n = grvx_propagate_missile(m1, p, H, &premature);
     assert(n >= N);
 
     /*
@@ -37,15 +37,15 @@ int main(int argc, char **argv) {
     double *x = m1->x[N - 1];
     double *v = m1->v[N - 1];
 
-    const double lat2 = lat(x[2]);
-    const double lon2 = lon(x[0], x[1]);
-    const double vlat2 = vlat(v[0], v[1], v[2], lat2, lon2);
-    const double vlon2 = vlon(v[0], v[1], v[2], lon2);
+    const double lat2 = grvx_lat(x[2]);
+    const double lon2 = grvx_lon(x[0], x[1]);
+    const double vlat2 = grvx_vlat(v[0], v[1], v[2], lat2, lon2);
+    const double vlon2 = grvx_vlon(v[0], v[1], v[2], lon2);
     const double v2_mag = sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
-    rc = init_missile(m2, lat2, lon2, v2_mag, -vlat2, -vlon2);
+    rc = grvx_init_missile(m2, lat2, lon2, v2_mag, -vlat2, -vlon2);
     assert(rc == 0);
 
-    unsigned n2 = propagate_missile(m2, p, H, &premature);
+    unsigned n2 = grvx_propagate_missile(m2, p, H, &premature);
     assert(premature != 0);
 
     // integration stops *after* the missile has passed the rim
@@ -61,8 +61,8 @@ int main(int argc, char **argv) {
         assert(fabs(m1->v[j][2] + m2->v[i][2]) < THRESHOLD);
     }
 
-    delete_missiles(trj);
-    delete_planets(p);
+    grvx_delete_missiles(trj);
+    grvx_delete_planets(p);
 
     return 0;
 }

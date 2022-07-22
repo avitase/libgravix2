@@ -3,7 +3,7 @@
 #include <math.h>
 
 static double dist(double xyz[3]) {
-    return acos(cos(lat(xyz[2])) * cos(lon(xyz[0], xyz[1])));
+    return acos(cos(grvx_lat(xyz[2])) * cos(grvx_lon(xyz[0], xyz[1])));
 }
 
 int main(int argc, char **argv) {
@@ -12,21 +12,21 @@ int main(int argc, char **argv) {
     const double THRESHOLD = 1e-10;
 
     const double r = 10. / 180. * M_PI;
-    const double v = v_scrcl(r);
+    const double v = grvx_v_scrcl(r);
 
-    PlanetsHandle p = new_planets(1);
-    int rc = set_planet(p, 0, 0., 0.);
+    GrvxPlanetsHandle p = grvx_new_planets(1);
+    int rc = grvx_set_planet(p, 0, 0., 0.);
     assert(rc == 0);
 
-    TrajectoryBatch trj = new_missiles(1);
-    struct Trajectory *m = get_trajectory(trj, 0);
-    rc = init_missile(m, r, 0., v, 0., 1.);
+    GrvxTrajectoryBatch trj = grvx_new_missiles(1);
+    struct GrvxTrajectory *m = grvx_get_trajectory(trj, 0);
+    rc = grvx_init_missile(m, r, 0., v, 0., 1.);
     assert(rc == 0);
 
     int premature = 0;
     for (int i = 0; i < N; i++) {
-        unsigned n = propagate_missile(m, p, H, &premature);
-        assert(n == TRAJECTORY_SIZE);
+        unsigned n = grvx_propagate_missile(m, p, H, &premature);
+        assert(n == GRVX_TRAJECTORY_SIZE);
         assert(premature == 0);
 
         for (int j = 0; j < n; j++) {
@@ -41,8 +41,8 @@ int main(int argc, char **argv) {
         }
     }
 
-    delete_missiles(trj);
-    delete_planets(p);
+    grvx_delete_missiles(trj);
+    grvx_delete_planets(p);
 
     return 0;
 }

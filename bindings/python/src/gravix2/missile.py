@@ -41,17 +41,17 @@ class Missile:
         self._missile = missile
         self._trajectory = None
 
-        init = lib.init_missile
+        init = lib.grvx_init_missile
         init.argtypes = [c_void_p, c_double, c_double, c_double, c_double, c_double]
         init.restype = c_int
         self._init = init
 
-        launch = lib.launch_missile
+        launch = lib.grvx_launch_missile
         launch.argtypes = [c_void_p, c_void_p, c_uint, c_double, c_double]
         launch.restype = c_int
         self._launch = launch
 
-        propagate = lib.propagate_missile
+        propagate = lib.grvx_propagate_missile
         propagate.argtypes = [c_void_p, c_void_p, c_double, POINTER(c_int)]
         propagate.restype = c_uint
         self._propagate = propagate
@@ -62,13 +62,13 @@ class Missile:
         self, *, pos: Sequence[float], orientation: Sequence[float], v: float
     ) -> None:
         """
-        Wrapper for ``libgravix2``'s ``init_missile()`` function
+        Wrapper for ``libgravix2``'s ``grvx_init_missile()`` function
 
         The initial position and orientation can either be passed as 2D tuples of
         latitudinal and longitudinal components or as 3D tuples in their respective
         Cartesian representation. If passed as 2D tuples ``libgravix2``'s helper
-        functions ``lat()``, ``lon()``, ``v_lat()`` and ``v_lon()`` are used for
-        conversions.
+        functions ``grvx_lat()``, ``grvx_lon()``, ``grvx_v_lat()`` and ``grvx_v_lon()``
+        are used for conversions.
 
         :param pos: Initial position
         :param orientation: Initial orientation
@@ -105,7 +105,7 @@ class Missile:
         self, *, planets: Planets, planet_idx: int, v: float, psi: float
     ) -> None:
         """
-        Wrapper for ``libgravix2``'s ``launch_missile()`` function
+        Wrapper for ``libgravix2``'s ``grvx_launch_missile()`` function
 
         :param planets: The planets
         :param planet_idx: The planet index (not ID)
@@ -132,7 +132,7 @@ class Missile:
 
     def propagate(self, planets: Planets, *, h: float) -> bool:
         """
-        Wrapper for ``libgravix2``'s ``propagate_missile()`` function
+        Wrapper for ``libgravix2``'s ``grvx_propagate_missile()`` function
 
         On success the :func:`gravix2.missile.Missile.propagate` is filled.
 
@@ -169,8 +169,9 @@ class Missiles:
     A sequence of :class:`gravix2.missile.Missile` corresponding to ``libgravix``'s
     ``Missiles``.
 
-    This proxy covers all necessary (de)allocations of ``libgravix``'s ``TrajectoryBatch`` from
-    the user and should behave like a tuple of :class:`gravix2.missile.Missile`:
+    This proxy covers all necessary (de)allocations of ``libgravix``'s
+    ``GrvxTrajectoryBatch`` from the user and should behave like a tuple of
+    :class:`gravix2.missile.Missile`:
 
     **Example**
 
@@ -193,12 +194,12 @@ class Missiles:
     def __init__(self, n: int, *, lib: ctypes.CDLL) -> None:
         n = int(n)
 
-        new_missiles = lib.new_missiles
+        new_missiles = lib.grvx_new_missiles
         new_missiles.argtypes = [c_uint]
         new_missiles.restype = c_void_p
         self._handle = new_missiles(n)
 
-        getter = lib.get_trajectory
+        getter = lib.grvx_get_trajectory
         getter.argtypes = [c_void_p, c_uint]
         getter.restype = c_void_p
 
@@ -206,7 +207,7 @@ class Missiles:
             Missile(missile=getter(self._handle, i), lib=lib) for i in range(n)
         ]
 
-        delete_missiles = lib.delete_missiles
+        delete_missiles = lib.grvx_delete_missiles
         delete_missiles.argtypes = [c_void_p]
         delete_missiles.restype = None
         self._delete_missiles = delete_missiles

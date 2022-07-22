@@ -5,11 +5,11 @@
 #include "planet.h"
 #include <math.h>
 
-#if POT_TYPE == POT_TYPE_3D
+#if GRVX_POT_TYPE == GRVX_POT_TYPE_3D
 #include "helpers.h"
 #endif
 
-#if POT_TYPE == POT_TYPE_3D
+#if GRVX_POT_TYPE == GRVX_POT_TYPE_3D
 static double pot3D_approx(double x) {
     const double TWO_PI = 2. * M_PI;
 
@@ -17,7 +17,7 @@ static double pot3D_approx(double x) {
     double acc = 0.;
 
     // accumulate contributions starting with the smallest one
-    for (unsigned i = 0; i < N_POT; i++) {
+    for (unsigned i = 0; i < GRVX_N_POT; i++) {
         acc += 1. / (TWO_PI * i + x) + 1. / (TWO_PI * (i + 1) - x) -
                4. / (TWO_PI * (2. * i + 1.));
     }
@@ -30,28 +30,28 @@ static double f3D_approx(double x) {
     double acc = 0.;
 
     // accumulate contributions starting with the smallest one
-    for (unsigned i = 0; i < N_POT; i++) {
-        double k = (double)(2 * (N_POT - 1 - i) + 1);
+    for (unsigned i = 0; i < GRVX_N_POT; i++) {
+        double k = (double)(2 * (GRVX_N_POT - 1 - i) + 1);
         acc += k / pow(M_PI * M_PI * k * k - x * x, 2);
     }
 
-    return -acc / sinc(x);
+    return -acc / grvx_sinc(x);
 }
 #endif
 
-void gradV(struct Vec3D *x, const struct Planets *planets) {
-    struct Vec3D acc = {0., 0., 0.};
+void grvx_gradV(struct GrvxVec3D *x, const struct GrvxPlanets *planets) {
+    struct GrvxVec3D acc = {0., 0., 0.};
     for (unsigned i = 0; i < planets->n; i++) {
-        struct Vec3D planet = {
+        struct GrvxVec3D planet = {
             planets->data[3 * i],
             planets->data[3 * i + 1],
             planets->data[3 * i + 2],
         };
-        const double d = dot(*x, planet);
+        const double d = grvx_dot(*x, planet);
 
-#if POT_TYPE == POT_TYPE_2D
+#if GRVX_POT_TYPE == GRVX_POT_TYPE_2D
         const double s = -1. / (1. - d);
-#elif POT_TYPE == POT_TYPE_3D
+#elif GRVX_POT_TYPE == GRVX_POT_TYPE_3D
         const double s = f3D_approx(acos(d) - M_PI);
 #endif
 
@@ -63,36 +63,37 @@ void gradV(struct Vec3D *x, const struct Planets *planets) {
     *x = acc;
 }
 
-double min_dist(const struct Vec3D *x, const struct Planets *planets) {
+double grvx_min_dist(const struct GrvxVec3D *x,
+                     const struct GrvxPlanets *planets) {
     double mdist = -1.;
 
     for (unsigned i = 0; i < planets->n; i++) {
-        struct Vec3D planet = {
+        struct GrvxVec3D planet = {
             planets->data[3 * i],
             planets->data[3 * i + 1],
             planets->data[3 * i + 2],
         };
-        const double d = dot(*x, planet);
+        const double d = grvx_dot(*x, planet);
         mdist = d > mdist ? d : mdist;
     }
 
     return mdist;
 }
 
-double v_esc(void) {
-#if POT_TYPE == POT_TYPE_2D
-    const double pot = -2. * log(sin(MIN_DIST / 2.));
-#elif POT_TYPE == POT_TYPE_3D
-    const double pot = pot3D_approx(MIN_DIST);
+double grvx_v_esc(void) {
+#if GRVX_POT_TYPE == GRVX_POT_TYPE_2D
+    const double pot = -2. * log(sin(GRVX_MIN_DIST / 2.));
+#elif GRVX_POT_TYPE == GRVX_POT_TYPE_3D
+    const double pot = pot3D_approx(GRVX_MIN_DIST);
 #endif
 
     return sqrt(2. * pot);
 }
 
-double v_scrcl(double r) {
-#if POT_TYPE == POT_TYPE_2D
+double grvx_v_scrcl(double r) {
+#if GRVX_POT_TYPE == GRVX_POT_TYPE_2D
     return sqrt((1. + cos(r)) / fabs(cos(r)));
-#elif POT_TYPE == POT_TYPE_3D
+#elif GRVX_POT_TYPE == GRVX_POT_TYPE_3D
     return sin(r) * sqrt(-f3D_approx(r - M_PI) / fabs(cos(r)));
 #endif
 }

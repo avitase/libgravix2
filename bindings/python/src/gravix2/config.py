@@ -16,6 +16,7 @@ class Config:
     :param min_dist: Same as ``MIN_DIST``
     :param composition_scheme: Same as ``COMPOSITION_SCHEME``
     """
+
     pot_type: str
     n_pot: Optional[int]
     trajectory_size: int
@@ -26,11 +27,12 @@ class Config:
 
 def get_config(*, lib: ctypes.CDLL) -> Config:
     """
-    Returns ``libgravix2``'s static ``Config``
+    Returns ``libgravix2``'s static ``GrvxConfig``
 
     :param lib: ``libgravix2`` library
     :return: The static configuration
     """
+
     class _Config(ctypes.Structure):
         _fields_ = [
             ("pot_type", c_char_p),
@@ -41,7 +43,7 @@ def get_config(*, lib: ctypes.CDLL) -> Config:
             ("composition_scheme", c_char_p),
         ]
 
-    get_cfg = lib.get_config
+    get_cfg = lib.grvx_get_config
     get_cfg.argtypes = None
     get_cfg.restype = POINTER(_Config)
 
@@ -55,7 +57,7 @@ def get_config(*, lib: ctypes.CDLL) -> Config:
         cfg.contents.composition_scheme.decode("ascii"),
     )
 
-    free_config = lib.free_config
+    free_config = lib.grvx_free_config
     free_config.argtypes = [POINTER(_Config)]
     free_config.restype = None
 

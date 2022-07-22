@@ -3,19 +3,19 @@
 #include <math.h>
 #include <stdlib.h>
 
-PlanetsHandle new_planets(unsigned n) {
-    struct Planets *ptr = malloc(sizeof(struct Planets));
+GrvxPlanetsHandle grvx_new_planets(unsigned n) {
+    struct GrvxPlanets *ptr = malloc(sizeof(struct GrvxPlanets));
     ptr->data = malloc(sizeof(double) * 3 * n);
     ptr->n = n;
     return ptr;
 }
 
-void delete_planets(PlanetsHandle p) {
+void grvx_delete_planets(GrvxPlanetsHandle p) {
     free(p->data);
     free(p);
 }
 
-int set_planet(PlanetsHandle p, unsigned i, double lat, double lon) {
+int grvx_set_planet(GrvxPlanetsHandle p, unsigned i, double lat, double lon) {
     if (i < p->n) {
         const double sin_lat = sin(lat);
         const double cos_lat = cos(lat);
@@ -32,7 +32,7 @@ int set_planet(PlanetsHandle p, unsigned i, double lat, double lon) {
     return -1;
 }
 
-unsigned pop_planet(PlanetsHandle p) {
+unsigned grvx_pop_planet(GrvxPlanetsHandle p) {
     if (p->n > 0) {
         p->n = p->n - 1;
     }
