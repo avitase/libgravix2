@@ -1,0 +1,10 @@
+<map id="grvx_dot" name="grvx_dot">
+<area shape="rect" id="node1" title="Dot product of a and b." alt="" coords="607,132,685,159"/>
+<area shape="rect" id="node2" href="$pot_8c.html#a16737972d01da9d683a09451d3dba145" title="Gradient of the potential at position q." alt="" coords="453,5,549,32"/>
+<area shape="rect" id="node3" href="$integrators_8c.html#acf77671e61cf1859b3a434a5267329dd" title="Multiple integration steps." alt="" coords="232,107,396,133"/>
+<area shape="rect" id="node4" href="$group__API.html#gae3b14b78f8b2418d4b8fdab4ebde45c9" title="Propagates a missile in the gravitational force field of planets." alt="" coords="5,81,184,108"/>
+<area shape="rect" id="node5" href="$pot_8c.html#a9b7a22989faba0b7fd589e2ee6f8efd9" title="Minimal distance to any planet." alt="" coords="444,157,559,184"/>
+<area shape="rect" id="node7" href="$group__API.html#gaa21fb62f1ec638cd0e0788305e433fa4" title="Computes the latitudinal speed, , from Cartesian coordinates." alt="" coords="460,208,543,235"/>
+<area shape="rect" id="node8" href="$group__API.html#ga0e30bc44a8315a2975d1cba7d9150413" title="Computes the (scaled) longitudinal speed, , from Cartesian coordinates." alt="" coords="458,259,545,285"/>
+<area shape="rect" id="node6" href="$group__API.html#gacbb830adc79d054bb88292ce65851536" title="Orbital period for isolated planets." alt="" coords="251,157,377,184"/>
+</map>

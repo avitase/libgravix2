@@ -1,0 +1,10 @@
+<map id="src/pot.c" name="src/pot.c">
+<area shape="rect" id="node1" title=" " alt="" coords="211,5,289,32"/>
+<area shape="rect" id="node2" href="$pot_8h.html" title="Gradient estimations of the potential." alt="" coords="5,80,60,107"/>
+<area shape="rect" id="node3" href="$api_8h.html" title="API." alt="" coords="84,80,139,107"/>
+<area shape="rect" id="node4" title=" " alt="" coords="107,155,180,181"/>
+<area shape="rect" id="node5" href="$linalg_8h.html" title="Helper functions for linear algebra calculations." alt="" coords="215,80,285,107"/>
+<area shape="rect" id="node6" href="$planet_8h.html" title="Definition of the set of planets." alt="" coords="310,80,385,107"/>
+<area shape="rect" id="node7" title=" " alt="" coords="409,80,477,107"/>
+<area shape="rect" id="node8" href="$helpers_8h.html" title="Compilation of helper functions." alt="" coords="502,80,585,107"/>
+</map>

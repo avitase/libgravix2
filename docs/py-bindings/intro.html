@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Introduction &mdash; pygravix2 0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Documentation" href="gravix2.html" />
+    <link rel="prev" title="Welcome to pygravix2’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> pygravix2
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#more-examples">More Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#how-to-install">How to install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#how-to-contribute">How to contribute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gravix2.html">Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pygravix2</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Introduction</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/intro.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading"></a></h1>
+<p>This is a thin wrapper around the C-API of <code class="docutils literal notranslate"><span class="pre">libgravix2</span></code>.
+Internally, this library uses <a class="reference external" href="https://docs.python.org/3/library/ctypes.html">Python’s ctypes</a> and <a class="reference external" href="https://numpy.org">NumPy</a> which are the only required dependencies.
+If provided with the path to <code class="docutils literal notranslate"><span class="pre">libgravix2.so</span></code>, its API is exposed by our proxy class
+<a class="reference internal" href="gravix2.html#gravix2.gravix2.Gravix2" title="gravix2.gravix2.Gravix2"><code class="xref py py-class docutils literal notranslate"><span class="pre">gravix2.gravix2.Gravix2</span></code></a> as returned by <code class="docutils literal notranslate"><span class="pre">gravix2.load_library</span></code>:</p>
+<p><strong>Example:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">gravix2</span>
+
+<span class="n">lib</span> <span class="o">=</span> <span class="n">gravix2</span><span class="o">.</span><span class="n">load_library</span><span class="p">(</span><span class="s1">&#39;path_to_libgravix2.so&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>From here on, one can use <code class="docutils literal notranslate"><span class="pre">lib</span></code>, for example, to create new <a class="reference internal" href="gravix2.html#gravix2.missile.Missiles" title="gravix2.missile.Missiles"><code class="xref py py-class docutils literal notranslate"><span class="pre">gravix2.missile.Missiles</span></code></a> by using <a class="reference internal" href="gravix2.html#gravix2.gravix2.Gravix2.new_missiles" title="gravix2.gravix2.Gravix2.new_missiles"><code class="xref py py-func docutils literal notranslate"><span class="pre">gravix2.gravix2.Gravix2.new_missiles()</span></code></a></p>
+<p><strong>Example:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">missiles</span> <span class="o">=</span> <span class="n">lib</span><span class="o">.</span><span class="n">new_missiles</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Typically, users shouldn’t instantiate any of our provided proxy classes manually but use the methods exposed by <a class="reference internal" href="gravix2.html#gravix2.gravix2.Gravix2" title="gravix2.gravix2.Gravix2"><code class="xref py py-class docutils literal notranslate"><span class="pre">gravix2.gravix2.Gravix2</span></code></a>.
+As most calls are forwarded to their wrapped counterparts in <code class="docutils literal notranslate"><span class="pre">libgravix2</span></code>, we intentionally kept the documentation for those methods short and refer to the <a class="reference external" href="https://avitase.github.io/libgravix2/">excellent documentation</a> of <code class="docutils literal notranslate"><span class="pre">libgravix2</span></code> instead.</p>
+<section id="more-examples">
+<h2>More Examples<a class="headerlink" href="#more-examples" title="Permalink to this heading"></a></h2>
+<p>We provide a more elaborated example in <a class="reference external" href="https://github.com/avitase/libgravix2/blob/main/bindings/python/example.ipynb">this notebook</a>.</p>
+</section>
+</section>
+<section id="how-to-install">
+<h1>How to install<a class="headerlink" href="#how-to-install" title="Permalink to this heading"></a></h1>
+<p>We don’t (yet) provide a PyPI package but, once you have downloaded the repository, building a wheel package is straightforward.
+First, download the repository and navigate to the root directory of the Python binding:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> git clone https://github.com/avitase/libgravix2
+<span class="gp">$</span> <span class="nb">cd</span> libgravix2/bindings/python/
+<span class="go">python $</span>
+</pre></div>
+</div>
+<p>Next, install/upgrade the <a class="reference external" href="https://pypi.org/project/build/">build package</a> from PyPI and build a wheel file</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python $ python3 -m venv venv</span>
+<span class="go">python $ . venv/bin/activate</span>
+<span class="go">(venv) python $ python3 -m pip install --upgrade build</span>
+<span class="go">(venv) python $ python3 -m build</span>
+<span class="go">* Creating venv isolated environment...</span>
+<span class="go">* Installing packages in isolated environment... (setuptools&gt;=42)</span>
+<span class="go">[...]</span>
+<span class="go">Successfully built pygravix2-x.y.tar.gz and pygravix2-x.y-py3-none-any.whl</span>
+<span class="go">(venv) python $</span>
+</pre></div>
+</div>
+<p>You should now see the <code class="docutils literal notranslate"><span class="pre">.whl</span></code> file in <code class="docutils literal notranslate"><span class="pre">dist/</span></code>. Copy the path as we will need it later</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">(venv) python $ ls `pwd`/dist/*.whl</span>
+<span class="go">&lt;PATH-TO-.whl&gt;</span>
+</pre></div>
+</div>
+<p>That’s all. You can now install <code class="docutils literal notranslate"><span class="pre">pygravix2</span></code> in any of your projects! For example</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">(other_venv) foo $ pip install &lt;PATH-TO-.whl&gt;</span>
+<span class="go">(other_venv) foo $ python3</span>
+<span class="go">Python 3.9.9 (main, Jan  1 1970, 00:00:01)</span>
+<span class="go">[GCC 11.2.0] on linux</span>
+<span class="go">Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.</span>
+<span class="gp">&gt;</span>&gt;&gt; import gravix2
+<span class="gp">&gt;</span>&gt;&gt;
+</pre></div>
+</div>
+</section>
+<section id="how-to-contribute">
+<h1>How to contribute<a class="headerlink" href="#how-to-contribute" title="Permalink to this heading"></a></h1>
+<p>This is work in progress and any help is highly welcome and will be appreciated.
+Please check your changes by running our test suite with <a class="reference external" href="https://pytest.org">pytest</a>.
+Note that one of our fixtures expects to find <code class="docutils literal notranslate"><span class="pre">libgravix2.so</span></code> in the <code class="docutils literal notranslate"><span class="pre">libs</span></code> directory:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">(venv) python $ mkdir -p libs/ &amp;&amp; cd libs/</span>
+<span class="go">(venv) libs $ ln -s ../../../build/src/libgravix2.so libgravix2.so</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">../../../build/</span></code> is the directory where we have built the C-API as a shared library.
+The unit tests can then be triggered from the root directory of the Python binding:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">(venv) python $ pip install --upgrade pytest</span>
+<span class="go">(venv) python $ python -m pytest .</span>
+<span class="go">============================== test session starts ===============================</span>
+<span class="go">platform linux -- Python 3.9.9, pytest-7.1.0, pluggy-1.0.0</span>
+<span class="go">rootdir: /libgravix2/bindings/python</span>
+<span class="go">plugins: anyio-3.5.0</span>
+<span class="go">collected 7 items</span>
+
+<span class="go">test/test_helpers.py ....                                                  [ 57%]</span>
+<span class="go">test/test_missile.py .                                                     [ 71%]</span>
+<span class="go">test/test_planets.py .                                                     [ 85%]</span>
+<span class="go">test/test_scrcl.py .                                                       [100%]</span>
+
+<span class="go">=============================== 7 passed in 0.15s ================================</span>
+</pre></div>
+</div>
+<p>Contribute your own tests but keep in mind that a unit test should not run for more than one second on a decently equipped machine.
+Remember to comment your contribution (w/ or w/o a unit test) and check the formatting of the <a class="reference external" href="https://www.sphinx-doc.org/">generated sphinx documentation</a> <strong>before</strong> submitting changes:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">(venv) python $ pip install --upgrade sphinx</span>
+<span class="go">(venv) python $ pip install --upgrade sphinx-rtd-theme</span>
+<span class="go">(venv) python $ cd doc &amp;&amp; make html</span>
+<span class="go">Running Sphinx v4.4.0</span>
+<span class="go">[...]</span>
+<span class="go">build succeeded.</span>
+
+<span class="go">The HTML pages are in build/html.</span>
+</pre></div>
+</div>
+<p>Furthermore, make sure to run the <a class="reference external" href="https://github.com/psf/black">black formatter</a> over all Python files <strong>before committing any changes!</strong></p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to pygravix2’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="gravix2.html" class="btn btn-neutral float-right" title="Documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Nis Meinert.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

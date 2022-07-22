@@ -1,0 +1,8 @@
+<map id="grvx_propagate_missile" name="grvx_propagate_missile">
+<area shape="rect" id="node1" title="Propagates a missile in the gravitational force field of planets." alt="" coords="5,5,184,32"/>
+<area shape="rect" id="node2" href="$linalg_8h.html#ade695e45519b67d429dc32d8590eb317" title="Dot product of a and b." alt="" coords="656,5,735,32"/>
+<area shape="rect" id="node3" href="$integrators_8h.html#acf77671e61cf1859b3a434a5267329dd" title="Multiple integration steps." alt="" coords="232,56,396,83"/>
+<area shape="rect" id="node4" href="$integrators_8c.html#a28a7bfa23cdef590950ec227733832fd" title="Single integration step." alt="" coords="444,56,608,83"/>
+<area shape="rect" id="node5" href="$linalg_8h.html#acce780f1411cbfacc913204f5610f3bf" title="Magnitude of vector." alt="" coords="483,107,569,133"/>
+<area shape="rect" id="node6" href="$pot_8h.html#a25db16939f21a056e2832100b61597d5" title="Minimal distance to any planet." alt="" coords="469,157,583,184"/>
+</map>

@@ -1,0 +1,10 @@
+<map id="src/integrators.c" name="src/integrators.c">
+<area shape="rect" id="node1" title=" " alt="" coords="257,5,384,32"/>
+<area shape="rect" id="node2" href="$integrators_8h.html" title="Symmetric and symplectic integrator for ODEs." alt="" coords="5,80,111,107"/>
+<area shape="rect" id="node4" title=" " alt="" coords="135,80,208,107"/>
+<area shape="rect" id="node5" href="$helpers_8h.html" title="Compilation of helper functions." alt="" coords="233,80,315,107"/>
+<area shape="rect" id="node6" href="$pot_8h.html" title="Gradient estimations of the potential." alt="" coords="340,80,395,107"/>
+<area shape="rect" id="node7" title=" " alt="" coords="419,80,494,107"/>
+<area shape="rect" id="node8" title=" " alt="" coords="519,80,587,107"/>
+<area shape="rect" id="node3" href="$linalg_8h.html" title="Helper functions for linear algebra calculations." alt="" coords="23,155,93,181"/>
+</map>

@@ -1,0 +1,4 @@
+<map id="grvx_set_planet" name="grvx_set_planet">
+<area shape="rect" id="node1" title="Initializes or overwrites the spatial position of a planet." alt="" coords="180,5,307,32"/>
+<area shape="rect" id="node2" href="$group__API.html#gacbb830adc79d054bb88292ce65851536" title="Orbital period for isolated planets." alt="" coords="5,5,132,32"/>
+</map>

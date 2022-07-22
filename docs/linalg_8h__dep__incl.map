@@ -1,0 +1,9 @@
+<map id="include/linalg.h" name="include/linalg.h">
+<area shape="rect" id="node1" title="Helper functions for linear algebra calculations." alt="" coords="293,5,415,32"/>
+<area shape="rect" id="node2" href="$integrators_8h.html" title="Symmetric and symplectic integrator for ODEs." alt="" coords="60,80,216,107"/>
+<area shape="rect" id="node5" href="$helpers_8c.html" title=" " alt="" coords="241,80,345,107"/>
+<area shape="rect" id="node6" href="$linalg_8c.html" title=" " alt="" coords="369,80,461,107"/>
+<area shape="rect" id="node7" href="$pot_8c.html" title=" " alt="" coords="486,80,563,107"/>
+<area shape="rect" id="node3" href="$integrators_8c.html" title=" " alt="" coords="5,155,132,181"/>
+<area shape="rect" id="node4" href="$missile_8c.html" title=" " alt="" coords="156,155,259,181"/>
+</map>
