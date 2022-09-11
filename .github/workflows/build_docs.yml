@@ -31,7 +31,7 @@ jobs:
 
     - name: Install LaTeX
       run: sudo apt-get update -q
-        && sudo apt-get install texlive-latex-base -q -y
+        && sudo apt-get install texlive-full -q -y
 
     - name: Generate figures
       working-directory: doc
