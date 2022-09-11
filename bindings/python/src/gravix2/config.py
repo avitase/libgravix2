@@ -15,6 +15,7 @@ class Config:
     :param int_steps: Same as ``INT_STEPS``
     :param min_dist: Same as ``MIN_DIST``
     :param composition_scheme: Same as ``COMPOSITION_SCHEME``
+    :param n_stages: Number of stages of the composition method
     """
 
     pot_type: str
@@ -23,6 +24,7 @@ class Config:
     int_steps: int
     min_dist: float
     composition_scheme: str
+    n_stages: int
 
 
 def get_config(*, lib: ctypes.CDLL) -> Config:
@@ -41,6 +43,7 @@ def get_config(*, lib: ctypes.CDLL) -> Config:
             ("int_steps", c_int),
             ("min_dist", c_double),
             ("composition_scheme", c_char_p),
+            ("n_stages", c_int),
         ]
 
     get_cfg = lib.grvx_get_config
@@ -55,6 +58,7 @@ def get_config(*, lib: ctypes.CDLL) -> Config:
         cfg.contents.int_steps,
         cfg.contents.min_dist,
         cfg.contents.composition_scheme.decode("ascii"),
+        cfg.contents.n_stages,
     )
 
     free_config = lib.grvx_free_config

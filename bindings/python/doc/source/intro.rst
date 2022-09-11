@@ -38,7 +38,7 @@ How to install
 We don't (yet) provide a PyPI package but, once you have downloaded the repository, building a wheel package is straightforward.
 First, download the repository and navigate to the root directory of the Python binding:
 
-.. code-block:: console
+.. code-block:: none
 
     $ git clone https://github.com/avitase/libgravix2
     $ cd libgravix2/bindings/python/
@@ -46,7 +46,7 @@ First, download the repository and navigate to the root directory of the Python 
 
 Next, install/upgrade the `build package <https://pypi.org/project/build/>`_ from PyPI and build a wheel file
 
-.. code-block:: console
+.. code-block:: none
 
     python $ python3 -m venv venv
     python $ . venv/bin/activate
@@ -60,14 +60,14 @@ Next, install/upgrade the `build package <https://pypi.org/project/build/>`_ fro
 
 You should now see the ``.whl`` file in ``dist/``. Copy the path as we will need it later
 
-.. code-block:: console
+.. code-block:: none
 
     (venv) python $ ls `pwd`/dist/*.whl
     <PATH-TO-.whl>
 
 That's all. You can now install ``pygravix2`` in any of your projects! For example
 
-.. code-block:: console
+.. code-block:: none
 
     (other_venv) foo $ pip install <PATH-TO-.whl>
     (other_venv) foo $ python3
@@ -83,37 +83,40 @@ How to contribute
 
 This is work in progress and any help is highly welcome and will be appreciated.
 Please check your changes by running our test suite with `pytest <https://pytest.org>`_.
-Note that one of our fixtures expects to find ``libgravix2.so`` in the ``libs`` directory:
+Note that one of our fixtures expects to find ``libgravix2.so`` in the ``lib`` directory:
 
-.. code-block:: console
+.. code-block:: none
 
-    (venv) python $ mkdir -p libs/ && cd libs/
-    (venv) libs $ ln -s ../../../build/src/libgravix2.so libgravix2.so
+    (venv) python $ mkdir -p lib/ && cd lib/
+    (venv) lib $ ln -s ../../../build/src/libgravix2.so libgravix2.so
 
 where ``../../../build/`` is the directory where we have built the C-API as a shared library.
 The unit tests can then be triggered from the root directory of the Python binding:
 
-.. code-block:: console
+.. code-block:: none
 
     (venv) python $ pip install --upgrade pytest
     (venv) python $ python -m pytest .
     ============================== test session starts ===============================
     platform linux -- Python 3.9.9, pytest-7.1.0, pluggy-1.0.0
     rootdir: /libgravix2/bindings/python
-    plugins: anyio-3.5.0
-    collected 7 items
+    collected 8 items
 
-    test/test_helpers.py ....                                                  [ 57%]
-    test/test_missile.py .                                                     [ 71%]
-    test/test_planets.py .                                                     [ 85%]
-    test/test_scrcl.py .                                                       [100%]
+    test_config.py::test_config PASSED                                       [ 12%]
+    test_helpers.py::test_lat PASSED                                         [ 25%]
+    test_helpers.py::test_lon PASSED                                         [ 37%]
+    test_helpers.py::test_vlat PASSED                                        [ 50%]
+    test_helpers.py::test_vlon PASSED                                        [ 62%]
+    test_missile.py::test_missiles PASSED                                    [ 75%]
+    test_planets.py::test_planets PASSED                                     [ 87%]
+    test_scrcl.py::test_missiles PASSED                                      [100%]
 
-    =============================== 7 passed in 0.15s ================================
+    ============================== 8 passed in 0.09s ===============================
 
 Contribute your own tests but keep in mind that a unit test should not run for more than one second on a decently equipped machine.
 Remember to comment your contribution (w/ or w/o a unit test) and check the formatting of the `generated sphinx documentation <https://www.sphinx-doc.org/>`_ **before** submitting changes:
 
-.. code-block:: console
+.. code-block:: none
 
     (venv) python $ pip install --upgrade sphinx
     (venv) python $ pip install --upgrade sphinx-rtd-theme

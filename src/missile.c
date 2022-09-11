@@ -1,21 +1,27 @@
+#include <assert.h>
+#include <math.h>
+#include <stddef.h>
+#include <stdlib.h>
+
 #include "api.h"
+#include "config.h"
 #include "integrators.h"
 #include "planet.h"
 #include "pot.h"
-#include <assert.h>
-#include <math.h>
-#include <stdlib.h>
 
-GrvxTrajectoryBatch grvx_new_missiles(unsigned n) {
+GrvxTrajectoryBatch grvx_new_missiles(unsigned n)
+{
     return malloc(sizeof(struct GrvxTrajectory) * n);
 }
 
-void grvx_delete_missiles(GrvxTrajectoryBatch batch) {
+void grvx_delete_missiles(GrvxTrajectoryBatch batch)
+{
     free(batch);
 }
 
 struct GrvxTrajectory *grvx_get_trajectory(GrvxTrajectoryBatch batch,
-                                           unsigned i) {
+                                           unsigned i)
+{
     return batch + i;
 }
 
@@ -24,7 +30,8 @@ int grvx_init_missile(struct GrvxTrajectory *t,
                       double lon,
                       double v,
                       double dlat,
-                      double dlon) {
+                      double dlon)
+{
     const double sin_lat = sin(lat);
     const double cos_lat = cos(lat);
     const double sin_lon = sin(lon);
@@ -35,6 +42,7 @@ int grvx_init_missile(struct GrvxTrajectory *t,
     t->x[0][2] = sin_lat;
 
     const double dv = sqrt(dlat * dlat + dlon * dlon);
+    assert(dv > 0.);
     t->v[0][0] = v * (-dlat * sin_lat * sin_lon + dlon * cos_lon) / dv;
     t->v[0][1] = v * (-dlat * sin_lat * cos_lon - dlon * sin_lon) / dv;
     t->v[0][2] = v * dlat * cos_lat / dv;
@@ -47,7 +55,8 @@ int grvx_init_missile(struct GrvxTrajectory *t,
     return 0;
 }
 
-static void rotation_matrix(double lat, double lon, struct GrvxVec3D rot[3]) {
+static void rotation_matrix(double lat, double lon, struct GrvxVec3D rot[3])
+{
     double sin_lat = sin(lat);
     double cos_lat = cos(lat);
     double sin_lon = sin(lon);
@@ -74,20 +83,17 @@ static void rotation_matrix(double lat, double lon, struct GrvxVec3D rot[3]) {
     rot[2] = r3;
 }
 
-int grvx_launch_missile(struct GrvxTrajectory *t,
-                        GrvxPlanetsHandle planets,
-                        unsigned planet,
-                        double v,
-                        double psi) {
-    if (planet >= planets->n) {
-        return -1;
-    }
-
+static void prepare_launch(GrvxPlanetsHandle planets,
+                           unsigned planet,
+                           double psi,
+                           struct GrvxVec3D *x,
+                           struct GrvxVec3D *v)
+{
     struct GrvxVec3D rot[3];
-    rotation_matrix(
-        grvx_lat(planets->data[3 * planet + 2]),
-        grvx_lon(planets->data[3 * planet], planets->data[3 * planet + 1]),
-        rot);
+    ptrdiff_t offset = 3 * (ptrdiff_t)planet;
+    rotation_matrix(grvx_lat(planets->data[offset + 2]),
+                    grvx_lon(planets->data[offset], planets->data[offset + 1]),
+                    rot);
 
     const double sin_r = sin(GRVX_MIN_DIST);
     const double cos_r = cos(GRVX_MIN_DIST);
@@ -99,29 +105,43 @@ int grvx_launch_missile(struct GrvxTrajectory *t,
         sin_r * cos_psi,
         cos_r,
     };
-    struct GrvxVec3D x1 = {
-        grvx_dot(rot[0], x0),
-        grvx_dot(rot[1], x0),
-        grvx_dot(rot[2], x0),
-    };
+
     struct GrvxVec3D v0 = {
         cos_r * sin_psi,
         cos_r * cos_psi,
         -sin_r,
     };
-    struct GrvxVec3D v1 = {
-        grvx_dot(rot[0], v0),
-        grvx_dot(rot[1], v0),
-        grvx_dot(rot[2], v0),
-    };
 
-    const double lat1 = grvx_lat(x1.z);
-    const double lon1 = grvx_lon(x1.x, x1.y);
+    x->x = grvx_dot(rot[0], x0);
+    x->y = grvx_dot(rot[1], x0);
+    x->z = grvx_dot(rot[2], x0);
 
-    const double sin_lat = sin(lat1);
-    const double cos_lat = cos(lat1);
-    const double sin_lon = sin(lon1);
-    const double cos_lon = cos(lon1);
+    v->x = grvx_dot(rot[0], v0);
+    v->y = grvx_dot(rot[1], v0);
+    v->z = grvx_dot(rot[2], v0);
+}
+
+int grvx_launch_missile(struct GrvxTrajectory *t,
+                        GrvxPlanetsHandle planets,
+                        unsigned planet,
+                        double v_abs,
+                        double psi)
+{
+    if (planet >= planets->n) {
+        return -1;
+    }
+
+    struct GrvxVec3D x;
+    struct GrvxVec3D v;
+    prepare_launch(planets, planet, psi, &x, &v);
+
+    const double lat = grvx_lat(x.z);
+    const double lon = grvx_lon(x.x, x.y);
+
+    const double sin_lat = sin(lat);
+    const double cos_lat = cos(lat);
+    const double sin_lon = sin(lon);
+    const double cos_lon = cos(lon);
 
     struct GrvxVec3D e_lat = {
         -sin_lat * sin_lon,
@@ -134,15 +154,16 @@ int grvx_launch_missile(struct GrvxTrajectory *t,
         0.,
     };
 
-    const double dlat1 = grvx_dot(v1, e_lat);
-    const double dlon1 = grvx_dot(v1, e_lon);
-    return grvx_init_missile(t, lat1, lon1, v, dlat1, dlon1);
+    const double dlat = grvx_dot(v, e_lat);
+    const double dlon = grvx_dot(v, e_lon);
+    return grvx_init_missile(t, lat, lon, v_abs, dlat, dlon);
 }
 
 unsigned grvx_propagate_missile(struct GrvxTrajectory *trj,
                                 GrvxPlanetsHandle planets,
                                 double h,
-                                int *premature) {
+                                int *premature)
+{
     struct GrvxQP qp = {
         .q.x = trj->x[GRVX_TRAJECTORY_SIZE - 1][0],
         .q.y = trj->x[GRVX_TRAJECTORY_SIZE - 1][1],
@@ -172,7 +193,8 @@ unsigned grvx_propagate_missile(struct GrvxTrajectory *trj,
     return i;
 }
 
-double grvx_orb_period(double v, double h) {
+double grvx_orb_period(double v, double h)
+{
     const double sin_threshold = sin(GRVX_MIN_DIST);
     const double cos_threshold = cos(GRVX_MIN_DIST);
 
@@ -196,9 +218,7 @@ double grvx_orb_period(double v, double h) {
     double mdist = -1.;
 
     struct GrvxQP qp2 = qp;
-    struct GrvxQP e = {
-        0., 0., 0., 0., 0., 0.,
-    };
+    struct GrvxQP e = {{0., 0., 0.}, {0., 0., 0.}};
     int t = 0;
     do {
         qp = qp2;
@@ -216,5 +236,5 @@ double grvx_orb_period(double v, double h) {
     const double dt = sqrt(2 * s / a);
     assert(!isnan(dt) && dt < 1.);
 
-    return ((double)t + dt) / GRVX_INT_STEPS;
+    return ((double)t + dt) / (double)GRVX_INT_STEPS;
 }

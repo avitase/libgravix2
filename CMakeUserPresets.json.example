@@ -1,0 +1,69 @@
+{
+  "version": 2,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 21,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "mydev-debug",
+      "hidden": true,
+      "inherits": ["dev-mode", "debug", "clang-tidy", "cppcheck", "sanitize"]
+    },
+    {
+      "name": "mydev-debug2D",
+      "binaryDir": "${sourceDir}/build/mydev2D",
+      "inherits": "mydev-debug",
+      "cacheVariables": {
+        "POT_TYPE": "2D"
+      }
+    },
+    {
+      "name": "mydev-debug3D",
+      "binaryDir": "${sourceDir}/build/mydev3D",
+      "inherits": "mydev-debug",
+      "cacheVariables": {
+        "POT_TYPE": "3D"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "mydev-debug2D",
+      "configurePreset": "mydev-debug2D",
+      "configuration": "Debug",
+      "jobs": 12
+    },
+    {
+      "name": "mydev-debug3D",
+      "configurePreset": "mydev-debug3D",
+      "configuration": "Debug",
+      "jobs": 12
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "mydev-debug2D",
+      "configurePreset": "mydev-debug2D",
+      "configuration": "Debug",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "jobs": 12
+      }
+    },
+    {
+      "name": "mydev-debug3D",
+      "configurePreset": "mydev-debug3D",
+      "configuration": "Debug",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "jobs": 12
+      }
+    }
+  ]
+}

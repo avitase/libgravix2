@@ -1,73 +1,108 @@
-cmake_minimum_required(VERSION 3.18)
+cmake_minimum_required(VERSION 3.21)
 
-project(libgravix2 C)
+include(cmake/prelude.cmake)
 
-include(cmake/StandardProjectSettings.cmake)
-include(cmake/PreventInSourceBuilds.cmake)
+project(
+    libgravix2
+    VERSION 0.1.0
+    DESCRIPTION "A fast simulation of attractive forces acting on point-like particles embedded onto the surface of a sphere."
+    HOMEPAGE_URL "https://github.com/avitase/libgravix2"
+    LANGUAGES C
+)
 
-add_library(project_options INTERFACE)
-target_compile_features(project_options INTERFACE c_std_11)
+include(cmake/variables.cmake)
 
-add_library(project_warnings INTERFACE)
-include(cmake/CompilerWarnings.cmake)
-set_project_warnings(project_warnings)
+# ---- Declare library ----
 
-include(cmake/Linker.cmake)
-configure_linker(project_options)
+add_library(
+    libgravix2_libgravix2
+    src/config.c
+    src/helpers.c
+    src/integrators.c
+    src/linalg.c
+    src/missile.c
+    src/planet.c
+    src/pot.c
+    src/version.c
+)
+add_library(libgravix2::libgravix2 ALIAS libgravix2_libgravix2)
 
-include(cmake/Sanitizers.cmake)
-enable_sanitizers(project_options)
+include(GenerateExportHeader)
+generate_export_header(
+    libgravix2_libgravix2
+    BASE_NAME libgravix2
+    EXPORT_MACRO_NAME GRVX_EXPORT
+    EXPORT_FILE_NAME export/libgravix2_export.h
+)
 
-include(cmake/Doxygen.cmake)
-enable_doxygen()
-
-option(ENABLE_TESTING "Enable Test Builds" OFF)
-if (ENABLE_TESTING)
-    if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-        enable_testing()
-        add_subdirectory(test)
-    else ()
-        message(FATAL_ERROR "Unit test have to be build in debug mode")
-    endif ()
-endif ()
-
-option(ENABLE_BENCHMARKS "Enable benchmarks" ON)
-if (ENABLE_BENCHMARKS)
-    add_subdirectory(benchmark)
-endif ()
-
-add_subdirectory(src)
-
-set(POT_TYPE "2D" CACHE STRING "Type of potential")
-set(POT_TYPE_VALUES "2D" "3D")
-set_property(CACHE POT_TYPE PROPERTY STRINGS ${POT_TYPE_VALUES})
-list(FIND POT_TYPE_VALUES ${POT_TYPE} POT_TYPE_INDEX)
-if (${POT_TYPE_INDEX} EQUAL -1)
-    message(FATAL_ERROR "Unkown potential type '${POT_TYPE}'; supported entries are ${POT_TYPE_VALUES}")
-else ()
-    message(STATUS "Using potential type: ${POT_TYPE}")
-endif ()
-
-if ("${POT_TYPE}" STREQUAL "3D")
-    set(N_POT "2" CACHE STRING "Approximation order of potential")
+if(NOT BUILD_SHARED_LIBS)
+    target_compile_definitions(libgravix2_libgravix2 PUBLIC LIBGRAVIX2_STATIC_DEFINE)
 endif()
 
-set(TRAJECTORY_SIZE "100" CACHE STRING "Size of trajectory")
-set(INT_STEPS "10" CACHE STRING "Number of integration steps between consecutive trajectory points")
-set(MIN_DIST "0.02" CACHE STRING "Min. allowed distance between missiles and planets")
+set_target_properties(
+    libgravix2_libgravix2 PROPERTIES
+    C_VISIBILITY_PRESET hidden
+    VERSION "${PROJECT_VERSION}"
+    SOVERSION "${PROJECT_VERSION_MAJOR}"
+    EXPORT_NAME libgravix2
+    OUTPUT_NAME gravix2
+)
 
-set(COMPOSITION_SCHEME "p8s15" CACHE STRING "Composition method of integrator")
-set(COMPOSITION_SCHEME_VALUES "p2s1" "p4s3" "p4s5" "p6s9" "p8s15")
-set_property(CACHE COMPOSITION_SCHEME PROPERTY STRINGS ${COMPOSITION_SCHEME_VALUES})
-list(FIND COMPOSITION_SCHEME_VALUES ${COMPOSITION_SCHEME} COMPOSITION_SCHEME_INDEX)
-if (${COMPOSITION_SCHEME_INDEX} EQUAL -1)
-    message(FATAL_ERROR "Unkown composition method '${COMPOSITION_SCHEME}'; supported entries are ${COMPOSITION_SCHEME_VALUES}")
-else ()
-    message(STATUS "Using composition method: ${COMPOSITION_SCHEME}")
-endif ()
+target_include_directories(
+    libgravix2_libgravix2 ${warning_guard}
+    PUBLIC
+    "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>"
+    "$<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/api>"
+    PRIVATE
+    "$<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/config>"
+)
 
+target_include_directories(
+    libgravix2_libgravix2 SYSTEM
+    PUBLIC
+    "$<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/export>"
+)
 
-configure_file(${PROJECT_SOURCE_DIR}/include/config.h.in src/config.h @ONLY)
-configure_file(${PROJECT_SOURCE_DIR}/include/config.h.in benchmark/config.h @ONLY)
-configure_file(${PROJECT_SOURCE_DIR}/include/config.h.in test/config.h @ONLY)
+target_link_libraries(libgravix2_libgravix2 PRIVATE m)
 
+target_compile_features(libgravix2_libgravix2 PUBLIC c_std_11)
+
+# ---- Install rules ----
+
+if(NOT CMAKE_SKIP_INSTALL_RULES)
+    include(cmake/install-rules.cmake)
+endif()
+
+# ---- Examples ----
+
+if(PROJECT_IS_TOP_LEVEL)
+    option(BUILD_EXAMPLES "Build examples tree" "${libgravix2_DEVELOPER_MODE}")
+    if(BUILD_EXAMPLES)
+        add_subdirectory(examples)
+    endif()
+endif()
+
+# ---- Documentation ----
+
+if(PROJECT_IS_TOP_LEVEL)
+    option(BUILD_DOCS "Build documentation using Doxygen" OFF)
+    if(BUILD_DOCS)
+        include(cmake/docs.cmake)
+    endif()
+endif()
+
+# ---- Developer mode ----
+
+if(libgravix2_DEVELOPER_MODE)
+    if(PROJECT_IS_TOP_LEVEL)
+        include(cmake/dev-mode.cmake)
+    else()
+        message(AUTHOR_WARNING "Developer mode is intended for developers of libgravix2")
+    endif()
+endif()
+
+# ---- Config ----
+
+include(config.cmake)
+configure_file(${PROJECT_SOURCE_DIR}/config.h.in config/config.h @ONLY)
+configure_file(${PROJECT_SOURCE_DIR}/api.h.in api/api.h @ONLY)

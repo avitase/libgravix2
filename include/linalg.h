@@ -3,8 +3,11 @@
  * \brief Helper functions for linear algebra calculations.
  */
 
-#ifndef GRVX_PHYSICS_LINALG_H
-#define GRVX_PHYSICS_LINALG_H
+#pragma once
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /*!
  * \brief 3D vector in cartesian representation.
@@ -30,4 +33,6 @@ double grvx_dot(struct GrvxVec3D a, struct GrvxVec3D b);
  */
 double grvx_mag(struct GrvxVec3D v);
 
-#endif // GRVX_PHYSICS_LINALG_H
+#ifdef __cplusplus
+} // extern "C"
+#endif

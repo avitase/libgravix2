@@ -3,8 +3,11 @@
  * \brief Definition of the set of planets.
  */
 
-#ifndef GRVX_PHYSICS_PLANET_H
-#define GRVX_PHYSICS_PLANET_H
+#pragma once
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /*!
  * \brief Set of planets.
@@ -19,4 +22,6 @@ struct GrvxPlanets {
     double *data; /*!< Data array. */
 };
 
-#endif // GRVX_PHYSICS_PLANET_H
+#ifdef __cplusplus
+} // extern "C"
+#endif

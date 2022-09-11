@@ -1,0 +1,67 @@
+name: Build documentation
+
+on:
+  push:
+    branches:
+    - main
+
+  pull_request:
+    branches:
+    - main
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-22.04
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install Doxygen
+      run: sudo apt-get update -q
+        && sudo apt-get install doxygen graphviz -q -y
+
+    - name: Generate figures
+      working-directory: docs
+      run: make
+
+    - name: Install Python dependencies
+      run: sudo apt-get install python3-pip
+        && pip3 install --user pytest
+        && pip3 install --user numpy
+        && pip3 install --user sphinx
+        && pip3 install --user sphinx-rtd-theme
+
+    - name: Configure main documentation
+      run: cmake --preset=docs
+
+    - name: Build main documentation
+      run: cmake --build build/docs
+
+    - name: Build documentation of Python binding
+      working-directory: bindings/python/doc
+      run: make html
+
+    - name: Install documentation of Python binding 
+      run: cp -r bindings/python/doc/build/html/ build/docs/html/py-bindings/
+        && touch build/docs/html/.nojekyll
+
+    - name: Setup Pages
+      uses: actions/configure-pages@v2
+
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v1
+      with:
+        path: build/docs/html/
+
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v1

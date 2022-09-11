@@ -1,106 +1,30 @@
-add_executable(check_asserts check_asserts.c)
-target_link_libraries(check_asserts PRIVATE project_warnings project_options)
-add_test(check_asserts check_asserts)
+cmake_minimum_required(VERSION 3.21)
 
-add_executable(planet_tests
-    planet_tests.c
-    ${PROJECT_SOURCE_DIR}/src/planet.c
-)
-target_include_directories(planet_tests BEFORE PUBLIC
-    ${CMAKE_CURRENT_BINARY_DIR}
-    ${PROJECT_SOURCE_DIR}/include
-)
-target_link_libraries(planet_tests PRIVATE project_warnings project_options m)
-add_test(planet_tests planet_tests)
+project(libgravix2Tests LANGUAGES CXX)
 
-add_executable(integrators_tests
-    integrator_tests.c
-    ${PROJECT_SOURCE_DIR}/src/helpers.c
-    ${PROJECT_SOURCE_DIR}/src/integrators.c
-    ${PROJECT_SOURCE_DIR}/src/linalg.c
-    ${PROJECT_SOURCE_DIR}/src/missile.c
-    ${PROJECT_SOURCE_DIR}/src/planet.c
-    ${PROJECT_SOURCE_DIR}/src/pot.c
-)
-target_include_directories(integrators_tests BEFORE PUBLIC
-    ${CMAKE_CURRENT_BINARY_DIR}
-    ${PROJECT_SOURCE_DIR}/include
-)
-target_link_libraries(integrators_tests PRIVATE project_warnings project_options m)
-add_test(integrators_tests integrators_tests)
+find_package(Catch2 REQUIRED 2)
 
-add_executable(missile_tests
-    missile_tests.c
-    ${PROJECT_SOURCE_DIR}/src/helpers.c
-    ${PROJECT_SOURCE_DIR}/src/integrators.c
-    ${PROJECT_SOURCE_DIR}/src/linalg.c
-    ${PROJECT_SOURCE_DIR}/src/missile.c
-    ${PROJECT_SOURCE_DIR}/src/planet.c
-    ${PROJECT_SOURCE_DIR}/src/pot.c
+add_executable(tests
+    main.cpp
+    test_config.cpp
+    test_helpers.cpp
+    test_integrator.cpp
+    test_missile.cpp
+    test_scrcl.cpp
+    test_torb.cpp
 )
-target_include_directories(missile_tests BEFORE PUBLIC
-    ${CMAKE_CURRENT_BINARY_DIR}
-    ${PROJECT_SOURCE_DIR}/include
-)
-target_link_libraries(missile_tests PRIVATE project_warnings project_options m)
-add_test(missile_tests missile_tests)
+set_property(TARGET tests PROPERTY CXX_STANDARD 20)
+target_link_libraries(tests PRIVATE Catch2::Catch2 libgravix2::libgravix2)
 
-add_executable(helpers_tests
-    helpers_tests.c
-    ${PROJECT_SOURCE_DIR}/src/helpers.c
-    ${PROJECT_SOURCE_DIR}/src/linalg.c
-)
-target_include_directories(helpers_tests BEFORE PUBLIC
-    ${CMAKE_CURRENT_BINARY_DIR}
-    ${PROJECT_SOURCE_DIR}/include
-)
-target_link_libraries(helpers_tests PRIVATE project_warnings project_options m)
-add_test(helpers_tests helpers_tests)
+if(ENABLE_SANITIZER)
+    target_compile_options(tests PRIVATE -fsanitize=address,undefined)
+    target_link_options(tests PRIVATE -fsanitize=address,undefined)
+endif()
 
-add_executable(scrcl_tests
-    scrcl_tests.c
-    ${PROJECT_SOURCE_DIR}/src/helpers.c
-    ${PROJECT_SOURCE_DIR}/src/integrators.c
-    ${PROJECT_SOURCE_DIR}/src/linalg.c
-    ${PROJECT_SOURCE_DIR}/src/missile.c
-    ${PROJECT_SOURCE_DIR}/src/planet.c
-    ${PROJECT_SOURCE_DIR}/src/pot.c
-)
-target_include_directories(scrcl_tests BEFORE PUBLIC
-    ${CMAKE_CURRENT_BINARY_DIR}
-    ${PROJECT_SOURCE_DIR}/include
-)
-target_link_libraries(scrcl_tests PRIVATE project_warnings project_options m)
-add_test(scrcl_tests scrcl_tests)
+include(../config.cmake)
+get_filename_component(parent_dir ${PROJECT_SOURCE_DIR} DIRECTORY)
+configure_file(${parent_dir}/config.h.in config/config.h @ONLY)
+target_include_directories(tests PRIVATE ${PROJECT_BINARY_DIR}/config)
 
-add_executable(sym_tests
-    sym_tests.c
-    ${PROJECT_SOURCE_DIR}/src/helpers.c
-    ${PROJECT_SOURCE_DIR}/src/integrators.c
-    ${PROJECT_SOURCE_DIR}/src/linalg.c
-    ${PROJECT_SOURCE_DIR}/src/missile.c
-    ${PROJECT_SOURCE_DIR}/src/planet.c
-    ${PROJECT_SOURCE_DIR}/src/pot.c
-)
-target_include_directories(sym_tests BEFORE PUBLIC
-    ${CMAKE_CURRENT_BINARY_DIR}
-    ${PROJECT_SOURCE_DIR}/include
-)
-target_link_libraries(sym_tests PRIVATE project_warnings project_options m)
-add_test(sym_tests sym_tests)
-
-add_executable(torb_tests
-    torb_tests.c
-    ${PROJECT_SOURCE_DIR}/src/helpers.c
-    ${PROJECT_SOURCE_DIR}/src/integrators.c
-    ${PROJECT_SOURCE_DIR}/src/linalg.c
-    ${PROJECT_SOURCE_DIR}/src/missile.c
-    ${PROJECT_SOURCE_DIR}/src/planet.c
-    ${PROJECT_SOURCE_DIR}/src/pot.c
-)
-target_include_directories(torb_tests BEFORE PUBLIC
-    ${CMAKE_CURRENT_BINARY_DIR}
-    ${PROJECT_SOURCE_DIR}/include
-)
-target_link_libraries(torb_tests PRIVATE project_warnings project_options m)
-add_test(torb_tests torb_tests)
+include(Catch)
+catch_discover_tests(tests)

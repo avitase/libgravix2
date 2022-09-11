@@ -1,8 +1,11 @@
 #include "config.h"
-#include "api.h"
+
 #include <stdlib.h>
 
-struct GrvxConfig *grvx_get_config(void) {
+#include "api.h"
+
+struct GrvxConfig *grvx_get_config(void)
+{
     struct GrvxConfig *cfg = malloc(sizeof(struct GrvxConfig));
 
 #if GRVX_POT_TYPE == GRVX_POT_TYPE_2D
@@ -16,11 +19,13 @@ struct GrvxConfig *grvx_get_config(void) {
     cfg->trajectory_size = GRVX_TRAJECTORY_SIZE;
     cfg->int_steps = GRVX_INT_STEPS;
     cfg->min_dist = GRVX_MIN_DIST;
-    cfg->composition_scheme = GRVX_COMPOSITION_SCHEME_STR;
+    cfg->composition_scheme = GRVX_COMPOSITION_SCHEME;
+    cfg->n_stages = GRVX_COMPOSITION_STAGES;
 
     return cfg;
 }
 
-void grvx_free_config(struct GrvxConfig *cfg) {
+void grvx_free_config(struct GrvxConfig *cfg)
+{
     free(cfg);
 }

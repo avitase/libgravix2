@@ -1,16 +1,22 @@
 #include "pot.h"
+
+#include <math.h>
+#include <stddef.h>
+
 #include "api.h"
 #include "config.h"
 #include "linalg.h"
 #include "planet.h"
-#include <math.h>
 
 #if GRVX_POT_TYPE == GRVX_POT_TYPE_3D
+#include "constants.h"
 #include "helpers.h"
 #endif
 
 #if GRVX_POT_TYPE == GRVX_POT_TYPE_3D
-static double pot3D_approx(double x) {
+
+static double pot3D_approx(double x)
+{
     const double TWO_PI = 2. * M_PI;
 
     // TODO: use lookup table and cubic hermite spline
@@ -25,7 +31,8 @@ static double pot3D_approx(double x) {
     return acc / (2. * TWO_PI);
 }
 
-static double f3D_approx(double x) {
+static double f3D_approx(double x)
+{
     // TODO: use lookup table and cubic hermite spline
     double acc = 0.;
 
@@ -37,11 +44,13 @@ static double f3D_approx(double x) {
 
     return -acc / grvx_sinc(x);
 }
+
 #endif
 
-void grvx_gradV(struct GrvxVec3D *x, const struct GrvxPlanets *planets) {
+void grvx_gradV(struct GrvxVec3D *x, const struct GrvxPlanets *planets)
+{
     struct GrvxVec3D acc = {0., 0., 0.};
-    for (unsigned i = 0; i < planets->n; i++) {
+    for (ptrdiff_t i = 0; i < planets->n; i++) {
         struct GrvxVec3D planet = {
             planets->data[3 * i],
             planets->data[3 * i + 1],
@@ -64,14 +73,16 @@ void grvx_gradV(struct GrvxVec3D *x, const struct GrvxPlanets *planets) {
 }
 
 double grvx_min_dist(const struct GrvxVec3D *x,
-                     const struct GrvxPlanets *planets) {
+                     const struct GrvxPlanets *planets)
+{
     double mdist = -1.;
 
     for (unsigned i = 0; i < planets->n; i++) {
+        ptrdiff_t offset = 3 * (ptrdiff_t)i;
         struct GrvxVec3D planet = {
-            planets->data[3 * i],
-            planets->data[3 * i + 1],
-            planets->data[3 * i + 2],
+            planets->data[offset],
+            planets->data[offset + 1],
+            planets->data[offset + 2],
         };
         const double d = grvx_dot(*x, planet);
         mdist = d > mdist ? d : mdist;
@@ -80,7 +91,8 @@ double grvx_min_dist(const struct GrvxVec3D *x,
     return mdist;
 }
 
-double grvx_v_esc(void) {
+double grvx_v_esc(void)
+{
 #if GRVX_POT_TYPE == GRVX_POT_TYPE_2D
     const double pot = -2. * log(sin(GRVX_MIN_DIST / 2.));
 #elif GRVX_POT_TYPE == GRVX_POT_TYPE_3D
@@ -90,7 +102,8 @@ double grvx_v_esc(void) {
     return sqrt(2. * pot);
 }
 
-double grvx_v_scrcl(double r) {
+double grvx_v_scrcl(double r)
+{
 #if GRVX_POT_TYPE == GRVX_POT_TYPE_2D
     return sqrt((1. + cos(r)) / fabs(cos(r)));
 #elif GRVX_POT_TYPE == GRVX_POT_TYPE_3D
