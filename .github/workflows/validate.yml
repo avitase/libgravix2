@@ -15,11 +15,18 @@ jobs:
   lint:
     runs-on: ubuntu-22.04
 
+    - name: Install dependencies
+      run: sudo apt-get update -q
+        && sudo apt-get install clang-format black -q -y
+
     steps:
     - uses: actions/checkout@v3
 
-    - name: Lint
+    - name: Check formatting of C library
       run: cmake -D FORMAT_COMMAND=clang-format -P cmake/lint.cmake
+
+    - name: Check formatting of Python binding
+      run: black --check bindings/python/{src,test}
 
   test:
     needs: [lint]
