@@ -11,8 +11,6 @@ on:
 
 jobs:
   coverage:
-    needs: [lint]
-
     runs-on: ubuntu-22.04
 
     strategy:
