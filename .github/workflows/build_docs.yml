@@ -29,6 +29,10 @@ jobs:
       run: sudo apt-get update -q
         && sudo apt-get install doxygen graphviz -q -y
 
+    - name: Install LaTeX
+      run: sudo apt-get update -q
+        && sudo apt-get install texlive-latex-base -q -y
+
     - name: Generate figures
       working-directory: doc
       run: make
