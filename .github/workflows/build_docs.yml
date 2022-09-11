@@ -30,7 +30,7 @@ jobs:
         && sudo apt-get install doxygen graphviz -q -y
 
     - name: Generate figures
-      working-directory: docs
+      working-directory: doc
       run: make
 
     - name: Install Python dependencies
