@@ -80,7 +80,7 @@ jobs:
     - name: Build
       run: cmake --build build/sanitize -j 2
 
-    - name: Test C lib
+    - name: Test C library
       working-directory: build/sanitize
       env:
         ASAN_OPTIONS: "strict_string_checks=1:\
