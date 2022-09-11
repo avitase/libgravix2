@@ -10,3 +10,6 @@ CMakeUserPresets.json
 .vs/
 .vscode/
 *.swp
+
+# misc
+Testing/
