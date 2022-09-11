@@ -36,7 +36,7 @@ def test_lon(random, libgravix2):
 
     m, n = 4, 100
     x = np.random.rand(m, n)
-    y = np.sqrt(1.0 - x**2)
+    y = np.sqrt(1.0 - x ** 2)
 
     lon = grvx.get_lon(x=x[0], y=y[0])
     assert lon.shape == (n,)
@@ -54,7 +54,7 @@ def test_vlat(libgravix2, random):
     grvx = gravix2.load_library(libgravix2)
 
     x, y = 0.1, 0.2
-    z = np.sqrt(1.0 - x**2 - y**2)
+    z = np.sqrt(1.0 - x ** 2 - y ** 2)
 
     vx, vy = 0.3, 0.4
     vz = -(x * vx + y * vy) / z
@@ -73,7 +73,7 @@ def test_vlat(libgravix2, random):
     m, n = 4, 100
     x = np.random.rand(m, n) * 0.5
     y = np.random.rand(m, n) * 0.5
-    z = np.sqrt(1.0 - x**2 - y**2)
+    z = np.sqrt(1.0 - x ** 2 - y ** 2)
 
     vx = np.random.rand(m, n)
     vy = np.random.rand(m, n)
@@ -103,7 +103,7 @@ def test_vlon(libgravix2, random):
     grvx = gravix2.load_library(libgravix2)
 
     x, y = 0.1, 0.2
-    z = np.sqrt(1.0 - x**2 - y**2)
+    z = np.sqrt(1.0 - x ** 2 - y ** 2)
 
     vx, vy = 0.3, 0.4
     vz = -(x * vx + y * vy) / z
@@ -116,7 +116,7 @@ def test_vlon(libgravix2, random):
     m, n = 4, 100
     x = np.random.rand(m, n) * 0.5
     y = np.random.rand(m, n) * 0.5
-    z = np.sqrt(1.0 - x**2 - y**2)
+    z = np.sqrt(1.0 - x ** 2 - y ** 2)
 
     vx = np.random.rand(m, n)
     vy = np.random.rand(m, n)

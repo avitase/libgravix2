@@ -35,7 +35,7 @@ def test_missiles(libgravix2):
     lat = np.arcsin(x[:, 2])
     lon = np.arctan2(x[:, 0], x[:, 1])
     dist = np.arccos(np.cos(lat) * np.cos(lon))
-    v_abs = np.sqrt(np.sum(v**2, axis=1))
+    v_abs = np.sqrt(np.sum(v ** 2, axis=1))
 
     r_error = np.rad2deg(dist - r0)
     v_error = np.rad2deg(v_abs - v0)
