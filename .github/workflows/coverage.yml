@@ -1,0 +1,45 @@
+name: Generate coverage report
+
+on:
+  push:
+    branches:
+    - main
+
+  pull_request:
+    branches:
+    - main
+
+jobs:
+  coverage:
+    needs: [lint]
+
+    runs-on: ubuntu-22.04
+
+    strategy:
+      matrix:
+        pot_type: [2D, 3D]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install LCov and Catch2
+      run: sudo apt-get update -q
+        && sudo apt-get install lcov catch2 -q -y
+
+    - name: Configure
+      run: cmake --preset=ci-coverage -DPOT_TYPE=${{ matrix.pot_type }}
+
+    - name: Build
+      run: cmake --build build/coverage -j 2
+
+    - name: Test
+      working-directory: build/coverage
+      run: ctest --output-on-failure -j 2
+
+    - name: Process coverage info
+      run: cmake --build build/coverage -t coverage
+
+    - name: Submit to codecov.io
+      uses: codecov/codecov-action@v3
+      with:
+        file: build/coverage/coverage.info
