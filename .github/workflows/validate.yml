@@ -69,7 +69,7 @@ jobs:
 
     - name: Install Catch2 and Python dependencies
       run: sudo apt-get update -q
-        && sudo apt-get install catch2 pyton3-pip -q -y
+        && sudo apt-get install catch2 python3-pip -q -y
         && pip3 install --user pytest
         && pip3 install --user numpy
 
