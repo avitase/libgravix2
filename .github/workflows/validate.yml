@@ -64,9 +64,11 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Install Catch2
+    - name: Install Catch2 and Python dependencies
       run: sudo apt-get update -q
-        && sudo apt-get install catch2 -q -y
+        && sudo apt-get install catch2 pyton3-pip -q -y
+        && pip3 install --user pytest
+        && pip3 install --user numpy
 
     - name: Configure
       env: { CC: clang }
@@ -75,7 +77,7 @@ jobs:
     - name: Build
       run: cmake --build build/sanitize -j 2
 
-    - name: Test
+    - name: Test C lib
       working-directory: build/sanitize
       env:
         ASAN_OPTIONS: "strict_string_checks=1:\
@@ -85,3 +87,8 @@ jobs:
                        detect_leaks=1"
         UBSAN_OPTIONS: print_stacktrace=1
       run: ctest --output-on-failure -j 2
+
+    - name: Test Python binding
+      run: mkdir -p bindings/python/lib/
+        && ln -sfr build/sanitize/libgravix2.so bindings/python/lib/
+        && python3 -m pytest bindings/python/test/
