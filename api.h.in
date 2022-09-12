@@ -1,5 +1,5 @@
 /*!
- * \file libgravix2.h
+ * \file api.h
  * \brief API of libgravix2
  *
  * See module \ref API for a detailed description.
