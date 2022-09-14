@@ -6,6 +6,8 @@
 TEST_CASE("Test basic integrator properties for single planets", "[integrator]")
 {
     auto planets = grvx_new_planets(1);
+    REQUIRE(grvx_count_planets(planets) == 1);
+
     int rc = grvx_set_planet(planets, 0, 0., 0.);
     REQUIRE(rc == 0);
 
@@ -42,6 +44,8 @@ TEST_CASE("Test integrator properties for multiple planets", "[integrator]")
 
     auto uni2 = grvx_new_planets(2);
     auto uni3 = grvx_new_planets(3);
+    REQUIRE(grvx_count_planets(uni2) == 2);
+    REQUIRE(grvx_count_planets(uni3) == 3);
 
     double lat1 = 0.;
     double lat2 = 1.;
@@ -128,6 +132,7 @@ TEST_CASE("Test symmetry of integrator", "[integrator]")
     REQUIRE(N < grvx_orb_period(V0, H));
 
     auto p = grvx_new_planets(1);
+    REQUIRE(grvx_count_planets(p) == 1);
 
     int rc = grvx_set_planet(p, 0, 0., 0.);
     REQUIRE(rc == 0);

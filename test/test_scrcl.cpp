@@ -18,6 +18,8 @@ TEST_CASE("Test small circle dynamics")
     auto v = grvx_v_scrcl(r);
 
     auto p = grvx_new_planets(1);
+    REQUIRE(grvx_count_planets(p) == 1);
+
     auto rc = grvx_set_planet(p, 0, 0., 0.);
     REQUIRE(rc == 0);
 

@@ -109,6 +109,15 @@ GRVX_EXPORT GrvxPlanetsHandle grvx_new_planets(unsigned n);
  */
 GRVX_EXPORT void grvx_delete_planets(GrvxPlanetsHandle handle);
 
+
+/*!
+ * \brief Counts the planets.
+ *
+ * @param handle The planets handle.
+ * @return Number of planets.
+ */
+GRVX_EXPORT unsigned grvx_count_planets(GrvxPlanetsHandle handle);
+
 /*!
  * \brief Initializes or overwrites the spatial position of a planet.
  *

@@ -20,6 +20,10 @@ void grvx_delete_planets(GrvxPlanetsHandle p)
     free(p);
 }
 
+unsigned grvx_count_planets(GrvxPlanetsHandle p) {
+    return p->n;
+}
+
 int grvx_set_planet(GrvxPlanetsHandle p, unsigned i, double lat, double lon)
 {
     if (i < p->n) {

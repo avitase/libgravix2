@@ -14,6 +14,8 @@ TEST_CASE("Test orbital time", "[integrator]")
                       std::make_pair(2. * V, 1337.));                   //
 
     auto p = grvx_new_planets(1);
+    REQUIRE(grvx_count_planets(p) == 1);
+
     int rc = grvx_set_planet(p, 0, 0., 0.);
     REQUIRE(rc == 0);
 
