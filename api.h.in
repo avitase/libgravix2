@@ -136,6 +136,21 @@ GRVX_EXPORT int
 grvx_set_planet(GrvxPlanetsHandle handle, unsigned i, double lat, double lon);
 
 /*!
+ * \brief Retrieves the spatial position of a planet.
+ *
+ * Retrieves the spatial position of a planet. See grvx_set_planet() for how to
+ * set these values.
+ *
+ * @param handle The planets handle.
+ * @param i ID of the planet to be initialized.
+ * @param lat Latitude.
+ * @param lon Longitude.
+ * @return Zero on success.
+ */
+GRVX_EXPORT int
+grvx_get_planet(GrvxPlanetsHandle handle, unsigned i, double *lat, double *lon);
+
+/*!
  * \brief Removes the last planet from the universe.
  *
  * The last planet in the universe is the one with the largest ID. If called

@@ -10,6 +10,7 @@ add_executable(tests
     test_helpers.cpp
     test_integrator.cpp
     test_missile.cpp
+    test_planet.cpp
     test_scrcl.cpp
     test_torb.cpp
 )
