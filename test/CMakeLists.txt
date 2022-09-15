@@ -17,6 +17,7 @@ add_executable(tests
 set_property(TARGET tests PROPERTY CXX_STANDARD 20)
 target_link_libraries(tests PRIVATE Catch2::Catch2 libgravix2::libgravix2)
 
+option(ENABLE_SANITIZER "Enable sanitizers" OFF)
 if(ENABLE_SANITIZER)
     target_compile_options(tests PRIVATE -fsanitize=address,undefined)
     target_link_options(tests PRIVATE -fsanitize=address,undefined)
