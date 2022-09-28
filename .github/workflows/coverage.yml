@@ -25,7 +25,7 @@ jobs:
         && sudo apt-get install lcov catch2 -q -y
 
     - name: Configure
-      run: cmake --preset=ci-coverage -DPOT_TYPE=${{ matrix.pot_type }}
+      run: cmake --preset=ci-coverage -DGRVX_POT_TYPE=${{ matrix.pot_type }}
 
     - name: Build
       run: cmake --build build/coverage -j 2

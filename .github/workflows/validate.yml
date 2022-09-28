@@ -48,7 +48,7 @@ jobs:
 
     - name: Configure
       env: { CC: clang }
-      run: cmake --preset=ci-sanitize -DPOT_TYPE=${{ matrix.pot_type }}
+      run: cmake --preset=ci-sanitize -DGRVX_POT_TYPE=${{ matrix.pot_type }}
 
     - name: Build
       run: cmake --build build/sanitize -j 2
