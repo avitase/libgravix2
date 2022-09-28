@@ -5,7 +5,6 @@ set(package libgravix2)
 
 install(
     DIRECTORY
-    # include/
     "${PROJECT_BINARY_DIR}/api/"
     "${PROJECT_BINARY_DIR}/export/"
     DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/libgravix2"
