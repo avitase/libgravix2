@@ -68,3 +68,24 @@ jobs:
       run: mkdir -p bindings/python/lib/
         && ln -sfr build/sanitize/libgravix2.so bindings/python/lib/
         && python3 -m pytest bindings/python/test/
+
+  api:
+    needs: [test]
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        pot_type: [2D, 3D]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Configure
+      run: cmake --preset=release -DGRVX_POT_TYPE=${{ matrix.pot_type }}
+
+    - name: Build
+      run: cmake --build build/release -j 2
+
+    - name: Test API surface
+      run: ./test_api_surface.sh build/release/libgravix2.so
