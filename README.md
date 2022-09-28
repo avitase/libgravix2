@@ -48,8 +48,8 @@ libgravix2 $ cmake --install build/release
 If you prefer to find the files in non-default locations you have to set `CMAKE_INSTALL_PREFIX` during configuration, e.g.,
 ```
 libgravix2 $ cmake --preset=release -DCMAKE_INSTALL_PREFIX=/some/path
-libgravix2 $ cmake --build build/release       (as before)
-libgravix2 $ cmake --install build/release     (as before)
+libgravix2 $ cmake --build build/release                  # as before
+libgravix2 $ cmake --install build/release                # as before
 ```
 
 There are more configuration options that can be set during compilation either by passing them directly via `-D` to `cmake` (as shown before with `CMAKE_INSTALL_PREFIX`) or via a graphical tool, such as [`ccmake`](https://cmake.org/cmake/help/latest/manual/ccmake.1.html):
