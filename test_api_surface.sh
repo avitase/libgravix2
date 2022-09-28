@@ -10,7 +10,9 @@ if [ ! -f api_surface.txt ]; then
     exit 2
 fi
 
-API=`nm -D -f posix $1 | awk '{ print $2 "," $1}' | grep "^T," | cut -d, -f2`
+sort -o api_surface.txt{,}
+
+API=`nm -D -f posix $1 | awk '{ print $2 "," $1}' | grep "^T," | cut -d, -f2 | sort`
 if echo "$API" | cmp --silent - api_surface.txt; then
     echo SUCCESS
     exit 0
