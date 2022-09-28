@@ -9,12 +9,12 @@ class Config:
     """
     ``libgravix2`` static configuration
 
-    :param pot_type: Same as ``POT_TYPE``
-    :param n_pot: Same as ``N_POT``
-    :param trajectory_size: Same as ``TRAJECTORY_SIZE``
-    :param int_steps: Same as ``INT_STEPS``
-    :param min_dist: Same as ``MIN_DIST``
-    :param composition_scheme: Same as ``COMPOSITION_SCHEME``
+    :param pot_type: Same as ``GRVX_POT_TYPE``
+    :param n_pot: Same as ``GRVX_N_POT``
+    :param trajectory_size: Same as ``GRVX_TRAJECTORY_SIZE``
+    :param int_steps: Same as ``GRVX_INT_STEPS``
+    :param min_dist: Same as ``GRVX_MIN_DIST``
+    :param composition_scheme: Same as ``GRVX_COMPOSITION_SCHEME``
     :param n_stages: Number of stages of the composition method
     """
 
