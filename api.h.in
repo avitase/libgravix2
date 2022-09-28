@@ -85,8 +85,8 @@ typedef struct GrvxPlanets *GrvxPlanetsHandle;
  * should be discarded by the caller.
  */
 struct GrvxTrajectory {
-    double x[@TRAJECTORY_SIZE@][3]; /*!< Cartesian position. */
-    double v[@TRAJECTORY_SIZE@][3]; /*!< Cartesian velocity. */
+    double x[@GRVX_TRAJECTORY_SIZE@][3]; /*!< Cartesian position. */
+    double v[@GRVX_TRAJECTORY_SIZE@][3]; /*!< Cartesian velocity. */
 };
 
 /*!

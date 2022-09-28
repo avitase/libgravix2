@@ -10,14 +10,14 @@
       "name": "pot2D",
       "hidden": true,
       "cacheVariables": {
-        "POT_TYPE": "2D"
+        "GRVX_POT_TYPE": "2D"
       }
     },
     {
       "name": "pot3D",
       "hidden": true,
       "cacheVariables": {
-        "POT_TYPE": "3D"
+        "GRVX_POT_TYPE": "3D"
       }
     },
     {

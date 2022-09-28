@@ -56,12 +56,12 @@ There are more configuration options that can be set during compilation either b
  - `CMAKE_BUILD_TYPE`: `Release` (default) or `Debug`. If enabling unit tests, this has to be set to `Debug`.
  - `ENABLE_TESTING`: `On` or `Off` (default). Generate unit tests and require a `Debug` build. Tests can be run with `ctest` after building.
  - `ENABLE_DOXYGEN`: `On` of `Off` (default). Generate documentation and require a [Doxygen installation](https://www.doxygen.nl/index.html).
- - `POT_TYPE`: `2D` (default) or `3D`.
- - `N_POT`: Approximation order of the force field. Only available if `POT_TYPE` is set to `3D`. (Default: `0`)
- - `TRAJECTORY_SIZE`: Size of trajectory. (Default: `100`)
- - `INT_STEPS`: Number of integration steps between trajectory points. (Default: `10`)
- - `MIN_DIST`: Smallest allowed distance between missiles and planets. (Default: `1` degree.)
- - `COMPOSITION_SCHEME`: `p2s1` , `p4s3` , `p4s5` , `p6s9` or `p8s15` (default).
+ - `GRVX_POT_TYPE`: `2D` (default) or `3D`.
+ - `GRVX_N_POT`: Approximation order of the force field. Only available if `POT_TYPE` is set to `3D`. (Default: `0`)
+ - `GRVX_TRAJECTORY_SIZE`: Size of trajectory. (Default: `100`)
+ - `GRVX_INT_STEPS`: Number of integration steps between trajectory points. (Default: `10`)
+ - `GRVX_MIN_DIST`: Smallest allowed distance between missiles and planets. (Default: `1` degree.)
+ - `GRVX_COMPOSITION_SCHEME`: `p2s1` , `p4s3` , `p4s5` , `p6s9` or `p8s15` (default).
 
 Have a look into our [documentation](https://avitase.github.io/libgravix2/) for more information about these options.
 
