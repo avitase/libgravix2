@@ -32,7 +32,7 @@ generate_export_header(
     libgravix2_libgravix2
     BASE_NAME libgravix2
     EXPORT_MACRO_NAME GRVX_EXPORT
-    EXPORT_FILE_NAME export/libgravix2_export.h
+    EXPORT_FILE_NAME export/libgravix2/libgravix2_export.h
 )
 
 if(NOT BUILD_SHARED_LIBS)
@@ -104,5 +104,5 @@ endif()
 # ---- Config ----
 
 include(config.cmake)
-configure_file(${PROJECT_SOURCE_DIR}/config.h.in config/config.h @ONLY)
-configure_file(${PROJECT_SOURCE_DIR}/api.h.in api/api.h @ONLY)
+configure_file(${PROJECT_SOURCE_DIR}/config.h.in config/libgravix2/config.h @ONLY)
+configure_file(${PROJECT_SOURCE_DIR}/api.h.in api/libgravix2/api.h @ONLY)

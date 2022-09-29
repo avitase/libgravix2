@@ -1,5 +1,5 @@
-#include "api.h"
-#include "config.h"
+#include "libgravix2/api.h"
+#include "libgravix2/config.h"
 #include <catch2/catch.hpp>
 #include <string>
 

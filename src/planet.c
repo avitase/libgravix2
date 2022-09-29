@@ -1,10 +1,10 @@
-#include "planet.h"
+#include "libgravix2/planet.h"
 
 #include <math.h>
 #include <stddef.h>
 #include <stdlib.h>
 
-#include "api.h"
+#include "libgravix2/api.h"
 
 GrvxPlanetsHandle grvx_new_planets(unsigned n)
 {

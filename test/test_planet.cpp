@@ -1,4 +1,4 @@
-#include "api.h"
+#include "libgravix2/api.h"
 #include <catch2/catch.hpp>
 #include <cmath>
 

@@ -1,11 +1,11 @@
-#include "integrators.h"
+#include "libgravix2/integrators.h"
 
 #include <assert.h>
 #include <math.h>
 
-#include "config.h"
-#include "helpers.h"
-#include "pot.h"
+#include "libgravix2/config.h"
+#include "libgravix2/helpers.h"
+#include "libgravix2/pot.h"
 
 #if GRVX_COMPOSITION_P2S1 == GRVX_COMPOSITION_ID
 // Vanilla Strang splitting

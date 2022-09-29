@@ -25,7 +25,7 @@ endif()
 
 include(../config.cmake)
 get_filename_component(parent_dir ${PROJECT_SOURCE_DIR} DIRECTORY)
-configure_file(${parent_dir}/config.h.in config/config.h @ONLY)
+configure_file(${parent_dir}/config.h.in config/libgravix2/config.h @ONLY)
 target_include_directories(tests PRIVATE ${PROJECT_BINARY_DIR}/config)
 
 include(Catch)

@@ -1,8 +1,8 @@
-#include "config.h"
+#include "libgravix2/config.h"
 
 #include <stdlib.h>
 
-#include "api.h"
+#include "libgravix2/api.h"
 
 struct GrvxConfig *grvx_get_config(void)
 {

@@ -1,4 +1,4 @@
-#include "linalg.h"
+#include "libgravix2/linalg.h"
 
 #include <math.h>
 

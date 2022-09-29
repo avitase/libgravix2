@@ -54,7 +54,7 @@
 
 #pragma once
 
-#include "libgravix2_export.h"
+#include "libgravix2/libgravix2_export.h"
 #include <stdint.h>
 
 #ifdef __cplusplus

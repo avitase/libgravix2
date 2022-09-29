@@ -1,9 +1,9 @@
-#include "helpers.h"
+#include "libgravix2/helpers.h"
 
 #include <math.h>
 
-#include "api.h"
-#include "linalg.h"
+#include "libgravix2/api.h"
+#include "libgravix2/linalg.h"
 
 double grvx_lat(double z)
 {
