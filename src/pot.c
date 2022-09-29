@@ -9,8 +9,8 @@
 #include "libgravix2/planet.h"
 
 #if GRVX_POT_TYPE == GRVX_POT_TYPE_3D
-#include "constants.h"
-#include "helpers.h"
+#include "libgravix2/constants.h"
+#include "libgravix2/helpers.h"
 #endif
 
 #if GRVX_POT_TYPE == GRVX_POT_TYPE_3D
