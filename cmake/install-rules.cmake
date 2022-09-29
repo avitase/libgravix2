@@ -5,7 +5,6 @@ set(package libgravix2)
 
 install(
     FILES
-    include/libgravix2/game.h
     ${PROJECT_BINARY_DIR}/api/libgravix2/api.h
     ${PROJECT_BINARY_DIR}/export/libgravix2/libgravix2_export.h
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/libgravix2
