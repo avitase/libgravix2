@@ -158,8 +158,8 @@ int grvx_request_launch(GrvxGameHandle game,
     }
 
     struct GrvxTrajectory *trj = grvx_get_trajectory(game->missiles, 0);
-    int rc = grvx_launch_missile(
-        trj, game->planets, planet_id, missile->v / game->v0, missile->psi);
+    int rc = grvx_launch_missile(trj, game->planets, planet_id,
+                                 missile->v / game->v0, missile->psi);
     if (rc != 0) {
         return rc;
     }
@@ -211,8 +211,8 @@ int grvx_request_launch(GrvxGameHandle game,
                 malloc(sizeof(struct GrvxMissileObservation));
             obs->planet_id = get_closest_planet(game->planets, lat, lon);
             obs->t = missile->t_ping;
-            grvx_get_planet(
-                game->planets, obs->planet_id, &obs->lat, &obs->lon);
+            grvx_get_planet(game->planets, obs->planet_id, &obs->lat,
+                            &obs->lon);
 
             game->observations = add_observation(game->observations, obs);
         }
