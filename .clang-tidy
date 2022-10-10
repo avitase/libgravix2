@@ -8,6 +8,7 @@ Checks: "-*,\
   -bugprone-easily-swappable-parameters,\
   concurrency-*,\
   misc-*,\
+  -misc-unused-parameters,\
   portability-*,\
   openmp-*"
 WarningsAsErrors: '*'

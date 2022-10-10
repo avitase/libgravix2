@@ -7,6 +7,7 @@ find_package(Catch2 REQUIRED 2)
 add_executable(tests
     main.cpp
     test_config.cpp
+    test_game.cpp
     test_helpers.cpp
     test_integrator.cpp
     test_missile.cpp

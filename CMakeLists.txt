@@ -17,10 +17,12 @@ include(cmake/variables.cmake)
 add_library(
     libgravix2_libgravix2
     src/config.c
+    src/game.c
     src/helpers.c
     src/integrators.c
     src/linalg.c
     src/missile.c
+    src/observations.c
     src/planet.c
     src/pot.c
     src/version.c
