@@ -1,4 +1,4 @@
-#include "api.h"
+#include "libgravix2/api.h"
 #include <catch2/catch.hpp>
 #include <cmath>
 
@@ -15,7 +15,10 @@ TEST_CASE("Test missile", "[missile]")
     REQUIRE(T > 0.);
 
     auto planets = grvx_new_planets(1);
-    grvx_set_planet(planets, 0, 0., 0.);
+    REQUIRE(grvx_count_planets(planets) == 1);
+
+    int rc = grvx_set_planet(planets, 0, 0., 0.);
+    REQUIRE(rc == 0);
 
     auto missiles = grvx_new_missiles(1);
     auto *m = grvx_get_trajectory(missiles, 0);

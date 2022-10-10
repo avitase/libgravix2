@@ -1,5 +1,5 @@
 /*!
- * \file libgravix2.h
+ * \file api.h
  * \brief API of libgravix2
  *
  * See module \ref API for a detailed description.
@@ -54,7 +54,8 @@
 
 #pragma once
 
-#include "libgravix2_export.h"
+#include "libgravix2/libgravix2_export.h"
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -85,8 +86,8 @@ typedef struct GrvxPlanets *GrvxPlanetsHandle;
  * should be discarded by the caller.
  */
 struct GrvxTrajectory {
-    double x[@TRAJECTORY_SIZE@][3]; /*!< Cartesian position. */
-    double v[@TRAJECTORY_SIZE@][3]; /*!< Cartesian velocity. */
+    double x[@GRVX_TRAJECTORY_SIZE@][3]; /*!< Cartesian position. */
+    double v[@GRVX_TRAJECTORY_SIZE@][3]; /*!< Cartesian velocity. */
 };
 
 /*!
@@ -99,7 +100,7 @@ struct GrvxTrajectory {
  * @param n Number of planets.
  * @return Planets handle to yet uninitialized planets.
  */
-GRVX_EXPORT GrvxPlanetsHandle grvx_new_planets(unsigned n);
+GRVX_EXPORT GrvxPlanetsHandle grvx_new_planets(uint32_t n);
 
 /*!
  * \brief Deletes all planets of the associated handle and frees the allocated
@@ -108,6 +109,14 @@ GRVX_EXPORT GrvxPlanetsHandle grvx_new_planets(unsigned n);
  * @param handle The planets handle.
  */
 GRVX_EXPORT void grvx_delete_planets(GrvxPlanetsHandle handle);
+
+/*!
+ * \brief Counts the planets.
+ *
+ * @param handle The planets handle.
+ * @return Number of planets.
+ */
+GRVX_EXPORT uint32_t grvx_count_planets(GrvxPlanetsHandle handle);
 
 /*!
  * \brief Initializes or overwrites the spatial position of a planet.
@@ -123,8 +132,27 @@ GRVX_EXPORT void grvx_delete_planets(GrvxPlanetsHandle handle);
  * @param lon Longitude.
  * @return Zero on success.
  */
-GRVX_EXPORT int
-grvx_set_planet(GrvxPlanetsHandle handle, unsigned i, double lat, double lon);
+GRVX_EXPORT int32_t grvx_set_planet(GrvxPlanetsHandle handle,
+                                    uint32_t i,
+                                    double lat,
+                                    double lon);
+
+/*!
+ * \brief Retrieves the spatial position of a planet.
+ *
+ * Retrieves the spatial position of a planet. See grvx_set_planet() for how to
+ * set these values.
+ *
+ * @param handle The planets handle.
+ * @param i ID of the planet to be initialized.
+ * @param lat Latitude.
+ * @param lon Longitude.
+ * @return Zero on success.
+ */
+GRVX_EXPORT int32_t grvx_get_planet(GrvxPlanetsHandle handle,
+                                    uint32_t i,
+                                    double *lat,
+                                    double *lon);
 
 /*!
  * \brief Removes the last planet from the universe.
@@ -136,7 +164,7 @@ grvx_set_planet(GrvxPlanetsHandle handle, unsigned i, double lat, double lon);
  * @param handle The planets handle.
  * @return Number of remaining planets in the universe.
  */
-GRVX_EXPORT unsigned grvx_pop_planet(GrvxPlanetsHandle handle);
+GRVX_EXPORT uint32_t grvx_pop_planet(GrvxPlanetsHandle handle);
 
 /*!
  * \brief Handle to a batch of trajectories.
@@ -156,7 +184,7 @@ typedef struct GrvxTrajectory *GrvxTrajectoryBatch;
  * @param n Number of missiles to be bundled into a batch.
  * @return The handle to the batch.
  */
-GRVX_EXPORT GrvxTrajectoryBatch grvx_new_missiles(unsigned n);
+GRVX_EXPORT GrvxTrajectoryBatch grvx_new_missiles(uint32_t n);
 
 /*!
  * \brief Deletes a batch of missiles and frees the allocated memory.
@@ -177,7 +205,7 @@ GRVX_EXPORT void grvx_delete_missiles(GrvxTrajectoryBatch batch);
  * @return The trajectory handle of the requested missile.
  */
 GRVX_EXPORT struct GrvxTrajectory *
-grvx_get_trajectory(GrvxTrajectoryBatch batch, unsigned i);
+grvx_get_trajectory(GrvxTrajectoryBatch batch, uint32_t i);
 
 /*!
  * \brief Initializes the position and velocity of a missile on the sphere.
@@ -207,12 +235,12 @@ grvx_get_trajectory(GrvxTrajectoryBatch batch, unsigned i);
  * \cos\phi\f$.
  * @return Zero on success.
  */
-GRVX_EXPORT int grvx_init_missile(struct GrvxTrajectory *trj,
-                                  double lat,
-                                  double lon,
-                                  double v,
-                                  double dlat,
-                                  double dlon);
+GRVX_EXPORT int32_t grvx_init_missile(struct GrvxTrajectory *trj,
+                                      double lat,
+                                      double lon,
+                                      double v,
+                                      double dlat,
+                                      double dlon);
 
 /*!
  * \brief Initializes a missile on the rim of a given planet.
@@ -236,11 +264,11 @@ GRVX_EXPORT int grvx_init_missile(struct GrvxTrajectory *trj,
  * @param psi The azimuthal position on the rim.
  * @return Zero on success.
  */
-GRVX_EXPORT int grvx_launch_missile(struct GrvxTrajectory *trj,
-                                    GrvxPlanetsHandle planets_handle,
-                                    unsigned planet_id,
-                                    double v_abs,
-                                    double psi);
+GRVX_EXPORT int32_t grvx_launch_missile(struct GrvxTrajectory *trj,
+                                        GrvxPlanetsHandle planets_handle,
+                                        uint32_t planet_id,
+                                        double v_abs,
+                                        double psi);
 
 /*!
  * \brief Propagates a missile in the gravitational force field of planets.
@@ -278,10 +306,10 @@ GRVX_EXPORT int grvx_launch_missile(struct GrvxTrajectory *trj,
  * missile passes a planet rim within the last integration step! (The
  * \p premature flag is still set in this case.)
  */
-GRVX_EXPORT unsigned grvx_propagate_missile(struct GrvxTrajectory *trj,
+GRVX_EXPORT uint32_t grvx_propagate_missile(struct GrvxTrajectory *trj,
                                             GrvxPlanetsHandle planets,
                                             double h,
-                                            int *premature);
+                                            int32_t *premature);
 
 /*!
  * \brief Computes the latitudinal position, \f$\phi\f$, from Cartesian
@@ -377,13 +405,13 @@ GRVX_EXPORT double grvx_orb_period(double v0, double h);
  * compilation. The corresponding compile-time constants that can be passed to
  * <a href="https://cmake.org">CMake</a> are:
  *
- *  - ``POT_TYPE``: same as GrvxConfig::pot_type
- *  - ``N_POT``: same as GrvxConfig::n_pot
- *  - ``TRAJECTORY_SIZE``: same as GrvxConfig::trajectory_size
- *  - ``INT_STEPS``: same as GrvxConfig::int_steps
- *  - ``MIN_DIST``: same as GrvxConfig::min_dist
- *  - ``P_MIN``: same as GrvxConfig::p_min
- *  - ``COMPOSITION_SCHEME``: same as GrvxConfig::composition_scheme
+ *  - ``GRVX_POT_TYPE``: same as GrvxConfig::pot_type
+ *  - ``GRVX_N_POT``: same as GrvxConfig::n_pot
+ *  - ``GRVX_TRAJECTORY_SIZE``: same as GrvxConfig::trajectory_size
+ *  - ``GRVX_INT_STEPS``: same as GrvxConfig::int_steps
+ *  - ``GRVX_MIN_DIST``: same as GrvxConfig::min_dist
+ *  - ``GRVX_P_MIN``: same as GrvxConfig::p_min
+ *  - ``GRVX_COMPOSITION_SCHEME``: same as GrvxConfig::composition_scheme
  *
  * Note that none of these settings is necessarily needed to interact with the
  * API, for example, grvx_propagate_missile() returns the number of simulated
@@ -424,7 +452,7 @@ struct GrvxConfig {
      * Possible values: Positive integer values or undefined if
      * GrvxConfig::pot_type is ``"2D"``.
      */
-    int n_pot;
+    int32_t n_pot;
 
     /*!
      * \brief Size of trajectory.
@@ -434,7 +462,7 @@ struct GrvxConfig {
      *
      * Possible values: Positive, non-zero integer values.
      */
-    int trajectory_size;
+    int32_t trajectory_size;
 
     /*!
      * \brief Number of integration steps between trajectory points.
@@ -445,7 +473,7 @@ struct GrvxConfig {
      *
      * Possible values: Positive, non-zero integer values.
      */
-    int int_steps;
+    int32_t int_steps;
 
     /*!
      * \brief Minimal allowed distance between missiles and planets.
@@ -470,7 +498,7 @@ struct GrvxConfig {
      *
      * See GrvxConfig.composition_scheme for details.
      */
-    int n_stages;
+    int32_t n_stages;
 };
 
 /*!

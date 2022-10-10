@@ -16,7 +16,7 @@
       "binaryDir": "${sourceDir}/build/mydev2D",
       "inherits": "mydev-debug",
       "cacheVariables": {
-        "POT_TYPE": "2D"
+        "GRVX_POT_TYPE": "2D"
       }
     },
     {
@@ -24,7 +24,7 @@
       "binaryDir": "${sourceDir}/build/mydev3D",
       "inherits": "mydev-debug",
       "cacheVariables": {
-        "POT_TYPE": "3D"
+        "GRVX_POT_TYPE": "3D"
       }
     }
   ],

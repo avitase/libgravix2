@@ -3,11 +3,11 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-#include "api.h"
-#include "config.h"
-#include "integrators.h"
-#include "planet.h"
-#include "pot.h"
+#include "libgravix2/api.h"
+#include "libgravix2/config.h"
+#include "libgravix2/integrators.h"
+#include "libgravix2/planet.h"
+#include "libgravix2/pot.h"
 
 GrvxTrajectoryBatch grvx_new_missiles(unsigned n)
 {

@@ -10,14 +10,14 @@
       "name": "pot2D",
       "hidden": true,
       "cacheVariables": {
-        "POT_TYPE": "2D"
+        "GRVX_POT_TYPE": "2D"
       }
     },
     {
       "name": "pot3D",
       "hidden": true,
       "cacheVariables": {
-        "POT_TYPE": "3D"
+        "GRVX_POT_TYPE": "3D"
       }
     },
     {
@@ -77,7 +77,7 @@
       "name": "flags",
       "hidden": true,
       "cacheVariables": {
-        "CMAKE_C_FLAGS": "-Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wcast-qual -Wshadow -Wformat=2 -Wundef -Werror -Wwrite-strings"
+        "CMAKE_C_FLAGS": "-Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wcast-qual -Wshadow -Wformat=2 -Wundef -Werror -Wwrite-strings -Wno-unused-parameter"
       }
     },
     {

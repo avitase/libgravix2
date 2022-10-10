@@ -1,16 +1,16 @@
-#include "pot.h"
+#include "libgravix2/pot.h"
 
 #include <math.h>
 #include <stddef.h>
 
-#include "api.h"
-#include "config.h"
-#include "linalg.h"
-#include "planet.h"
+#include "libgravix2/api.h"
+#include "libgravix2/config.h"
+#include "libgravix2/linalg.h"
+#include "libgravix2/planet.h"
 
 #if GRVX_POT_TYPE == GRVX_POT_TYPE_3D
-#include "constants.h"
-#include "helpers.h"
+#include "libgravix2/constants.h"
+#include "libgravix2/helpers.h"
 #endif
 
 #if GRVX_POT_TYPE == GRVX_POT_TYPE_3D

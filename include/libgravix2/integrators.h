@@ -9,7 +9,7 @@
 extern "C" {
 #endif
 
-#include "linalg.h"
+#include "libgravix2/linalg.h"
 
 struct GrvxPlanets;
 

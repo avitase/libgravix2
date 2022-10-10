@@ -1,4 +1,4 @@
-#include "api.h"
+#include "libgravix2/api.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
