@@ -6,14 +6,27 @@
  */
 
 /*!
- * \defgroup Game Game
- * \brief API for creating and interacting with games.
+ * \defgroup game Game Extension
+ * \brief Extension of our API that can be used as a building block for game
+ *        servers.
  *
  * @{
  *
- * TODO: explain relation to libgravix2 (extension of its API)
- * TODO: explain (fractional) ticks
- * TODO: unit is radians
+ * The Game module is an extension of the libgravix2 API. Games are created
+ * from a given set of planets. If not already initialized,
+ * grvx_rnd_init_planets() can be used to randomly sample the planets in the
+ * universe.
+ *
+ * Use grvx_init_game() and grvx_delete_game() to generate and delete games.
+ * The game API is designed to encapsulate the initialization and propagation
+ * of missiles, and it introduces two new data structures: GrvxMissileLaunch
+ * and GrvxMissileObservation. The former is used to request new missile
+ * launches (see grvx_request_launch()) and the latter summarizes events at
+ * given time ticks.
+ *
+ * Time is represented by ticks and is advanced via grvx_observe_or_tick(). A
+ * tick is an integer, however, observable events are represented as fractions
+ * of ticks.
  */
 
 #pragma once
@@ -51,21 +64,24 @@ struct GrvxMissileLaunch {
     /*!
      * \brief Ping.
      *
-     * Scheduled time to broadcast a ping.
+     * A ping is send after this number of ticks if the missile wasn't destroyed
+     * earlier.
      */
-    double t_ping;
+    double dt_ping;
 
     /*!
      * \brief Self-destruction.
      *
-     * Scheduled time of self-destruction.
+     * The missile self destructs after this number of ticks if it didn't
+     * collide with a planet before. Self-destructions are unobservable events.
      */
-    double t_end;
+    double dt_end;
 
     /*!
      * \brief Initial velocity.
      *
-     * Velocity during launch.
+     * Velocity during launch in multiples of the escape velocity; see
+     * grvx_v_esc().
      */
     double v;
 
@@ -81,7 +97,8 @@ struct GrvxMissileLaunch {
  * \brief Observation of a missile.
  *
  * Missiles are observed in space and time either by their scheduled ping or
- * when they detonate at the surface of a planet.
+ * when they detonate at the surface of a planet. Self-destructions are
+ * unobservable events.
  */
 struct GrvxMissileObservation {
     /*!
@@ -92,7 +109,7 @@ struct GrvxMissileObservation {
      */
     uint32_t planet_id;
 
-    /*
+    /*!
      * \brief Tick of observation.
      *
      * Point in time of scheduled ping or detonation at a planet surface.
@@ -102,14 +119,14 @@ struct GrvxMissileObservation {
     /*!
      * \brief Latitude.
      *
-     * Latitudinal position.
+     * Latitudinal position in radians.
      */
     double lat;
 
     /*!
      * \brief Longitude.
      *
-     * Longitudinal position.
+     * Longitudinal position in radians.
      */
     double lon;
 };
@@ -150,7 +167,7 @@ GRVX_EXPORT int32_t grvx_rnd_init_planets(GrvxPlanetsHandle planets,
 /*!
  * \brief Initializes a new game from a set of planets.
  *
- * A new game is created from a set of (already initialized) planets.
+ * A new game is created from a set of planets.
  *
  * The caller of this functions owns this new game instance and it is his/her
  * obligation to eventually destroy it via grvx_delete_game().
@@ -181,7 +198,7 @@ GRVX_EXPORT void grvx_delete_game(GrvxGameHandle handle);
  * the product of the number of integration steps between trajectory points,
  * ``GRVX_INT_STEPS``, and the trajectory size ``GRVX_TRAJECTORY_SIZE``.
  * This makes \p dt and the simulated time interval independent of
- * ``GRVX_INT_STEPS`` and ``GRVX_TRAJECTORY_SIZE`.
+ * ``GRVX_INT_STEPS`` and ``GRVX_TRAJECTORY_SIZE?``.
  *
  * @param game The game handle.
  * @param planet_id ID of the planet.
@@ -197,10 +214,10 @@ GRVX_EXPORT int32_t grvx_request_launch(GrvxGameHandle game,
 /*!
  * \brief Returns a new observation or advances time.
  *
- * Pings and planet destructions are observations and a list of observations is
- * associated with each tick. Upon calling one element of the list for the
- * current tick is returned and is removed from the list. The current tick is
- * written to \p t.
+ * Pings and detonations at planet surfaces are observable and a list of
+ * observations is associated with each tick. Upon calling one element of the
+ * list for the current tick is returned and is removed from the list. The
+ * current tick is written to \p t.
  * If the list is empty, time is advanced by increasing the tick count by one.
  * This updated tick is written to \p t and ``NULL`` is returned.
  *
@@ -221,4 +238,4 @@ grvx_observe_or_tick(GrvxGameHandle game, uint32_t *t);
 } // extern "C"
 #endif
 
-/*! @} */ // end of group API
+/*! @} */ // end of group game

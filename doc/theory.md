@@ -1,14 +1,14 @@
 The propagation of point-like particles, aka _missiles_, are simulated in the gravitational force field of static center of masses, aka _planets_, on the surface of a unit sphere.
-%Planets and missiles are restricted to stay exactly on the surface at any time.
 
 In this document, we describe in detail the theoretical background and list all equations that are necessary to efficiently deal with this library.
 If you prefer a more experimental-orientated approach you can skip this section and directly jump to [the description of the API](@ref API).
 There, you will find everything necessary to use the library and to run your simulations.
 
+We also provide a minimalistic [game extension](@ref game) that is built on top of the API.
+Read its documentation [here](@ref game) if you are interested in using it as a building block for your game server.
+
 # Theory
-%Planets generate a static gravitational force field \f$\vec\nabla V\f$ on the surface of a unit sphere which we refer to as _the manifold_ from here on.
 Missiles do not generate a force field but move in \f$\vec\nabla V\f$ whereas planets are static and stay fixed.
-%Planets and missiles are placed on the manifold and the dynamics of the latter are constrained to not leave it at any time.
 Let \f$(\vec q, \vec p) \in \mathbb{R}^3 \otimes \mathbb{R}^3\f$ be the phase space coordinates of a single missile and let us think about \f$\vec q\f$ as the spatial position which is sufficient to evaluate \f$V\f$ such that the Hamiltonian of a single missile with mass \f$m\f$ reads:
 \f[
     H(\vec{q}, \vec{p}) = \frac{p^2}{2m} + V(\vec{q}) + \lambda g(\vec{q}) \,,

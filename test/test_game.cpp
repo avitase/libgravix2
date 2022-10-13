@@ -148,3 +148,65 @@ TEST_CASE("Test planet distribution", "[game]")
         REQUIRE(lon_hist[i] < threshold);
     }
 }
+
+TEST_CASE("Test tick")
+{
+    const double H = .1;
+
+    auto planets = grvx_new_planets(2);
+    grvx_set_planet(planets, 0, -std::numbers::pi / 2., 0.);
+    grvx_set_planet(planets, 1, +std::numbers::pi / 2., 0.);
+
+    auto game = grvx_init_game(planets);
+
+    GrvxMissileLaunch m1{.t_start = 2.1, // start: 2.1
+                         .dt_ping = 1.4, //  ping: 3.5
+                         .dt_end = 2.0,  //   end: 4.1
+                         .v = 1.,
+                         .psi = 0.};
+    GrvxMissileLaunch m2{.t_start = 1.5, // start:   1.5
+                         .dt_ping = 1.6, //  ping:   3.1
+                         .dt_end = 98.5, //   end: 100.0  (too late)
+                         .v = 1.,
+                         .psi = 0.};
+    REQUIRE(grvx_request_launch(game, 0, &m1, H) == 0);
+    REQUIRE(grvx_request_launch(game, 0, &m2, H) == 0);
+
+    std::uint32_t t = 0;
+    GrvxMissileObservation *obs = grvx_observe_or_tick(game, &t);
+    REQUIRE(t == 1);
+    REQUIRE(obs == nullptr);
+
+    obs = grvx_observe_or_tick(game, &t);
+    REQUIRE(t == 2);
+    REQUIRE(obs == nullptr);
+
+    obs = grvx_observe_or_tick(game, &t);
+    REQUIRE(t == 3);
+    REQUIRE(obs == nullptr);
+
+    obs = grvx_observe_or_tick(game, &t);
+    REQUIRE(t == 3);
+    REQUIRE(obs != nullptr);
+    REQUIRE(obs->t == Approx(3.1));
+    REQUIRE(obs->planet_id > 1);
+
+    obs = grvx_observe_or_tick(game, &t);
+    REQUIRE(t == 3);
+    REQUIRE(obs != nullptr);
+    REQUIRE(obs->t == Approx(3.5));
+    REQUIRE(obs->planet_id > 1);
+
+    obs = grvx_observe_or_tick(game, &t);
+    REQUIRE(t == 4);
+    REQUIRE(obs == nullptr);
+
+    while ((obs = grvx_observe_or_tick(game, &t)) == nullptr and t <= 100) {
+    }
+    REQUIRE(obs != nullptr);
+    REQUIRE(obs->t < 100.);
+    REQUIRE(obs->planet_id == 1);
+
+    grvx_delete_game(game);
+    grvx_delete_planets(planets);
+}

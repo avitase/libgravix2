@@ -55,21 +55,20 @@ get_closest_planet(GrvxPlanetsHandle planets, double lat, double lon)
 
 static bool validate_launch(struct GrvxMissileLaunch *missile, double t)
 {
-    return (t <= missile->t_start) &&              //
-           (missile->t_start < missile->t_end) &&  //
-           (missile->t_start < missile->t_ping) && //
-           (missile->t_ping <= missile->t_end);
+    return (t <= missile->t_start && //
+            missile->dt_ping > 0. && //
+            missile->dt_end > 0. &&  //
+            missile->dt_ping < missile->dt_end);
 }
 
 static void
-get_position(struct GrvxTrajectory *trj, double t_rel, double *lat, double *lon)
+get_position(struct GrvxTrajectory *trj, uint32_t n, double *lat, double *lon)
 {
-    unsigned idx = (unsigned)(t_rel * GRVX_TRAJECTORY_SIZE);
-    assert(idx < GRVX_TRAJECTORY_SIZE);
+    assert(n < GRVX_TRAJECTORY_SIZE);
 
-    double x = trj->x[idx][0];
-    double y = trj->x[idx][1];
-    double z = trj->x[idx][2];
+    double x = trj->x[n][0];
+    double y = trj->x[n][1];
+    double z = trj->x[n][2];
 
     *lat = grvx_lat(z);
     *lon = grvx_lon(x, y);
@@ -152,14 +151,13 @@ int grvx_request_launch(GrvxGameHandle game,
                         struct GrvxMissileLaunch *missile,
                         double dt)
 {
-    double t = (double)game->tick;
-    if (!validate_launch(missile, t)) {
+    if (!validate_launch(missile, game->tick)) {
         return 1;
     }
 
     struct GrvxTrajectory *trj = grvx_get_trajectory(game->missiles, 0);
-    int rc = grvx_launch_missile(trj, game->planets, planet_id,
-                                 missile->v / game->v0, missile->psi);
+    int rc = grvx_launch_missile(
+        trj, game->planets, planet_id, missile->v * game->v0, missile->psi);
     if (rc != 0) {
         return rc;
     }
@@ -167,52 +165,52 @@ int grvx_request_launch(GrvxGameHandle game,
     const double trj_size = (double)GRVX_TRAJECTORY_SIZE;
     const double h = dt / (double)GRVX_INT_STEPS / trj_size;
 
+    double t = 0.;
+
     int premature = 0;
-    while (premature != 1 && t < missile->t_end) {
+    while (premature != 1 && t < missile->t_start + missile->dt_end) {
         unsigned n = grvx_propagate_missile(trj, game->planets, h, &premature);
 
-        double t_ping = -1.;
-        double t_detonation = -1.;
+        bool ping = false;
+        bool detonation = false;
+
+        const double dt_ping = missile->t_start + missile->dt_ping - t;
+        const double dt_detonation = missile->t_start + missile->dt_end - t;
 
         if (premature == 1) {
-            double frac = (double)n / trj_size;
-
-            double diff = missile->t_ping - t;
-            if (0. <= diff && diff < frac) {
-                t_ping = diff;
+            const double frac = (double)n / trj_size;
+            if (0. <= dt_ping && dt_ping < frac) {
+                ping = true;
             }
 
-            diff = missile->t_end - t;
-            if (frac <= diff) {
-                t_detonation = frac;
+            if (frac <= dt_detonation) {
+                detonation = true;
             }
-        } else {
-            double diff = missile->t_ping - t;
-            if (0. <= diff && diff < 1.) {
-                t_ping = diff;
-            }
+        } else if (0. <= dt_ping && dt_ping < 1.) {
+            ping = true;
         }
 
-        if (t_ping >= 0.) {
+        if (ping) {
             struct GrvxMissileObservation *obs =
                 malloc(sizeof(struct GrvxMissileObservation));
             obs->planet_id = grvx_count_planets(game->planets);
-            obs->t = missile->t_ping;
-            get_position(trj, t_ping, &obs->lat, &obs->lon);
+            obs->t = missile->t_start + missile->dt_ping;
+            get_position(
+                trj, (uint32_t)(dt_ping * trj_size), &obs->lat, &obs->lon);
 
             game->observations = add_observation(game->observations, obs);
         }
 
-        if (t_detonation >= 0.) {
+        if (detonation) {
             double lat, lon;
-            get_position(trj, t_ping, &lat, &lon);
+            get_position(trj, n, &lat, &lon);
 
             struct GrvxMissileObservation *obs =
                 malloc(sizeof(struct GrvxMissileObservation));
             obs->planet_id = get_closest_planet(game->planets, lat, lon);
-            obs->t = missile->t_ping;
-            grvx_get_planet(game->planets, obs->planet_id, &obs->lat,
-                            &obs->lon);
+            obs->t = t + (double)n / trj_size;
+            grvx_get_planet(
+                game->planets, obs->planet_id, &obs->lat, &obs->lon);
 
             game->observations = add_observation(game->observations, obs);
         }
@@ -228,7 +226,8 @@ struct GrvxMissileObservation *grvx_observe_or_tick(GrvxGameHandle game,
 {
     struct GrvxMissileObservation *obs = 0;
 
-    if (game->observations == 0 || game->observations->obs->t > game->tick) {
+    if (game->observations == 0 ||
+        game->observations->obs->t > game->tick + 1) {
         game->tick += 1;
     } else {
         free(game->observation);
