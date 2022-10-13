@@ -27,7 +27,7 @@ test_init_planets(GrvxPlanets *planets, double min_dist, unsigned seed)
         std::launch::async, *grvx_rnd_init_planets, planets, &seed, min_dist);
 
     using namespace std::chrono_literals;
-    auto status = n.wait_for(10ms);
+    auto status = n.wait_for(50ms);
     if (status != std::future_status::ready) {
         auto n_planets = grvx_count_planets(planets);
         FAIL("Initializing failed: " << n_planets << " planets, seed=" << seed
