@@ -63,31 +63,51 @@ TEST_CASE("Test missile", "[missile]")
 
 TEST_CASE("Test perturbed measurements", "[missile]")
 {
-    auto planets = grvx_new_planets(1);
-    REQUIRE(grvx_count_planets(planets) == 1);
+    auto planets = grvx_new_planets(2);
+    REQUIRE(grvx_count_planets(planets) == 2);
 
-    int rc = grvx_set_planet(planets, 0, .1, .2);
+    int rc = grvx_set_planet(planets, 1, .1, .2);
     REQUIRE(rc == 0);
 
-    double lat = .3;
-    double lon = .4;
+    const double lat = .3;
+    const double lon = .4;
 
-    double error = 0.;
-    grvx_perturb_measurement(planets, 0, error, &lat, &lon);
-    REQUIRE(lat == Approx(.3));
-    REQUIRE(lon == Approx(.4));
+    SECTION("Error = 0")
+    {
+        double error = 0.;
 
-    error = 2. * std::numbers::pi;
-    grvx_perturb_measurement(planets, 0, error, &lat, &lon);
-    REQUIRE(lat == Approx(.3));
-    REQUIRE(lon == Approx(.4));
+        double lat2 = lat;
+        double lon2 = lon;
+        grvx_perturb_measurement(planets, 1, error, &lat2, &lon2);
 
-    error = std::numbers::pi;
-    double lat2 = lat;
-    double lon2 = lon;
-    grvx_perturb_measurement(planets, 0, error, &lat2, &lon2);
-    REQUIRE(grvx::testing::great_circle_distance(lat, lon, lat2, lon2) ==
-            Approx(2 * grvx::testing::great_circle_distance(.1, .2, lat, lon)));
+        REQUIRE(lat2 == Approx(lat));
+        REQUIRE(lon2 == Approx(lon));
+    }
+
+    SECTION("Error = 2 pi")
+    {
+        double error = 2. * std::numbers::pi;
+
+        double lat2 = lat;
+        double lon2 = lon;
+        grvx_perturb_measurement(planets, 1, error, &lat2, &lon2);
+
+        REQUIRE(lat2 == Approx(lat));
+        REQUIRE(lon2 == Approx(lon));
+    }
+
+    SECTION("Error = +/- pi")
+    {
+        double error = GENERATE(-std::numbers::pi, +std::numbers::pi);
+
+        double lat2 = lat;
+        double lon2 = lon;
+        grvx_perturb_measurement(planets, 1, error, &lat2, &lon2);
+
+        auto d = grvx::testing::great_circle_distance(lat, lon, lat2, lon2);
+        auto r = grvx::testing::great_circle_distance(.1, .2, lat, lon);
+        REQUIRE(d == Approx(2. * r));
+    }
 
     grvx_delete_planets(planets);
 }
