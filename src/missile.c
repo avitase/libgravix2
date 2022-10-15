@@ -238,3 +238,50 @@ double grvx_orb_period(double v, double h)
 
     return ((double)t + dt) / (double)GRVX_INT_STEPS;
 }
+
+void grvx_perturb_measurement(GrvxPlanetsHandle planets,
+                              uint32_t planet,
+                              double angular_error,
+                              double *lat,
+                              double *lon)
+{
+    const ptrdiff_t offset = 3 * (ptrdiff_t)planet;
+    const double x_p = planets->data[offset];
+    const double y_p = planets->data[offset + 1];
+    const double z_p = planets->data[offset + 2];
+    const double lat_p = grvx_lat(z_p);
+    const double lon_p = grvx_lon(x_p, y_p);
+
+    const double sin_lat_p = sin(lat_p);
+    const double cos_lat_p = cos(lat_p);
+    const double sin_lat_obs = sin(*lat);
+    const double cos_lat_obs = cos(*lat);
+
+    const double dlon = lon_p - *lon;
+    const double sin_dlon = sin(dlon);
+    const double cos_dlon = cos(dlon);
+
+    const double sigma =
+        acos(sin_lat_obs * sin_lat_p + cos_lat_obs * cos_lat_p * cos_dlon);
+    const double cos_sigma = cos(sigma);
+    const double sin_sigma = sin(sigma);
+
+    const double alpha =
+        atan2(cos_lat_obs * sin_dlon,
+              cos_lat_p * sin_lat_obs - sin_lat_p * cos_lat_obs * cos_dlon) +
+        angular_error;
+    const double sin_alpha = sin(alpha);
+    const double cos_alpha = cos(alpha);
+
+    struct GrvxVec3D rot[3];
+    rotation_matrix(lat_p, lon_p, rot);
+
+    struct GrvxVec3D c = {
+        sin_sigma * sin_alpha, sin_sigma * cos_alpha, cos_sigma};
+
+    const double x = grvx_dot(rot[0], c);
+    const double y = grvx_dot(rot[1], c);
+    const double z = grvx_dot(rot[2], c);
+    *lat = grvx_lat(z);
+    *lon = grvx_lon(x, y);
+}

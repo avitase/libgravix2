@@ -398,6 +398,27 @@ GRVX_EXPORT double grvx_v_scrcl(double r);
 GRVX_EXPORT double grvx_orb_period(double v0, double h);
 
 /*!
+ * \brief Perturbs measurement by assuming finite angular resolution.
+ *
+ * An observation of an event at a given planet is measured with a finite
+ * angular resolution. The given latitude and longitude pair is moved on a small
+ * circle centered at the planet by \p angular_error. The (ground truth)
+ * position of the event is read from \p lat and \p lon, and eventually updated
+ * with the new perturbed values.
+ *
+ * @param planets_handle The planets handle.
+ * @param planet_id The planet ID.
+ * @param angular_error The angular error that shifts the event position.
+ * @param lat Latitudinal position of the event.
+ * @param lon Longitudinal position of the event.
+ */
+GRVX_EXPORT void grvx_perturb_measurement(GrvxPlanetsHandle planets_handle,
+                                          uint32_t planet_id,
+                                          double angular_error,
+                                          double *lat,
+                                          double *lon);
+
+/*!
  * \brief Static configurations.
  *
  * There are several static configurations that can be set at compile-time.
