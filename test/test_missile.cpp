@@ -84,9 +84,9 @@ TEST_CASE("Test perturbed measurements", "[missile]")
         REQUIRE(lon2 == Approx(lon));
     }
 
-    SECTION("Error = 2 pi")
+    SECTION("Error = +/- 2 pi")
     {
-        double error = 2. * std::numbers::pi;
+        double error = GENERATE(-2. * std::numbers::pi, +2. * std::numbers::pi);
 
         double lat2 = lat;
         double lon2 = lon;
