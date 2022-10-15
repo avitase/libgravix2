@@ -19,7 +19,7 @@ where \f$g(\vec q)\f$ is the constraint of the manifold
     \vec\nabla g(\vec q) &= \vec{q} \,.
 \f}
 
-**NB** Differentiating the constraint \f$g(\vec q) = 0\f$ w.r.t. time we get the identity \f$\vec q \perp \vec p\f$, and differentiating a second time a physical interpretation of the Lagrange multiplier \f$\lambda = p^2 - \vec{q} \cdot \vec\nabla V\f$:
+**NB:** Differentiating the constraint \f$g(\vec q) = 0\f$ w.r.t. time we get the identity \f$\vec q \perp \vec p\f$, and differentiating a second time a physical interpretation of the Lagrange multiplier \f$\lambda = p^2 - \vec{q} \cdot \vec\nabla V\f$:
 For particles at rest the projection of the gravitational force along the position vector of a given particle thus has to be compensated in order to fulfill the constraint of our manifold.
 If the particle has a finite momentum, this constraining force can be reduced (note that \f$\operatorname{sign}(\vec{q} \cdot \vec\nabla V) > 0\f$) until the gravitational force pulls the particle on a circular orbit (\f$ \lambda = 0\f$) and eventually changes from a _pulling_ force into a _pushing_ force if the momentum becomes even larger.
 
@@ -316,6 +316,35 @@ that allows for a straightforward extraction of the longitudinal and (scaled) la
         -\sin\lambda' \\
         0
     \end{pmatrix}.
+\f]
+
+# Angular resolution
+Let's assume that an observation \f$\vec{x}_\mathrm{obs}\f$ on a planet at \f$(\phi_\mathrm{p}, \lambda_\mathrm{p})\f$ of an event happening somewhere in the universe is measured with a finite angular resolution \f$\delta \alpha\f$.
+Hence, the exact position \f$\alpha\f$ on a [small circle](https://en.wikipedia.org/wiki/Circle_of_a_sphere) with a radius \f$\sigma\f$ around the planet is unknown:
+\f[
+    \vec{x}_\mathrm{obs} = \boldsymbol{R}_{\phi_\mathrm{p}, \lambda_\mathrm{p}}
+    \begin{pmatrix}
+        \sin \sigma \, \sin (\alpha + \delta \alpha) \\
+        \sin \sigma \, \cos (\alpha + \delta \alpha) \\
+        \cos \sigma
+    \end{pmatrix},
+\f]
+with \f$\sigma = \arccos( \vec{x}_\mathrm{obs} \cdot \vec{x}_\mathrm{p})\f$.
+Consequently, the absolute error of the perturbed measurement \f$\vec{x}_\mathrm{obs} = \vec{x}_\mathrm{obs}(\alpha + \delta \alpha)\f$ and the ground truth event \f$\vec{x}_\mathrm{gt} = \vec{x}_\mathrm{obs}(\alpha + 0)\f$,
+\f[
+    \left| \vec{x}_\mathrm{obs} - \vec{x}_\mathrm{gt} \right| = 2 \sin \left( \frac{\delta \alpha}{2} \right) \, \sin \sigma,
+\f]
+scales linearly with \f$\sin \sigma = \sqrt{ 1 - ( \vec{x}_\mathrm{obs} \cdot \vec{x}_\mathrm{p} )^2}\f$.
+We implement this kind of perturbation and expose it via grvx_perturb_measurement().
+
+**NB:** The mapping between the position on a small circle \f$\alpha\f$ and the measurement \f$(\phi_\mathrm{obs}, \lambda_\mathrm{obs})\f$ is given by \f$\alpha = \operatorname{atan2}(y_1, y_2)\f$ with
+\f{align*}
+    y_1 &= \cos \phi_\mathrm{obs} \, \sin(\lambda_\mathrm{p} - \lambda_\mathrm{obs}) \\
+    y_2 &= \cos \phi_\mathrm{p} \, \sin \phi_\mathrm{obs} - \sin \phi_\mathrm{p} \, \cos \phi_\mathrm{obs} \, \cos(\lambda_\mathrm{p} - \lambda_\mathrm{obs})
+\f}
+where we have defined \f$\vec{y} = (y_1, y_2, y_3)^\top\f$ as
+\f[
+    \vec y \equiv \boldsymbol{R}^{-1}_{\phi_\mathrm{p}, \lambda_\mathrm{p}} \vec{x}_\mathrm{obs} = \boldsymbol{R}^\top_{\phi_\mathrm{p}, \lambda_\mathrm{p}} \vec{x}_\mathrm{obs} \,.
 \f]
 
 # Using the adjoint method to infer planet configurations

@@ -15,6 +15,7 @@ grvx_new_missiles
 grvx_new_planets
 grvx_observe_or_tick
 grvx_orb_period
+grvx_perturb_measurement
 grvx_pop_planet
 grvx_propagate_missile
 grvx_request_launch

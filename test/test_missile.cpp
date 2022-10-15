@@ -1,3 +1,4 @@
+#include "helpers.hpp"
 #include "libgravix2/api.h"
 #include <catch2/catch.hpp>
 #include <cmath>
@@ -57,5 +58,56 @@ TEST_CASE("Test missile", "[missile]")
     REQUIRE(premature == 0);
 
     grvx_delete_missiles(missiles);
+    grvx_delete_planets(planets);
+}
+
+TEST_CASE("Test perturbed measurements", "[missile]")
+{
+    auto planets = grvx_new_planets(2);
+    REQUIRE(grvx_count_planets(planets) == 2);
+
+    int rc = grvx_set_planet(planets, 1, .1, .2);
+    REQUIRE(rc == 0);
+
+    const double lat = .3;
+    const double lon = .4;
+
+    SECTION("Error = 0")
+    {
+        double error = 0.;
+
+        double lat2 = lat;
+        double lon2 = lon;
+        grvx_perturb_measurement(planets, 1, error, &lat2, &lon2);
+
+        REQUIRE(lat2 == Approx(lat));
+        REQUIRE(lon2 == Approx(lon));
+    }
+
+    SECTION("Error = +/- 2 pi")
+    {
+        double error = GENERATE(-2. * std::numbers::pi, +2. * std::numbers::pi);
+
+        double lat2 = lat;
+        double lon2 = lon;
+        grvx_perturb_measurement(planets, 1, error, &lat2, &lon2);
+
+        REQUIRE(lat2 == Approx(lat));
+        REQUIRE(lon2 == Approx(lon));
+    }
+
+    SECTION("Error = +/- pi")
+    {
+        double error = GENERATE(-std::numbers::pi, +std::numbers::pi);
+
+        double lat2 = lat;
+        double lon2 = lon;
+        grvx_perturb_measurement(planets, 1, error, &lat2, &lon2);
+
+        auto d = grvx::testing::great_circle_distance(lat, lon, lat2, lon2);
+        auto r = grvx::testing::great_circle_distance(.1, .2, lat, lon);
+        REQUIRE(d == Approx(2. * r));
+    }
+
     grvx_delete_planets(planets);
 }

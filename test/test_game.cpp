@@ -1,3 +1,4 @@
+#include "helpers.hpp"
 #include "libgravix2/game.h"
 #include <catch2/catch.hpp>
 #include <chrono>
@@ -7,17 +8,6 @@
 #include <numbers>
 #include <random>
 #include <set>
-
-static double
-great_circle_distance(double lat1, double lon1, double lat2, double lon2)
-{
-    double s1 = std::sin(lat1);
-    double s2 = std::sin(lat2);
-    double c1 = std::cos(lat1);
-    double c2 = std::cos(lat2);
-    double d = std::cos(lon1 - lon2);
-    return std::acos(s1 * s2 + c1 * c2 * d);
-}
 
 static void
 test_init_planets(GrvxPlanets *planets, double min_dist, unsigned seed)
@@ -45,8 +35,8 @@ test_init_planets(GrvxPlanets *planets, double min_dist, unsigned seed)
             if (i != j) {
                 double lat2, lon2;
                 grvx_get_planet(planets, j, &lat2, &lon2);
-                REQUIRE(great_circle_distance(lat1, lon1, lat2, lon2) >
-                        min_dist);
+                REQUIRE(grvx::testing::great_circle_distance(
+                            lat1, lon1, lat2, lon2) > min_dist);
             }
         }
     }
