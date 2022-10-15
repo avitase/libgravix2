@@ -335,6 +335,7 @@ Consequently, the absolute error of the perturbed measurement \f$\vec{x}_\mathrm
     \left| \vec{x}_\mathrm{obs} - \vec{x}_\mathrm{gt} \right| = 2 \sin \left( \frac{\delta \alpha}{2} \right) \, \sin \sigma,
 \f]
 scales linearly with \f$\sin \sigma = \sqrt{ 1 - ( \vec{x}_\mathrm{obs} \cdot \vec{x}_\mathrm{p} )^2}\f$.
+We implement this kind of perturbation and expose it via grvx_perturb_measurement().
 
 **NB:** The mapping between the position on a small circle \f$\alpha\f$ and the measurement \f$(\phi_\mathrm{obs}, \lambda_\mathrm{obs})\f$ is given by \f$\alpha = \operatorname{atan2}(y_1, y_2)\f$ with
 \f{align*}
@@ -343,7 +344,7 @@ scales linearly with \f$\sin \sigma = \sqrt{ 1 - ( \vec{x}_\mathrm{obs} \cdot \v
 \f}
 where we have defined \f$\vec{y} = (y_1, y_2, y_3)^\top\f$ as
 \f[
-    \vec y \equiv \boldsymbol{R}^{-1}_{\phi_\mathrm{p}, \lambda_\mathrm{p}} \vec{x}_\mathrm{obs} = \boldsymbol{R}^\top_{\phi_\mathrm{p}, \lambda_\mathrm{p}} \vec{x}_\mathrm{obs}.
+    \vec y \equiv \boldsymbol{R}^{-1}_{\phi_\mathrm{p}, \lambda_\mathrm{p}} \vec{x}_\mathrm{obs} = \boldsymbol{R}^\top_{\phi_\mathrm{p}, \lambda_\mathrm{p}} \vec{x}_\mathrm{obs} \,.
 \f]
 
 # Using the adjoint method to infer planet configurations
