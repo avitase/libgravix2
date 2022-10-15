@@ -1,5 +1,5 @@
 import ctypes
-from ctypes import c_double, c_int, c_uint, c_void_p
+from ctypes import c_double, c_int, c_uint, c_void_p, POINTER
 from typing import List, Sequence, Tuple
 
 
@@ -48,6 +48,17 @@ class Planets:
         delete_planets.restype = None
         self._delete_planets = delete_planets
 
+        perturb_measurement = lib.grvx_perturb_measurement
+        perturb_measurement.argtypes = [
+            c_void_p,
+            c_int,
+            c_double,
+            POINTER(c_double),
+            POINTER(c_double),
+        ]
+        perturb_measurement.restype = None
+        self._perturb_measurement = perturb_measurement
+
     @property
     def planet_id(self) -> List[int]:
         """
@@ -77,7 +88,7 @@ class Planets:
         :return: None
         """
         if idx < 0 or idx >= len(self._planet_id):
-            raise IndexError(f"Invalid index {i}")
+            raise IndexError(f"Invalid index {idx}")
 
         n = self._pop_planet(self.handle)
         assert n == len(self._planet_id) - 1
@@ -86,6 +97,35 @@ class Planets:
         self._planet_pos[idx] = self._planet_pos[-1]
         self._planet_id.pop()
         self._planet_pos.pop()
+
+    def perturb_measurement(
+        self,
+        idx: int,
+        *,
+        lat: float,
+        lon: float,
+        angular_error: float,
+    ) -> Tuple[float, float]:
+        """
+        Shifts measurement by an angular offset.
+
+        Shifts a measurement taken on the given planet by an angular offset. See
+        ``libgravix``'s ``grvx_perturb_measurement()`` for details.
+
+        :param idx: Planet index
+        :param lat: Latitudinal position of measurement
+        :param lon: Longitudinal position of measurement
+        :param angular_error: Angular offset.
+        :return: Perturbed measurement
+        """
+        if idx < 0 or idx >= len(self._planet_id):
+            raise IndexError(f"Invalid index {idx}")
+
+        lat, lon = c_double(lat), c_double(lon)
+        self._perturb_measurement(
+            self.handle, idx, angular_error, ctypes.byref(lat), ctypes.byref(lon)
+        )
+        return lat.value, lon.value
 
     def __del__(self):
         self._delete_planets(self.handle)
