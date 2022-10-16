@@ -1,7 +1,7 @@
 import ctypes
 import functools
 from pathlib import Path
-from typing import Sequence, Tuple, Union
+from typing import Optional, Sequence, Tuple, Union
 
 import numpy as np
 from numpy.typing import ArrayLike
@@ -41,14 +41,35 @@ class Gravix2:
         """
         return self._config
 
-    def new_planets(self, planets: Sequence[Tuple[float, float]]) -> planet.Planets:
+    def new_planets(
+        self,
+        planets: Union[int, Sequence[Tuple[float, float]]],
+        *,
+        seed: Optional[int] = None,
+        min_dist: Optional[float] = None,
+    ) -> planet.Planets:
         """
         Creates a new set of planets
 
-        :param planets: List of latitude and longitude pairs
+        Planets are either initialized explicitly or randomly via ``libgravix2``'s
+        ``grvx_rnd_init_planets()`` (from the game extension.)
+
+        If initialized randomly, a min. distance between planets has to be given.
+
+        :param planets: Number of planets (random initialization) or list of latitude
+                        and longitude pairs (explicit initialization.) If the parameter
+                        is an integer, this many planets are initialized randomly.
+                        Otherwise, the latitude/longitude pairs are used for (explicit)
+                        initialization.
+        :param seed: If planets are initialized randomly, a seed can be passed to make
+                     the sampling result consistent. If set to ``None``, a random seed
+                     will be generated internally.
+        :param min_dist: If planets are initialized randomly, a min. distance is
+                         required. See ``libgravix2``'s ``grvx_rnd_init_planets()`` for
+                         details (from the game extensions.)
         :return: A new set of planets
         """
-        return planet.Planets(planets, lib=self._lib)
+        return planet.Planets(planets, seed=seed, min_dist=min_dist, lib=self._lib)
 
     def new_missiles(self, missiles: int) -> missile.Missiles:
         """
@@ -66,7 +87,8 @@ class Gravix2:
         Reimplements ``libgravix2``'s helper function ``grvx_lat()`` for NumPy arrays
 
         :param z: (Batch of) First parameter of ``grvx_lat()``
-        :param fwd: Bypass reimplementation and forward call to ``libgravix2`` (does not work for NumPy arrays)
+        :param fwd: Bypass reimplementation and forward call to ``libgravix2`` (does not
+                    work for NumPy arrays)
         :return: (Batch of) Latitude
         """
         return self._helper.get_lat(float(z)) if fwd else np.arcsin(z)
@@ -83,7 +105,8 @@ class Gravix2:
 
         :param x: (Batch of) First parameter of ``grvx_lon()``
         :param y: (Batch of) Second parameter of ``grvx_lon()``
-        :param fwd: Bypass reimplementation and forward call to ``libgravix2`` (does not work for NumPy arrays)
+        :param fwd: Bypass reimplementation and forward call to ``libgravix2`` (does not
+                    work for NumPy arrays)
         :return: (Batch of) Longitude
         """
         return self._helper.get_lon(float(x), float(y)) if fwd else np.arctan2(x, y)
@@ -99,10 +122,12 @@ class Gravix2:
         """
         Reimplements ``libgravix2``'s helper function ``grvx_v_lat()`` for NumPy arrays
 
-        :param v: Tuple of first three parameters of ``grvx_v_lat()`` or NumPy array of shape (\*, 3)
+        :param v: Tuple of first three parameters of ``grvx_v_lat()`` or NumPy array of
+                  shape (\*, 3)
         :param lat: (Batch of) Fourth parameter of ``grvx_v_lat()``
         :param lon: (Batch of) Fifth parameter of ``grvx_v_lat()``
-        :param fwd: Bypass reimplementation and forward call to ``libgravix2`` (does not work for NumPy arrays)
+        :param fwd: Bypass reimplementation and forward call to ``libgravix2`` (does not
+                    work for NumPy arrays)
         :return: (Batch of) Latitudinal speed
         """
         if fwd:

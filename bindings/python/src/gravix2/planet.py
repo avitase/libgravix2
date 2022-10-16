@@ -1,42 +1,109 @@
 import ctypes
+import random
 from ctypes import c_double, c_int, c_uint, c_void_p, POINTER
-from typing import List, Sequence, Tuple
+from typing import List, Optional, Sequence, Tuple, Union
 
 
 class Planets:
     """
     Proxy class for operations on ``libgravix2``'s ``Planets``
 
-    New planets are allocated and initialized at the provided coordinates. Planets can
-    be accessed and removed by referring to them by their respective indices. Removing
-    planets can rearrange the internal representation and indices associations might
-    change. Use :func:`gravix2.planet.Planets.planet_id` to get a static and unique
-    identification (ID) for each planet. Initially, indices and IDs are identically.
+    New planets are allocated and initialized either at the provided coordinates or
+    randomly. Planets can be accessed and removed by referring to them by their
+    respective indices. Removing planets can rearrange the internal representation and
+    indices associations might change. Use :func:`gravix2.planet.Planets.planet_id` to
+    get a static and unique identification (ID) for each planet. Initially, indices and
+    IDs are identically.
 
     Use :func:`gravix2.gravix2.Gravix2.new_planets` to create a new instance.
 
-    :param planets: List of latitude and longitude pairs
+    :param planets: Number of planets or list of latitude and longitude pairs. If this
+                    parameter is an integer, this many planets are initialized randomly.
+    :param seed: If planets are initialized randomly a seed can be passed. If ``None``
+                 a random seed will be generated.
+    :param min_dist: If planets are initialized randomly, a min. distance is required.
     :param lib: ``libgravix2`` library
     """
 
     def __init__(
-        self, planets: Sequence[Tuple[float, float]], *, lib: ctypes.CDLL
+        self,
+        planets: Union[int, Sequence[Tuple[float, float]]],
+        *,
+        seed: Optional[int] = None,
+        min_dist: Optional[float] = None,
+        lib: ctypes.CDLL,
     ) -> None:
         new_planets = lib.grvx_new_planets
         new_planets.argtypes = [c_uint]
         new_planets.restype = c_void_p
-        self.handle = new_planets(len(planets))
 
-        set_planet = lib.grvx_set_planet
-        set_planet.argtypes = [c_void_p, c_uint, c_double, c_double]
-        set_planet.restype = c_int
+        if isinstance(planets, int):
+            if min_dist is None:
+                self.handle = None  # disable __del__()
+                raise ValueError(
+                    "Random initialization of planets requires a min. distance"
+                )
 
-        for i, (lat, lon) in enumerate(planets):
-            rc = set_planet(self.handle, i, float(lat), float(lon))
-            assert rc == 0
+            if planets < 1:
+                self.handle = None  # disable __del__()
+                raise ValueError("Number of planets has to be at least 1")
 
-        self._planet_pos = list(planets)
-        self._planet_id = list(range(len(planets)))
+            if seed is None:
+                seed = random.getrandbits(32)
+
+            seed = c_uint(seed)
+
+            rnd_init = lib.grvx_rnd_init_planets
+            rnd_init.argtypes = [c_void_p, POINTER(c_uint), c_double]
+            rnd_init.restype = c_uint
+
+            self.handle = new_planets(planets)
+            rnd_init(self.handle, ctypes.byref(seed), c_double(min_dist))
+
+            get_planet = lib.grvx_get_planet
+            get_planet.argtypes = [
+                c_void_p,
+                c_uint,
+                POINTER(c_double),
+                POINTER(c_double),
+            ]
+            get_planet.restype = c_int
+
+            self._planet_pos = []
+            for i in range(planets):
+                lat, lon = c_double(), c_double()
+                rc = get_planet(
+                    self.handle, c_uint(i), ctypes.byref(lat), ctypes.byref(lon)
+                )
+                assert rc == 0
+
+                self._planet_pos.append((lat.value, lon.value))
+
+        else:
+            if min_dist is not None:
+                raise Warning(
+                    "Planets are initialized explicitly and parameter "
+                    "`min_dist` is ignored"
+                )
+
+            if seed is not None:
+                raise Warning(
+                    "Planets are initialized explicitly and parameter "
+                    "`seed` is ignored"
+                )
+
+            set_planet = lib.grvx_set_planet
+            set_planet.argtypes = [c_void_p, c_uint, c_double, c_double]
+            set_planet.restype = c_int
+
+            self.handle = new_planets(len(planets))
+            for i, (lat, lon) in enumerate(planets):
+                rc = set_planet(self.handle, i, float(lat), float(lon))
+                assert rc == 0
+
+            self._planet_pos = list(planets)
+
+        self._planet_id = list(range(len(self._planet_pos)))
 
         pop_planet = lib.grvx_pop_planet
         pop_planet.argtypes = [c_void_p]
@@ -98,6 +165,9 @@ class Planets:
         self._planet_id.pop()
         self._planet_pos.pop()
 
+    def __len__(self) -> int:
+        return len(self._planet_pos)
+
     def perturb_measurement(
         self,
         idx: int,
@@ -128,4 +198,5 @@ class Planets:
         return lat.value, lon.value
 
     def __del__(self):
-        self._delete_planets(self.handle)
+        if self.handle is not None:
+            self._delete_planets(self.handle)

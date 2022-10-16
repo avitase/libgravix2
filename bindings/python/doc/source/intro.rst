@@ -22,7 +22,7 @@ From here on, one can use ``lib``, for example, to create new :class:`gravix2.mi
 .. highlight:: python
 .. code-block:: python
 
-    missiles = lib.new_missiles(n=3)
+    missiles = lib.new_missiles(3)
 
 Typically, users shouldn't instantiate any of our provided proxy classes manually but use the methods exposed by :class:`gravix2.gravix2.Gravix2`.
 As most calls are forwarded to their wrapped counterparts in ``libgravix2``, we intentionally kept the documentation for those methods short and refer to the `excellent documentation <https://avitase.github.io/libgravix2/>`_ of ``libgravix2`` instead.
