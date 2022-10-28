@@ -9,6 +9,7 @@ def configure():
     mpl.rcParams["text.usetex"] = True
     mpl.rcParams["pgf.texsystem"] = "lualatex"
     mpl.rcParams["pgf.rcfonts"] = False
+    mpl.rcParams["savefig.dpi"] = 400
 
 
 def save_fig(fig, file_name):
