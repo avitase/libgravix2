@@ -3,6 +3,8 @@ import random
 from ctypes import c_double, c_int, c_uint, c_void_p, POINTER
 from typing import List, Optional, Sequence, Tuple, Union
 
+from .extensions.game import Game
+
 
 class Planets:
     """
@@ -33,6 +35,8 @@ class Planets:
         min_dist: Optional[float] = None,
         lib: ctypes.CDLL,
     ) -> None:
+        self.lib = lib
+
         new_planets = lib.grvx_new_planets
         new_planets.argtypes = [c_uint]
         new_planets.restype = c_void_p
@@ -196,6 +200,17 @@ class Planets:
             self.handle, idx, angular_error, ctypes.byref(lat), ctypes.byref(lon)
         )
         return lat.value, lon.value
+
+    def new_game(self, *, dt: float) -> Game:
+        """
+        Creates a new game instance
+
+        Creates a new game instance from ``libgravix2``'s game extension.
+
+        :param dt: Step size of simulation
+        :return: A new game
+        """
+        return Game(planets=self.handle, dt=dt, lib=self.lib)
 
     def __del__(self):
         if self.handle is not None:
