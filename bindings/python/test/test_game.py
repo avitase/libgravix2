@@ -36,7 +36,7 @@ def test_game(random, libgravix2):
     assert np.isclose(obs[0].t, 3.1)
     assert np.isclose(obs[1].t, 3.5)
 
-    obs = game.tick()
+    obs = None
     while not obs and game.t <= 100:
         obs = game.tick()
 
@@ -44,4 +44,4 @@ def test_game(random, libgravix2):
     assert len(obs) == 1
     assert isinstance(obs[0], observation.Detonation)
     assert obs[0].t < game.t
-    assert obs[0].planet_id == 1
+    assert obs[0].planet_idx == 1

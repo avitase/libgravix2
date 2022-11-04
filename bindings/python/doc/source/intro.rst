@@ -97,21 +97,19 @@ The unit tests can then be triggered from the root directory of the Python bindi
 
     (venv) python $ pip install --upgrade pytest
     (venv) python $ python -m pytest .
-    ============================== test session starts ===============================
-    platform linux -- Python 3.9.9, pytest-7.1.0, pluggy-1.0.0
+    ======================== test session starts ========================
+    platform linux -- Python 3.10.6, pytest-7.2.0, pluggy-1.0.0
     rootdir: /libgravix2/bindings/python
-    collected 8 items
+    collected 9 items
 
-    test_config.py::test_config PASSED                                       [ 12%]
-    test_helpers.py::test_lat PASSED                                         [ 25%]
-    test_helpers.py::test_lon PASSED                                         [ 37%]
-    test_helpers.py::test_vlat PASSED                                        [ 50%]
-    test_helpers.py::test_vlon PASSED                                        [ 62%]
-    test_missile.py::test_missiles PASSED                                    [ 75%]
-    test_planets.py::test_planets PASSED                                     [ 87%]
-    test_scrcl.py::test_missiles PASSED                                      [100%]
+    test/test_config.py .                                         [ 11%]
+    test/test_game.py .                                           [ 22%]
+    test/test_helpers.py ....                                     [ 66%]
+    test/test_missile.py .                                        [ 77%]
+    test/test_planets.py .                                        [ 88%]
+    test/test_scrcl.py .                                          [100%]
 
-    ============================== 8 passed in 0.09s ===============================
+    ========================= 9 passed in 0.16s =========================
 
 Contribute your own tests but keep in mind that a unit test should not run for more than one second on a decently equipped machine.
 Remember to comment your contribution (w/ or w/o a unit test) and check the formatting of the `generated sphinx documentation <https://www.sphinx-doc.org/>`_ **before** submitting changes:

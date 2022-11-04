@@ -48,3 +48,19 @@ Config
    :members:
    :undoc-members:
    :show-inheritance:
+
+Game Extension
+--------------
+
+.. automodule:: gravix2.extensions.game
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Observable events
+~~~~~~~~~~~~~~~~~
+
+.. automodule:: gravix2.extensions.observation
+   :members:
+   :undoc-members:
+   :show-inheritance:

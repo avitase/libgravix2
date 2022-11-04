@@ -7,7 +7,18 @@ from .observation import Detonation, Ping
 
 class Game:
     """
-    TODO
+    Proxy class for ``libgravix2``'s game extension
+
+    A new game is created. The functions
+    :func:`gravix2.extensions.game.Game.request_launch` and
+    :func:`gravix2.extensions.game.Game.tick` map (almost) directly to their
+    counterparts ``grvx_request_launch()`` and ``grvx_observe_or_tick()``, respectively.
+
+    Use :func:`gravix2.planet.Planet.new_game` to create a new instance.
+
+    :param planets: Planet handel
+    :param dt: Step size of simulation
+    :param lib: ``libgravix2`` library
     """
 
     def __init__(self, *, planets: c_void_p, dt: float, lib: ctypes.CDLL) -> None:
@@ -51,15 +62,16 @@ class Game:
         psi: float,
     ) -> None:
         """
-        TODO
+        Requests a missile launch
 
-        :param planet_idx:
-        :param t_start:
-        :param dt_ping:
-        :param dt_end:
-        :param v:
-        :param psi:
-        :return:
+        Requests a missile launch via ``libgravix2``'s ``grvx_request_launch()``.
+
+        :param planet_idx: The planet index
+        :param t_start: Requested launch time
+        :param dt_ping: Requested time to send a ping after launch
+        :param dt_end: Requested time of self-destruction
+        :param v: Requested initial velocity
+        :param psi: Orientation during launch
         """
 
         class Request(ctypes.Structure):
@@ -78,9 +90,16 @@ class Game:
 
     def tick(self) -> List[Union[Detonation, Ping]]:
         """
-        TODO
+        Advances time
 
-        :return:
+        Advances time via ``libgravix2``'s ``grvx_observe_or_tick()`` and bundles
+        observations in a list. Note that this behavior is different from the C-API
+        and a single call to this function will always advance time.
+
+        An observable event is either a :class:`gravix2.extensions.observation.Ping`
+        or a :class:`gravix2.extensions.observation.Detonation`.
+
+        :return: List of observables
         """
 
         class Observation(ctypes.Structure):
@@ -103,7 +122,7 @@ class Game:
             if obs:
                 obs = ctypes.cast(obs, POINTER(Observation)).contents
                 observations.append(
-                    Detonation(planet_id=obs.planet_id, t=obs.t)
+                    Detonation(planet_idx=obs.planet_id, t=obs.t)
                     if obs.planet_id < self.n_planets
                     else Ping(t=obs.t, lat=obs.lat, lon=obs.lon)
                 )
