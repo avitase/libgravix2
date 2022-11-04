@@ -198,10 +198,7 @@ GRVX_EXPORT void grvx_delete_game(GrvxGameHandle handle);
  * the product of the number of integration steps between trajectory points,
  * ``GRVX_INT_STEPS``, and the trajectory size ``GRVX_TRAJECTORY_SIZE``.
  * This makes \p dt and the simulated time interval independent of
- * ``GRVX_INT_STEPS`` and ``GRVX_TRAJECTORY_SIZE``.
- *
- * If a requested time in \p missile is not an integer, the value might get
- * rounded to the closest fractional tick.
+ * ``GRVX_INT_STEPS`` and ``GRVX_TRAJECTORY_SIZE?``.
  *
  * @param game The game handle.
  * @param planet_id ID of the planet.
