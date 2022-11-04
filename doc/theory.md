@@ -52,7 +52,7 @@ In the figure below, we show \f$V^{(j)}_{3\mathrm{D}}(\sigma_i)\f$ for \f$j=0,1,
 
 [<img src="pot3D.png" width="400"/>](pot3D.png)
 
-Note that these potentials or only physical meaningful for \f$0 \le \sigma_i < 2\pi\f$.
+Note that these potentials are only physical meaningful for \f$0 \le \sigma_i < 2\pi\f$.
 (In fact, by definition of the inverse cosine function, the interval actual reads \f$0 \le \sigma_i \le \pi\f$.)
 Furthermore, since \f$\sigma_i = \pi\f$ is the largest possible distance between two points on a unit sphere, any reasonable potential \f$V(\sigma_i)\f$ has to obey the symmetry relation \f$V(\sigma_i) = V(2\pi - \sigma_i)\f$.
 
