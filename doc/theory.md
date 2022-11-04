@@ -52,7 +52,7 @@ In the figure below, we show \f$V^{(j)}_{3\mathrm{D}}(\sigma_i)\f$ for \f$j=0,1,
 
 [<img src="pot3D.png" width="400"/>](pot3D.png)
 
-Note that these potentials or only physical meaningful for \f$0 \le \sigma_i < 2\pi\f$.
+Note that these potentials are only physical meaningful for \f$0 \le \sigma_i < 2\pi\f$.
 (In fact, by definition of the inverse cosine function, the interval actual reads \f$0 \le \sigma_i \le \pi\f$.)
 Furthermore, since \f$\sigma_i = \pi\f$ is the largest possible distance between two points on a unit sphere, any reasonable potential \f$V(\sigma_i)\f$ has to obey the symmetry relation \f$V(\sigma_i) = V(2\pi - \sigma_i)\f$.
 
@@ -95,7 +95,7 @@ In particular, \f$f_d(\sigma_i) < 0 \; \forall \, \sigma_i\f$ whereas the projec
 In the visualization of \f$d = 3\mathrm{D}\f$ above, we approximated the infinite sum with \f$J=100\f$ summands.
 Below, we show the ratio of truncated summations w.r.t. \f$J=0\f$.
 In general, we see that the sum converges fast and for most cases taking \f$\mathrm{O}(10)\f$ summands is sufficient. 
-In particular, the deviation is largest where the force field is weakest and the missile kinematic is most likely be dominated by other planets, and even here, taking the first two leading terms, \f$J=1\f$, already gives an approximation which deviates less than \f$2\,\%\f$ from the asymptotic result, \f$J \to \infty\f$.
+In particular, the deviation is largest where the force field is weakest and the missile kinematic is most likely be dominated by other planets, and even here, taking the first two leading terms, \f$J=1\f$, already gives an approximation that deviates less than \f$2\,\%\f$ from the asymptotic result, \f$J \to \infty\f$.
 
 [<img src="f3D_ratio.png" width="400"/>](f3D_ratio.png)
 
@@ -123,7 +123,7 @@ Hence, a possible solution reads:
 \f]
 The velocity \f$v_\mathrm{orb}\f$ for a given force field \f$f_d\f$ and distance \f$r\f$ can thus be obtained by setting \f$\phi_0 = \pi/2 - r\f$ and evaluating:
 \f[
-    v_{\mathrm{orb},d} \equiv \dot x = v_\lambda \cos \phi_0 = \sqrt{ \frac{-f_d(r)}{|\cos r|}} \, \sin r
+    v_{\mathrm{orb},d} \equiv \dot x = v_\lambda \cos \phi_0 = \sqrt{ \frac{-f_d(r)}{|\cos r|}} \, \sin r \,.
 \f]
 For convenience, we provide a helper function grvx_v_scrcl() which returns \f$v_\mathrm{orb}\f$ if provided with \f$r\f$.
 
