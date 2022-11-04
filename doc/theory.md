@@ -123,7 +123,7 @@ Hence, a possible solution reads:
 \f]
 The velocity \f$v_\mathrm{orb}\f$ for a given force field \f$f_d\f$ and distance \f$r\f$ can thus be obtained by setting \f$\phi_0 = \pi/2 - r\f$ and evaluating:
 \f[
-    v_{\mathrm{orb},d} \equiv \dot x = v_\lambda \cos \phi_0 = \sqrt{ \frac{-f_d(r)}{|\cos r|}} \, \sin r
+    v_{\mathrm{orb},d} \equiv \dot x = v_\lambda \cos \phi_0 = \sqrt{ \frac{-f_d(r)}{|\cos r|}} \, \sin r \,.
 \f]
 For convenience, we provide a helper function grvx_v_scrcl() which returns \f$v_\mathrm{orb}\f$ if provided with \f$r\f$.
 
