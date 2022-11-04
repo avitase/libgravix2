@@ -10,10 +10,10 @@ def test_game(random, libgravix2):
 
     game = planets.new_game(dt=0.1)
     game.request_launch(
-        planet_id=0, t_start=2.1, dt_ping=1.4, dt_end=2.0, v=1.0, psi=0.0
+        planet_idx=0, t_start=2.1, dt_ping=1.4, dt_end=2.0, v=1.0, psi=0.0
     )
     game.request_launch(
-        planet_id=1, t_start=1.5, dt_ping=1.6, dt_end=98.5, v=1.0, psi=0.0
+        planet_idx=0, t_start=1.5, dt_ping=1.6, dt_end=98.5, v=1.0, psi=0.0
     )
 
     obs = game.tick()
@@ -38,10 +38,10 @@ def test_game(random, libgravix2):
 
     obs = game.tick()
     while not obs and game.t <= 100:
-        pass
+        obs = game.tick()
 
     assert game.t < 100
     assert len(obs) == 1
     assert isinstance(obs[0], observation.Detonation)
     assert obs[0].t < game.t
-    assert obs[0].planet_id == 1  # TODO ID!?
+    assert obs[0].planet_id == 1

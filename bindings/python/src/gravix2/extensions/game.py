@@ -43,7 +43,7 @@ class Game:
     def request_launch(
         self,
         *,
-        planet_id: int,  # TODO use ID from planets
+        planet_idx: int,
         t_start: float,
         dt_ping: float,
         dt_end: float,
@@ -53,7 +53,7 @@ class Game:
         """
         TODO
 
-        :param planet_id:
+        :param planet_idx:
         :param t_start:
         :param dt_ping:
         :param dt_end:
