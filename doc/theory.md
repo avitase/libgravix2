@@ -95,7 +95,7 @@ In particular, \f$f_d(\sigma_i) < 0 \; \forall \, \sigma_i\f$ whereas the projec
 In the visualization of \f$d = 3\mathrm{D}\f$ above, we approximated the infinite sum with \f$J=100\f$ summands.
 Below, we show the ratio of truncated summations w.r.t. \f$J=0\f$.
 In general, we see that the sum converges fast and for most cases taking \f$\mathrm{O}(10)\f$ summands is sufficient. 
-In particular, the deviation is largest where the force field is weakest and the missile kinematic is most likely be dominated by other planets, and even here, taking the first two leading terms, \f$J=1\f$, already gives an approximation which deviates less than \f$2\,\%\f$ from the asymptotic result, \f$J \to \infty\f$.
+In particular, the deviation is largest where the force field is weakest and the missile kinematic is most likely be dominated by other planets, and even here, taking the first two leading terms, \f$J=1\f$, already gives an approximation that deviates less than \f$2\,\%\f$ from the asymptotic result, \f$J \to \infty\f$.
 
 [<img src="f3D_ratio.png" width="400"/>](f3D_ratio.png)
 
