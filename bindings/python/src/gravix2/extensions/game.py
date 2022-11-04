@@ -18,7 +18,7 @@ class Game:
         count_planets = lib.grvx_count_planets
         count_planets.argtypes = [c_void_p]
         count_planets.restype = c_uint
-        self.n_planets = count_planets(planets).value
+        self.n_planets = count_planets(planets)
 
         init_game = lib.grvx_init_game
         init_game.argtypes = [c_void_p]
@@ -74,7 +74,7 @@ class Game:
         req = Request(t_start, dt_ping, dt_end, v, psi)
         rc = self._request_launch(self.handle, planet_idx, ctypes.byref(req), self.dt)
         if rc != 0:
-            raise RuntimeError(f"Unsuccessful request. Return code: {rc.value}")
+            raise RuntimeError(f"Unsuccessful request. Return code: {rc}")
 
     def tick(self) -> List[Union[Detonation, Ping]]:
         """
@@ -103,9 +103,9 @@ class Game:
             if obs:
                 obs = ctypes.cast(obs, POINTER(Observation)).contents
                 observations.append(
-                    Detonation(planet_id=obs.planet_id.value, t=obs.t.value)
-                    if obs.planet_id.value < self.n_planets
-                    else Ping(t=obs.t.value, lat=obs.lat.value, lon=obs.lon.value)
+                    Detonation(planet_id=obs.planet_id, t=obs.t)
+                    if obs.planet_id < self.n_planets
+                    else Ping(t=obs.t, lat=obs.lat, lon=obs.lon)
                 )
 
         return observations
