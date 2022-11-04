@@ -20,7 +20,8 @@ jobs:
 
     - name: Install dependencies
       run: sudo apt-get update -q
-        && sudo apt-get install clang-format black -q -y
+        && sudo apt-get install clang-format -q -y
+        && pip3 install --user black
 
     - name: Check formatting of C library
       run: cmake -D FORMAT_COMMAND=clang-format -P cmake/lint.cmake
