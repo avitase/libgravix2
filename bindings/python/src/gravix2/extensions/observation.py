@@ -17,7 +17,7 @@ class Ping:
     """
     :param t: Tick
     :param lat: Latitude
-    :param lat: Longitude
+    :param lon: Longitude
     """
 
     t: float
