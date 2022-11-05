@@ -55,7 +55,7 @@ libgravix2 $ cmake --install build/release                # as before
 There are more configuration options that can be set during compilation either by passing them directly via `-D` to `cmake` (as shown before with `CMAKE_INSTALL_PREFIX`) or via a graphical tool, such as [`ccmake`](https://cmake.org/cmake/help/latest/manual/ccmake.1.html):
  - `CMAKE_BUILD_TYPE`: `Release` (default) or `Debug`. If enabling unit tests, this has to be set to `Debug`.
  - `ENABLE_TESTING`: `On` or `Off` (default). Generate unit tests and require a `Debug` build. Tests can be run with `ctest` after building.
- - `ENABLE_DOXYGEN`: `On` of `Off` (default). Generate documentation and require a [Doxygen installation](https://www.doxygen.nl/index.html).
+ - `ENABLE_DOXYGEN`: `On` or `Off` (default). Generate documentation and require a [Doxygen installation](https://www.doxygen.nl/index.html).
  - `GRVX_POT_TYPE`: `2D` (default) or `3D`.
  - `GRVX_N_POT`: Approximation order of the force field. Only available if `GRVX_POT_TYPE` is set to `3D`. (Default: `0`)
  - `GRVX_TRAJECTORY_SIZE`: Size of trajectory. (Default: `100`)
