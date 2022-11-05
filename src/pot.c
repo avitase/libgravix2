@@ -50,7 +50,9 @@ static double f3D_approx(double x)
 void grvx_gradV(struct GrvxVec3D *x, const struct GrvxPlanets *planets)
 {
     struct GrvxVec3D acc = {0., 0., 0.};
-    for (ptrdiff_t i = 0; i < planets->n; i++) {
+
+    const ptrdiff_t N = (ptrdiff_t)planets->n;
+    for (ptrdiff_t i = 0; i < N; i++) {
         struct GrvxVec3D planet = {
             planets->data[3 * i],
             planets->data[3 * i + 1],
@@ -77,12 +79,12 @@ double grvx_min_dist(const struct GrvxVec3D *x,
 {
     double mdist = -1.;
 
-    for (unsigned i = 0; i < planets->n; i++) {
-        ptrdiff_t offset = 3 * (ptrdiff_t)i;
+    const ptrdiff_t N = (ptrdiff_t)planets->n;
+    for (ptrdiff_t i = 0; i < N; i++) {
         struct GrvxVec3D planet = {
-            planets->data[offset],
-            planets->data[offset + 1],
-            planets->data[offset + 2],
+            planets->data[3 * i],
+            planets->data[3 * i + 1],
+            planets->data[3 * i + 2],
         };
         const double d = grvx_dot(*x, planet);
         mdist = d > mdist ? d : mdist;
