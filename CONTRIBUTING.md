@@ -13,7 +13,7 @@ Build system targets that are only useful for developers of this project are hid
 Enabling this option makes tests and other developer targets and options available.
 Not enabling this option means that you are a consumer of this project and thus you have no need for these targets and options.
 
-Developer mode is always set to on in CI workflows.
+Developer mode is always set to `ON` in CI workflows.
 
 ### Presets
 This project makes use of [CMake's presets](https://cmake.org/cmake/help/latest/manual/cmake-presets.7.html) to simplify the process of configuring the project.
