@@ -101,7 +101,8 @@
       "inherits": "make",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release",
-        "BUILD_SHARED_LIBS": "ON"
+        "BUILD_SHARED_LIBS": "ON",
+        "CMAKE_C_FLAGS": "-O3"
       }
     },
     {
