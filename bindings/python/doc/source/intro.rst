@@ -50,7 +50,7 @@ Next, install/upgrade the `build package <https://pypi.org/project/build/>`_ fro
 
     python $ python3 -m venv venv
     python $ . venv/bin/activate
-    (venv) python $ python3 -m pip install --upgrade build
+    (venv) python $ pip install --upgrade build
     (venv) python $ python3 -m build
     * Creating venv isolated environment...
     * Installing packages in isolated environment... (setuptools>=42)
@@ -98,7 +98,7 @@ The unit tests can then be triggered from the root directory of the Python bindi
     (venv) python $ pip install --upgrade pytest
     (venv) python $ python -m pytest .
     ======================== test session starts ========================
-    platform linux -- Python 3.10.6, pytest-7.2.0, pluggy-1.0.0
+    platform linux -- Python 3.9.9, pytest-7.2.0, pluggy-1.0.0
     rootdir: /libgravix2/bindings/python
     collected 9 items
 
