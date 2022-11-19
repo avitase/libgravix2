@@ -88,7 +88,7 @@ Note that one of our fixtures expects to find ``libgravix2.so`` in the ``lib`` d
 .. code-block:: none
 
     (venv) python $ mkdir -p lib/ && cd lib/
-    (venv) lib $ ln -s ../../../build/src/libgravix2.so libgravix2.so
+    (venv) lib $ ln -s ../../../build/release/libgravix2.so libgravix2.so
 
 where ``../../../build/`` is the directory where we have built the C-API as a shared library.
 The unit tests can then be triggered from the root directory of the Python binding:
